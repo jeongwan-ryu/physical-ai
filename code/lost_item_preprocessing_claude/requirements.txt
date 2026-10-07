@@ -1,0 +1,10 @@
+# ---- 공통 (PC · Raspberry Pi) ----
+numpy>=1.21
+opencv-python>=4.6        # Pi에서는 apt의 python3-opencv를 써도 됨
+
+# ---- PC: 학습·검증용 (선택) ----
+# ultralytics>=8.3        # 학습, ONNX export, PC에서 .pt로 녹화 영상 검증
+
+# ---- Raspberry Pi 5: apt로 설치 (pip 아님) ----
+# sudo apt install python3-picamera2 hailo-all
+# 그 다음 venv를 쓴다면: python3 -m venv --system-site-packages .venv

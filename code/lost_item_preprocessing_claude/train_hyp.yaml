@@ -1,0 +1,22 @@
+# Ultralytics 학습 하이퍼파라미터 (전처리·타일링된 데이터셋용)
+# 물리 열화 증강과 Copy-Paste는 build_dataset.py에서 이미 적용했으므로
+# 여기서는 가벼운 기하·색 증강만 쓴다.
+#
+#   yolo detect train model=yolo11n.pt data=data.yaml cfg=train_hyp.yaml
+imgsz: 672
+epochs: 200
+batch: 32
+fliplr: 0.5        # 좌우 반전 OK
+flipud: 0.0        # 상하 반전 금지 (카메라 원근 구조 고정)
+degrees: 0.0       # 큰 회전 금지 (물체 회전은 Copy-Paste에서)
+shear: 0.0
+perspective: 0.0
+scale: 0.2         # ±20%
+translate: 0.1
+mosaic: 0.5
+close_mosaic: 10   # 마지막 10 epoch는 mosaic 끔
+mixup: 0.0
+copy_paste: 0.0    # 기하를 고려한 Copy-Paste는 build_dataset.py에서
+hsv_h: 0.015       # 색 단서 보존을 위해 약하게
+hsv_s: 0.3
+hsv_v: 0.3

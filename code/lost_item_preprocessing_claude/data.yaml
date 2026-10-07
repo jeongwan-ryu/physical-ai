@@ -1,0 +1,19 @@
+# build_dataset.py 출력 경로에 맞춰 수정
+path: ds
+train: train/images
+val: val/images
+test: test/images
+
+names:
+  0: airpods_bud
+  1: airpods_case
+  2: ring
+  3: earring
+  4: key
+  5: remote
+  6: kibble        # 이하 방해 물체 클래스: 학습에만 쓰고 결과에서는 버림
+  7: pill
+  8: bottle_cap
+  9: hair_tie
+  10: plug
+  11: led_glare

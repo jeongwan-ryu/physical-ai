@@ -144,7 +144,37 @@ main section:first-child .font-body-lg{font-size:15px;}
 .nooki-validation h5{font-size:14px;font-weight:600;color:#123d57;line-height:1.6;margin-bottom:8px;}
 .nooki-validation article p{font-size:13px;line-height:1.8;}
 @media(max-width:767px){.nooki-validation-grid{grid-template-columns:1fr;}.nooki-validation summary{font-size:14px;}}
-</style></head><body id="top" class="bg-surface font-body-md text-body-md text-on-surface antialiased"><a class="nooki-skip" href="#main-content">본문으로 바로가기</a><header class="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(31,78,121,0.04)]"><div class="h-20 max-w-[1280px] mx-auto px-gutter flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-md flex-shrink-0"><a class="flex items-center gap-space-sm" data-path="overview" href="#top"><span aria-hidden="true" class="material-symbols-outlined text-primary text-[32px]">travel_explore</span><span class="font-headline-sm text-headline-sm text-primary font-semibold tracking-tight">Nooki</span></a></div><nav class="nooki-nav" aria-label="주요 메뉴" data-active-classes="bg-surface-container text-primary font-semibold rounded-full"><a class="px-space-md py-space-sm rounded-full font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-colors duration-150" data-path="how-it-works" href="#how-it-works">작동 원리</a><a class="px-space-md py-space-sm rounded-full font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-colors duration-150" data-path="vision-quality" href="#vision-quality">인식 과정</a><a class="px-space-md py-space-sm rounded-full font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-colors duration-150" data-path="key-features" href="#key-features">핵심 기능</a><a class="px-space-md py-space-sm rounded-full font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-colors duration-150" data-path="app-preview" href="#app-preview">앱 미리보기</a><a class="px-space-md py-space-sm rounded-full font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-colors duration-150" data-path="faq" href="#faq">자주 묻는 질문</a></nav><div class="flex items-center gap-space-md flex-shrink-0"><a class="hidden sm:inline-flex items-center justify-center bg-secondary-container text-on-secondary-container hover:bg-secondary-fixed hover:text-on-secondary-fixed font-label-lg text-label-lg px-space-lg py-space-sm rounded-full shadow-[0_0_16px_rgba(254,174,44,0.35)] transition-all duration-200 active:scale-95" data-path="pre-order-reservation" href="#preorder">개발 소식</a></div></div></header><main class="w-full pt-20 bg-surface" id="main-content"><div class="flex flex-col w-full">
+
+.nooki-report-nav{border:1px solid #cddce6;border-radius:999px;padding:8px 14px;white-space:nowrap;color:#123d57;font-size:13px;font-weight:600;cursor:pointer;background:#fff;}
+.nooki-report-nav:hover,.nooki-report-link:hover{background:#e9f0f5;}
+.nooki-report-link{display:flex;align-items:center;justify-content:space-between;width:100%;padding:18px 20px;margin-top:28px;border:1px solid #cddce6;border-radius:12px;background:#fff;color:#123d57;font-size:15px;font-weight:600;cursor:pointer;}
+.nooki-report-dialog{width:min(920px,calc(100% - 40px));max-width:none;height:min(860px,calc(100dvh - 48px));max-height:calc(100dvh - 48px);margin:auto;padding:0;border:1px solid #dce6ee;border-radius:22px;background:#fff;color:#123d57;box-shadow:0 24px 80px #10232f40;overflow:hidden;}
+.nooki-report-dialog[open]{display:flex;flex-direction:column;}
+.nooki-report-dialog::backdrop{background:#10232f99;backdrop-filter:blur(4px);}
+.nooki-report-header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:24px 32px;border-bottom:1px solid #dce6ee;flex-shrink:0;}
+.nooki-report-header .nooki-model-label{margin-bottom:6px;}.nooki-report-header h2{font-size:25px;line-height:1.4;font-weight:600;letter-spacing:-.03em;}
+.nooki-report-close{height:40px;width:40px;border-radius:50%;background:#edf3f7;font-size:28px;flex-shrink:0;cursor:pointer;line-height:1;}
+.nooki-report-content{padding:28px 32px;overflow-y:auto;overscroll-behavior:contain;min-height:0;}
+.nooki-report-content p{font-size:14px;line-height:1.85;color:#526978;word-break:keep-all;}
+.nooki-report-meta{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin:20px 0 30px;font-size:12px;color:#526978;}
+.nooki-report-download{display:inline-flex;gap:10px;align-items:center;padding:10px 14px;border-radius:8px;background:#123d57;color:#fff;font-weight:600;}
+.nooki-report-content section{padding:26px 0!important;border-top:1px solid #dce6ee;scroll-margin-top:0;}
+.nooki-report-content h3{font-size:21px;font-weight:600;line-height:1.5;margin-bottom:12px;}
+.nooki-report-content h5{font-size:15px;font-weight:600;margin-bottom:8px;}
+.nooki-report-table-wrap{overflow-x:auto;margin:18px 0;}
+.nooki-report-content table{border-collapse:collapse;width:100%;font-size:13px;line-height:1.7;text-align:left;}
+.nooki-report-content caption{text-align:left;font-size:12px;color:#526978;padding-bottom:10px;}
+.nooki-report-content th,.nooki-report-content td{padding:12px;border-bottom:1px solid #dce6ee;}
+.nooki-report-content thead{background:#f0f5f8;}.nooki-report-content tbody th{font-weight:600;}
+.nooki-report-badge{display:inline-block;margin-left:6px;padding:2px 6px;background:#f4ead8;border-radius:4px;font-size:10px;color:#835500;white-space:nowrap;}
+.nooki-report-content .nooki-report-footnote{font-size:12px;}
+.nooki-report-flow{list-style:none;margin:20px 0 0;padding:0;display:grid;gap:10px;}
+.nooki-report-flow li{display:grid;grid-template-columns:80px 1fr;gap:16px;background:#f5f8fa;border-radius:10px;padding:16px;font-size:14px;line-height:1.8;}
+.nooki-report-flow span{color:#526978;}.nooki-report-content .nooki-validation-body{padding:0;}
+.nooki-report-footer{display:flex;justify-content:space-between;align-items:center;gap:16px;border-top:1px solid #dce6ee;padding:16px 32px;background:#f5f8fa;font-size:12px;color:#526978;flex-shrink:0;}
+.nooki-report-footer button{padding:10px 18px;border-radius:8px;background:#123d57;color:#fff;font-size:13px;font-weight:600;cursor:pointer;}
+@media(max-width:767px){.nooki-report-dialog{width:calc(100% - 20px);height:calc(100dvh - 24px);max-height:calc(100dvh - 24px);border-radius:16px;}.nooki-report-header{padding:18px;}.nooki-report-header h2{font-size:20px;}.nooki-report-content{padding:20px;}.nooki-report-footer{padding:14px 20px;}.nooki-report-flow li{grid-template-columns:1fr;gap:4px;}.nooki-report-nav{font-size:12px;padding:7px 10px;}.nooki-nav{justify-content:flex-start;}}
+</style></head><body id="top" class="bg-surface font-body-md text-body-md text-on-surface antialiased"><a class="nooki-skip" href="#main-content">본문으로 바로가기</a><header class="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(31,78,121,0.04)]"><div class="h-20 max-w-[1280px] mx-auto px-gutter flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-md flex-shrink-0"><a class="flex items-center gap-space-sm" data-path="overview" href="#top"><span aria-hidden="true" class="material-symbols-outlined text-primary text-[32px]">travel_explore</span><span class="font-headline-sm text-headline-sm text-primary font-semibold tracking-tight">Nooki</span></a></div><nav class="nooki-nav" aria-label="주요 메뉴" data-active-classes="bg-surface-container text-primary font-semibold rounded-full"><a class="px-space-md py-space-sm rounded-full font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-colors duration-150" data-path="how-it-works" href="#how-it-works">작동 원리</a><a class="px-space-md py-space-sm rounded-full font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-colors duration-150" data-path="vision-quality" href="#vision-quality">인식 과정</a><a class="px-space-md py-space-sm rounded-full font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-colors duration-150" data-path="key-features" href="#key-features">핵심 기능</a><a class="px-space-md py-space-sm rounded-full font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-colors duration-150" data-path="app-preview" href="#app-preview">앱 미리보기</a><a class="px-space-md py-space-sm rounded-full font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-colors duration-150" data-path="faq" href="#faq">자주 묻는 질문</a><button type="button" class="nooki-report-nav" data-report-open aria-haspopup="dialog" aria-controls="technical-report" aria-expanded="false">기술 보고서</button></nav><div class="flex items-center gap-space-md flex-shrink-0"><a class="hidden sm:inline-flex items-center justify-center bg-secondary-container text-on-secondary-container hover:bg-secondary-fixed hover:text-on-secondary-fixed font-label-lg text-label-lg px-space-lg py-space-sm rounded-full shadow-[0_0_16px_rgba(254,174,44,0.35)] transition-all duration-200 active:scale-95" data-path="pre-order-reservation" href="#preorder">개발 소식</a></div></div></header><main class="w-full pt-20 bg-surface" id="main-content"><div class="flex flex-col w-full">
 <!-- SECTION 1: HERO -->
 <section class="relative w-full overflow-hidden bg-surface py-space-xl lg:py-margin">
 <div class="max-w-[1280px] mx-auto px-gutter grid grid-cols-1 lg:grid-cols-12 gap-space-xl items-center">
@@ -403,19 +433,7 @@ main section:first-child .font-body-lg{font-size:15px;}
     <article><span class="nooki-model-step">03 · 기기에서 실행</span><h4>기기 안에서 인식하다</h4><p><strong>Raspberry Pi 5와 Hailo-8L</strong> 구성을 검토 중입니다. 학습한 AI를 기기에 맞춰 최적화하고, 내부에서 영상을 처리할 계획입니다.</p></article>
     <article><span class="nooki-model-step">04 · 발견 안내</span><h4>확인한 위치를 안내하다</h4><p>중복과 반사 후보를 정리하고 발견을 반복 확인합니다. 물품 사진과 위치를 앱에 연결할 예정입니다.</p></article>
   </div>
-  <details class="nooki-validation">
-<summary>학습·검증 과정 자세히 보기<span class="nooki-validation-toggle" aria-hidden="true">+</span></summary>
-<div class="nooki-validation-body">
-<p class="nooki-technical-detail"><strong>검토 구성</strong> · Raspberry Pi 5 + AI HAT+ 13 TOPS(Hailo-8L). PC에서 추가 학습한 모델을 가속기 실행 형식으로 변환합니다. 학습과 탐색에 같은 영상 보정 기준을 사용하며, 화면 좌표는 카메라·바닥 위치 보정을 거쳐 지도에 연결할 계획입니다.</p>
-<p class="nooki-technical-detail">신뢰도는 AI의 판단 점수이며 발견 확률을 보장하지 않습니다. 반복 확인과 함께 판단에 사용합니다.</p>
-<p>실제 기기와 생활 공간에서 검증할 계획입니다.</p>
-<div class="nooki-validation-grid">
-<article><h5>작은 물건을 놓치지 않는지</h5><p>학습에 쓰지 않은 영상으로 크기·거리·조명별 인식을 평가합니다. 기기용 모델로 변환한 뒤에도 같은 기준으로 비교합니다.</p></article>
-<article><h5>빈 공간에 잘못 알리지 않는지</h5><p>빈 바닥, 빛 반사, 닮은 물체에서 잘못된 알림을 확인합니다. 후보 정리 전후의 결과도 비교합니다.</p></article>
-<article><h5>탐색 중 꾸준히 동작하는지</h5><p>촬영부터 결과 확인까지의 시간을 측정합니다. 연속 실행 중 지연과 발열에 따른 변화도 점검합니다.</p></article>
-</div>
-</div>
-</details>
+  <button type="button" class="nooki-report-link" data-report-open aria-haspopup="dialog" aria-controls="technical-report" aria-expanded="false">기술 보고서 보기 <span aria-hidden="true">↗</span></button>
 <p class="nooki-model-note">개발 중인 구성입니다. 모델·기기 사양은 검증 후 확정됩니다.</p>
   <div class="nooki-model-sources"><span>모델 기술 자료</span><a href="https://docs.ultralytics.com/models/yolo11/" target="_blank" rel="noopener noreferrer">Ultralytics YOLO11 ↗</a><a href="https://github.com/hailo-ai/hailo_model_zoo" target="_blank" rel="noopener noreferrer">Hailo Model Zoo ↗</a></div>
 </div>
@@ -1041,5 +1059,59 @@ main section:first-child .font-body-lg{font-size:15px;}
   });
 })();
 
+</script>
+
+<!-- On-page summary of the supplied report; open the original document for full details. -->
+<dialog id="technical-report" class="nooki-report-dialog" aria-labelledby="report-title" aria-describedby="report-description">
+<div class="nooki-report-header"><div><span class="nooki-model-label">Nooki · 기술 보고서</span><h2 id="report-title">객체 인식 모델과 적용 계획</h2></div><button type="button" class="nooki-report-close" data-report-close aria-label="기술 보고서 닫기" autofocus><span aria-hidden="true">×</span></button></div>
+<div class="nooki-report-content">
+<p id="report-description" class="nooki-report-intro">모델 추천 보고서의 핵심 내용을 정리했습니다. 모델과 하드웨어는 검토안이며, 성능은 실제 기기에서 검증할 예정입니다.</p>
+<div class="nooki-report-meta"><span>보고서 기준 · 2026.10.08</span><a class="nooki-report-download" href="report/nooki_%EA%B0%9D%EC%B2%B4%EC%9D%B8%EC%8B%9D_%EB%AA%A8%EB%8D%B8_%EC%B6%94%EC%B2%9C_%EB%B3%B4%EA%B3%A0%EC%84%9C.docx" download>원본 보고서 다운로드 <span aria-hidden="true">↓</span></a></div>
+<section aria-labelledby="report-model-title"><span class="nooki-model-step">01 · 모델 선정</span><h3 id="report-model-title">YOLO11s를 우선 검토합니다</h3><p>물건의 종류·위치·신뢰도를 함께 찾는 객체 검출 모델을 사용합니다. 작은 소지품 인식, 처리 속도, 가속기 지원을 기준으로 후보를 비교합니다.</p>
+<div class="nooki-report-table-wrap"><table><caption>보고서의 모델 후보와 검토 역할</caption><thead><tr><th scope="col">후보</th><th scope="col">검토 목적</th></tr></thead><tbody><tr><th scope="row">YOLO11s <span class="nooki-report-badge">우선 후보</span></th><td>정확도·속도·Hailo 지원의 균형</td></tr><tr><th scope="row">YOLOv8s</th><td>안정적인 비교 기준과 대안</td></tr><tr><th scope="row">YOLO26s</th><td>작은 물체 인식 성능 비교</td></tr><tr><th scope="row">DAMO-YOLO-S</th><td>라이선스 조건을 고려한 대안</td></tr></tbody></table></div><p class="nooki-report-footnote">모델별 지원 환경과 사용 조건을 확인한 뒤 최종 선정합니다. 공개 벤치마크 수치는 Nooki의 실제 성능을 의미하지 않습니다.</p></section>
+<section aria-labelledby="report-train-title"><span class="nooki-model-step">02 · 학습과 영상 처리</span><h3 id="report-train-title">생활 공간에 맞춰 추가 학습합니다</h3><p>이어버드·이어폰 케이스·반지·귀걸이·열쇠·리모컨을 우선 대상으로 준비합니다. 바닥 재질, 그림자, 조명과 사료·알약처럼 혼동하기 쉬운 물체를 함께 학습합니다.</p>
+<ol class="nooki-report-flow"><li><strong>전처리</strong><span>밝기·대비 보정과 겹치는 영역 분할로 작은 물건의 단서를 유지합니다.</span></li><li><strong>AI 인식</strong><span>추가 학습한 YOLO11s로 물품 후보의 종류·위치·신뢰도를 찾습니다.</span></li><li><strong>후처리</strong><span>중복·반사 후보를 정리하고 같은 위치에서 반복되는 발견을 확인합니다.</span></li></ol></section>
+<section aria-labelledby="report-device-title"><span class="nooki-model-step">03 · 기기 적용</span><h3 id="report-device-title">학습한 AI를 기기 안으로 연결합니다</h3><p>PC에서 학습한 모델을 기기용으로 최적화해 실행하고, 확인한 물품의 사진과 위치를 앱에 연결하는 흐름을 준비합니다.</p><p>카메라 모델과 최종 하드웨어 구성은 아직 확정되지 않았습니다.</p></section>
+<section aria-labelledby="report-validation-title"><span class="nooki-model-step">04 · 검증 기준</span><h3 id="report-validation-title">실제 바닥에서 확인합니다</h3>
+<div class="nooki-validation-body">
+<p class="nooki-technical-detail"><strong>검토 구성</strong> · Raspberry Pi 5 + AI HAT+ 13 TOPS(Hailo-8L). PC에서 추가 학습한 모델을 가속기 실행 형식으로 변환합니다. 학습과 탐색에 같은 영상 보정 기준을 사용하며, 화면 좌표는 카메라·바닥 위치 보정을 거쳐 지도에 연결할 계획입니다.</p>
+<p class="nooki-technical-detail">신뢰도는 AI의 판단 점수이며 발견 확률을 보장하지 않습니다. 반복 확인과 함께 판단에 사용합니다.</p>
+<p>실제 기기와 생활 공간에서 검증할 계획입니다.</p>
+<div class="nooki-validation-grid">
+<article><h5>작은 물건을 놓치지 않는지</h5><p>학습에 쓰지 않은 영상으로 크기·거리·조명별 인식을 평가합니다. 기기용 모델로 변환한 뒤에도 같은 기준으로 비교합니다.</p></article>
+<article><h5>빈 공간에 잘못 알리지 않는지</h5><p>빈 바닥, 빛 반사, 닮은 물체에서 잘못된 알림을 확인합니다. 후보 정리 전후의 결과도 비교합니다.</p></article>
+<article><h5>탐색 중 꾸준히 동작하는지</h5><p>촬영부터 결과 확인까지의 시간을 측정합니다. 연속 실행 중 지연과 발열에 따른 변화도 점검합니다.</p></article>
+</div>
+</div>
+
+</section>
+<div class="nooki-model-sources"><span>공식 기술 자료</span><a href="https://docs.ultralytics.com/models/yolo11/" target="_blank" rel="noopener noreferrer">Ultralytics YOLO11 ↗</a><a href="https://github.com/hailo-ai/hailo_model_zoo" target="_blank" rel="noopener noreferrer">Hailo Model Zoo ↗</a></div>
+</div>
+<div class="nooki-report-footer"><span>개발·검증 계획 요약</span><button type="button" data-report-close>보고서 닫기</button></div>
+</dialog>
+<script>
+(() => {
+  const report = document.getElementById('technical-report');
+  const triggers = document.querySelectorAll('[data-report-open]');
+  let savedOverflow = '';
+  triggers.forEach(button => button.addEventListener('click', () => {
+    if (report.open) return;
+    savedOverflow = document.body.style.overflow;
+    report.showModal();
+    document.body.style.overflow = 'hidden';
+    report.querySelector('.nooki-report-content').scrollTop = 0;
+    triggers.forEach(trigger => trigger.setAttribute('aria-expanded', 'true'));
+  }));
+  report.querySelectorAll('[data-report-close]').forEach(button => button.addEventListener('click', () => report.close()));
+  report.addEventListener('close', () => {
+    document.body.style.overflow = savedOverflow;
+    triggers.forEach(trigger => trigger.setAttribute('aria-expanded', 'false'));
+  });
+  report.addEventListener('click', event => {
+    if (event.target !== report) return;
+    const rect = report.getBoundingClientRect();
+    if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) report.close();
+  });
+})();
 </script>
 </body></html>

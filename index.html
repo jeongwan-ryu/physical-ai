@@ -134,6 +134,23 @@ main section:first-child .font-body-lg{font-size:15px;}
 .nooki-detection-figure{margin:0;min-width:0;}.nooki-detection-figure svg{display:block;width:100%;height:auto;}
 .nooki-detection-figure .nooki-model-example{margin-top:12px;padding:12px 16px;}
 .nooki-detection-figure figcaption{font-size:11px;line-height:1.75;color:#526978;margin-top:10px;word-break:keep-all;}
+/* 확장 계획: YOLO11s + YOLOE */
+.nooki-model-expand{background:#fff;border:1px solid #dce6ee;border-radius:14px;padding:24px;margin-top:28px;}
+.nooki-model-expand h4{font-size:22px;letter-spacing:-.03em;}
+.nooki-model-expand>p{font-size:14px;line-height:1.85;color:#526978;word-break:keep-all;}
+.nooki-model-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:20px 0 24px;}
+.nooki-model-pair>div{background:#f5f8fa;border-radius:12px;padding:18px;}
+.nooki-model-pair h5{font-size:18px;line-height:1.5;font-weight:600;color:#123d57;margin-bottom:6px;}
+.nooki-model-pair p{font-size:13px;line-height:1.8;color:#526978;word-break:keep-all;}
+.nooki-model-loop-figure{margin:0;}
+.nooki-model-loop{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;}
+.nooki-model-loop li{position:relative;border:1px solid #dce6ee;border-radius:10px;padding:14px 12px;background:#fff;font-size:12.5px;line-height:1.7;color:#526978;word-break:keep-all;}
+.nooki-model-loop li strong{display:block;font-size:13px;color:#123d57;font-weight:600;margin-bottom:4px;}
+.nooki-model-loop li.is-key{border:2px solid #123d57;background:#eef4f8;}
+.nooki-model-loop li:not(:last-child)::after{content:"→";position:absolute;right:-13px;top:50%;transform:translateY(-50%);width:12px;text-align:center;color:#835500;font-size:13px;}
+.nooki-model-loop-return{display:flex;align-items:center;gap:8px;margin-top:12px;padding:10px 14px;border-radius:8px;background:#f4ead8;font-size:12.5px;line-height:1.7;color:#5c3d00;word-break:keep-all;}
+.nooki-model-loop-figure figcaption{font-size:11px;line-height:1.75;color:#526978;margin-top:10px;word-break:keep-all;}
+@media(max-width:767px){.nooki-model-expand{padding:18px;}.nooki-model-pair{grid-template-columns:1fr;}.nooki-model-loop{grid-template-columns:1fr;gap:16px;}.nooki-model-loop li:not(:last-child)::after{content:"↓";right:auto;left:50%;top:auto;bottom:-15px;transform:translateX(-50%);}}
 .nooki-validation{margin-top:28px;border:1px solid #cddce6;border-radius:12px;background:#fff;overflow:hidden;}
 .nooki-validation summary{display:flex;align-items:center;justify-content:space-between;gap:12px;list-style:none;padding:18px 20px;cursor:pointer;font-size:15px;line-height:1.6;font-weight:600;color:#123d57;}
 .nooki-validation summary::-webkit-details-marker{display:none;}.nooki-validation summary:focus-visible{outline:2px solid #123d57;outline-offset:-4px;}
@@ -158,6 +175,7 @@ main section:first-child .font-body-lg{font-size:15px;}
 .nooki-report-content p{font-size:14px;line-height:1.85;color:#526978;word-break:keep-all;}
 .nooki-report-meta{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin:20px 0 30px;font-size:12px;color:#526978;}
 .nooki-report-download{display:inline-flex;gap:10px;align-items:center;padding:10px 14px;border-radius:8px;background:#123d57;color:#fff;font-weight:600;}
+.nooki-report-downloads{display:flex;flex-wrap:wrap;gap:8px;}
 .nooki-report-content section{padding:26px 0!important;border-top:1px solid #dce6ee;scroll-margin-top:0;}
 .nooki-report-content h3{font-size:21px;font-weight:600;line-height:1.5;margin-bottom:12px;}
 .nooki-report-content h5{font-size:15px;font-weight:600;margin-bottom:8px;}
@@ -433,9 +451,30 @@ main section:first-child .font-body-lg{font-size:15px;}
     <article><span class="nooki-model-step">03 · 기기에서 실행</span><h4>기기 안에서 인식하다</h4><p><strong>Raspberry Pi 5와 Hailo-8L</strong> 구성을 검토 중입니다. 학습한 AI를 기기에 맞춰 최적화하고, 내부에서 영상을 처리할 계획입니다.</p></article>
     <article><span class="nooki-model-step">04 · 발견 안내</span><h4>확인한 위치를 안내하다</h4><p>중복과 반사 후보를 정리하고 발견을 반복 확인합니다. 물품 사진과 위치를 앱에 연결할 예정입니다.</p></article>
   </div>
+  <!-- Expansion plan from the 2026-10-12 vision model analysis report: YOLO11s stays the main detector, YOLOE is added later. -->
+  <div class="nooki-model-expand" aria-labelledby="model-expand-title">
+    <span class="nooki-model-label">확장 계획 · 두 모델을 함께 사용</span>
+    <h4 id="model-expand-title">아는 물건은 YOLO11s, 처음 보는 물건은 YOLOE</h4>
+    <p>기본 탐색은 학습한 <strong>YOLO11s</strong>가 맡습니다. 목록에 없는 물건을 찾아 달라는 요청은 이름만으로 물건을 찾는 <strong>YOLOE</strong>가 대신 처리하고, 이 과정에서 새 물건의 학습 데이터를 모읍니다.</p>
+    <div class="nooki-model-pair">
+      <div><span class="nooki-model-step">기본 · 먼저 개발</span><h5>YOLO11s</h5><p>이어버드·반지·귀걸이·열쇠·리모컨처럼 <strong>정해 둔 물건</strong>을 기기 안에서 찾습니다. 우리 집 바닥에서 학습해 작은 물건에 강합니다.</p></div>
+      <div><span class="nooki-model-step">확장 · 다음 단계</span><h5>YOLOE</h5><p>안경처럼 <strong>목록에 없는 물건</strong>을 이름만으로 찾습니다. 따로 학습하지 않은 결과라, 사용자 확인을 거쳐 활용합니다.</p></div>
+    </div>
+    <figure class="nooki-model-loop-figure" aria-labelledby="model-loop-caption">
+      <ol class="nooki-model-loop">
+        <li><strong>① 평소 탐색</strong>YOLO11s가 학습한 물건을 찾습니다.</li>
+        <li><strong>② 목록 밖 요청</strong>"안경 찾아줘" — YOLOE가 대신 찾습니다.</li>
+        <li class="is-key"><strong>③ 사용자 확인</strong>앱의 발견 사진에 "맞아요 / 아니에요"를 누릅니다.</li>
+        <li><strong>④ 데이터 모으기</strong>확인된 사진만 학습 데이터로 저장합니다.</li>
+        <li><strong>⑤ 다시 학습</strong>자주 찾는 물건을 YOLO11s 목록에 더합니다.</li>
+      </ol>
+      <p class="nooki-model-loop-return"><span aria-hidden="true">↺</span>다시 학습한 YOLO11s를 기기에 올리면, 다음부터는 그 물건도 YOLO11s가 바로 찾습니다.</p>
+      <figcaption id="model-loop-caption">확장 계획 흐름도 · ③ 사용자 확인으로 잘못된 학습 데이터를 거릅니다.</figcaption>
+    </figure>
+  </div>
   <button type="button" class="nooki-report-link" data-report-open aria-haspopup="dialog" aria-controls="technical-report" aria-expanded="false">기술 보고서 보기 <span aria-hidden="true">↗</span></button>
-<p class="nooki-model-note">개발 중인 구성입니다. 모델·기기 사양은 검증 후 확정됩니다.</p>
-  <div class="nooki-model-sources"><span>모델 기술 자료</span><a href="https://docs.ultralytics.com/models/yolo11/" target="_blank" rel="noopener noreferrer">Ultralytics YOLO11 ↗</a><a href="https://github.com/hailo-ai/hailo_model_zoo" target="_blank" rel="noopener noreferrer">Hailo Model Zoo ↗</a></div>
+<p class="nooki-model-note">개발 중인 구성입니다. 모델·기기 사양은 검증 후 확정됩니다. YOLOE의 기기 가속 지원과 사진 수집 방식(개인정보 보호)은 확장 단계 전에 검증합니다.</p>
+  <div class="nooki-model-sources"><span>모델 기술 자료</span><a href="https://docs.ultralytics.com/models/yolo11/" target="_blank" rel="noopener noreferrer">Ultralytics YOLO11 ↗</a><a href="https://docs.ultralytics.com/models/yoloe/" target="_blank" rel="noopener noreferrer">Ultralytics YOLOE ↗</a><a href="https://github.com/hailo-ai/hailo_model_zoo" target="_blank" rel="noopener noreferrer">Hailo Model Zoo ↗</a></div>
 </div>
 <div class="rounded-2xl bg-primary-container text-on-primary p-space-lg flex flex-col md:flex-row md:items-center gap-space-lg">
 <div class="flex-1"><h3 class="font-headline-sm text-headline-sm font-semibold">실제 공간에서 완성해 갑니다</h3><p class="font-body-md text-body-md text-primary-fixed mt-space-sm" style="word-break:keep-all;">영상 처리 코드를 준비했습니다. 다음 단계는 카메라·AI 연결과 생활 공간 검증입니다.</p></div>
@@ -1065,8 +1104,8 @@ main section:first-child .font-body-lg{font-size:15px;}
 <dialog id="technical-report" class="nooki-report-dialog" aria-labelledby="report-title" aria-describedby="report-description">
 <div class="nooki-report-header"><div><span class="nooki-model-label">Nooki · 기술 보고서</span><h2 id="report-title">객체 인식 모델과 적용 계획</h2></div><button type="button" class="nooki-report-close" data-report-close aria-label="기술 보고서 닫기" autofocus><span aria-hidden="true">×</span></button></div>
 <div class="nooki-report-content">
-<p id="report-description" class="nooki-report-intro">모델 추천 보고서의 핵심 내용을 정리했습니다. 모델과 하드웨어는 검토안이며, 성능은 실제 기기에서 검증할 예정입니다.</p>
-<div class="nooki-report-meta"><span>보고서 기준 · 2026.10.08</span><a class="nooki-report-download" href="report/nooki_%EA%B0%9D%EC%B2%B4%EC%9D%B8%EC%8B%9D_%EB%AA%A8%EB%8D%B8_%EC%B6%94%EC%B2%9C_%EB%B3%B4%EA%B3%A0%EC%84%9C.docx" download>원본 보고서 다운로드 <span aria-hidden="true">↓</span></a></div>
+<p id="report-description" class="nooki-report-intro">모델 추천 보고서와 비전 AI 모델 분석 리포트의 핵심 내용을 정리했습니다. 모델과 하드웨어는 검토안이며, 성능은 실제 기기에서 검증할 예정입니다.</p>
+<div class="nooki-report-meta"><span>보고서 기준 · 2026.10.08 · 2026.10.12</span><span class="nooki-report-downloads"><a class="nooki-report-download" href="report/nooki_%EA%B0%9D%EC%B2%B4%EC%9D%B8%EC%8B%9D_%EB%AA%A8%EB%8D%B8_%EC%B6%94%EC%B2%9C_%EB%B3%B4%EA%B3%A0%EC%84%9C.docx" download>모델 추천 보고서 <span aria-hidden="true">↓</span></a><a class="nooki-report-download" href="report/%EB%B9%84%EC%A0%84_AI_%EB%AA%A8%EB%8D%B8_5%EC%A2%85_%EB%B6%84%EC%84%9D_%EB%A6%AC%ED%8F%AC%ED%8A%B8.docx" download>비전 AI 모델 분석 리포트 <span aria-hidden="true">↓</span></a></span></div>
 <section aria-labelledby="report-model-title"><span class="nooki-model-step">01 · 모델 선정</span><h3 id="report-model-title">YOLO11s를 우선 검토합니다</h3><p>물건의 종류·위치·신뢰도를 함께 찾는 객체 검출 모델을 사용합니다. 작은 소지품 인식, 처리 속도, 가속기 지원을 기준으로 후보를 비교합니다.</p>
 <div class="nooki-report-table-wrap"><table><caption>보고서의 모델 후보와 검토 역할</caption><thead><tr><th scope="col">후보</th><th scope="col">검토 목적</th></tr></thead><tbody><tr><th scope="row">YOLO11s <span class="nooki-report-badge">우선 후보</span></th><td>정확도·속도·Hailo 지원의 균형</td></tr><tr><th scope="row">YOLOv8s</th><td>안정적인 비교 기준과 대안</td></tr><tr><th scope="row">YOLO26s</th><td>작은 물체 인식 성능 비교</td></tr><tr><th scope="row">DAMO-YOLO-S</th><td>라이선스 조건을 고려한 대안</td></tr></tbody></table></div><p class="nooki-report-footnote">모델별 지원 환경과 사용 조건을 확인한 뒤 최종 선정합니다. 공개 벤치마크 수치는 Nooki의 실제 성능을 의미하지 않습니다.</p></section>
 <section aria-labelledby="report-train-title"><span class="nooki-model-step">02 · 학습과 영상 처리</span><h3 id="report-train-title">생활 공간에 맞춰 추가 학습합니다</h3><p>이어버드·이어폰 케이스·반지·귀걸이·열쇠·리모컨을 우선 대상으로 준비합니다. 바닥 재질, 그림자, 조명과 사료·알약처럼 혼동하기 쉬운 물체를 함께 학습합니다.</p>
@@ -1085,7 +1124,17 @@ main section:first-child .font-body-lg{font-size:15px;}
 </div>
 
 </section>
-<div class="nooki-model-sources"><span>공식 기술 자료</span><a href="https://docs.ultralytics.com/models/yolo11/" target="_blank" rel="noopener noreferrer">Ultralytics YOLO11 ↗</a><a href="https://github.com/hailo-ai/hailo_model_zoo" target="_blank" rel="noopener noreferrer">Hailo Model Zoo ↗</a></div>
+<section aria-labelledby="report-expand-title"><span class="nooki-model-step">05 · 모델 확장 계획 <span class="nooki-report-badge">2026.10.12 분석 리포트</span></span><h3 id="report-expand-title">기본은 YOLO11s, 처음 보는 물건은 YOLOE</h3><p>YOLOE·SAM 2·SigLIP 2·EasyOCR·MediaPipe 다섯 모델을 공식 제원으로 비교했습니다. 결론은 <strong>정해 둔 물건은 학습한 YOLO11s가, 목록에 없는 물건은 YOLOE가</strong> 맡는 것입니다. YOLOE는 학습 없이 이름만으로 찾을 수 있지만, 정해 둔 물건을 찾을 때는 그 물건으로 학습한 모델이 더 정확합니다.</p>
+<div class="nooki-report-table-wrap"><table><caption>분석 리포트의 모델별 역할</caption><thead><tr><th scope="col">모델</th><th scope="col">Nooki에서의 역할</th><th scope="col">실행 위치</th></tr></thead><tbody>
+<tr><th scope="row">YOLO11s <span class="nooki-report-badge">기본</span></th><td>정해 둔 물건(이어버드·반지·귀걸이·열쇠·리모컨) 검출</td><td>기기 (Hailo-8L)</td></tr>
+<tr><th scope="row">YOLOE <span class="nooki-report-badge">확장 1순위</span></th><td>목록에 없는 물건을 이름으로 검출하고, 새 학습 데이터를 모음</td><td>기기 가속 지원 확인 필요</td></tr>
+<tr><th scope="row">SigLIP 2</th><td>발견 사진과 "검은색 이어폰 케이스" 같은 설명을 비교해 오검출을 거름</td><td>기기 또는 앱</td></tr>
+<tr><th scope="row">SAM 2</th><td>학습용 사진에 클릭으로 정밀한 물체 영역 표시 (라벨링 도구)</td><td>PC</td></tr>
+<tr><th scope="row">MediaPipe Hands</th><td>손가락 개수로 물건을 고르거나 탐색을 시작하는 보조 입력</td><td>기기 CPU</td></tr>
+</tbody></table></div>
+<ol class="nooki-report-flow"><li><strong>평소</strong><span>YOLO11s가 학습한 물건을 찾습니다.</span></li><li><strong>목록 밖</strong><span>목록에 없는 물건 요청은 YOLOE가 대신 찾습니다.</span></li><li><strong>확인</strong><span>사용자가 앱에서 "맞아요"로 확인한 사진만 학습 데이터로 모읍니다.</span></li><li><strong>재학습</strong><span>자주 찾는 물건을 YOLO11s 목록에 더해 기기에 다시 올립니다.</span></li></ol>
+<p class="nooki-report-footnote">사진 수집은 "집 내부 영상을 외부로 보내지 않는다"는 원칙과 함께 결정해야 합니다. YOLOE의 기기 가속 지원도 확장 전에 검증합니다. YOLO11s와 YOLOE는 모두 AGPL-3.0 라이선스입니다.</p></section>
+<div class="nooki-model-sources"><span>공식 기술 자료</span><a href="https://docs.ultralytics.com/models/yolo11/" target="_blank" rel="noopener noreferrer">Ultralytics YOLO11 ↗</a><a href="https://docs.ultralytics.com/models/yoloe/" target="_blank" rel="noopener noreferrer">Ultralytics YOLOE ↗</a><a href="https://github.com/hailo-ai/hailo_model_zoo" target="_blank" rel="noopener noreferrer">Hailo Model Zoo ↗</a></div>
 </div>
 <div class="nooki-report-footer"><span>개발·검증 계획 요약</span><button type="button" data-report-close>보고서 닫기</button></div>
 </dialog>

@@ -2,7 +2,7 @@ import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "npm:@supabase/supabase-js@2";
 
 // Nooki 홈페이지 챗봇: 질문 → Gemini 임베딩 → nooki_chunks 검색 → Gemini 답변
-// 로그인 없이 공개 호출(anon key)되므로 DB 접근은 service_role 로만 하고, 입력 길이·IP별 빈도를 제한한다.
+// 로그인 없이 공개 호출(anon key)되므로 DB 접근은 service_role 로만 하고, 입력 길이를 제한한다.
 
 const EMBED_MODEL = "gemini-embedding-2";
 const CHAT_MODEL = "gemini-3.5-flash-lite";
@@ -13,12 +13,10 @@ const API_BASE = "https://generativelanguage.googleapis.com/v1beta/models";
 const MATCH_COUNT = 4;
 const MATCH_THRESHOLD = 0.6;
 
-// 남용 방지
+// 입력 크기 제한
 const MAX_QUESTION_CHARS = 500;
 const MAX_HISTORY_TURNS = 6;
 const MAX_HISTORY_CHARS = 1000;
-const LIMIT_PER_MINUTE = 10;
-const LIMIT_PER_DAY = 200;
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
@@ -81,33 +79,6 @@ async function generate(history: Turn[], prompt: string): Promise<string> {
   return parts.filter((p: any) => !p.thought && p.text).map((p: any) => p.text).join("").trim();
 }
 
-async function sha256(text: string) {
-  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
-  return Array.from(new Uint8Array(buf), (b) => b.toString(16).padStart(2, "0")).join("");
-}
-
-// IP 해시 기준 분당/일일 요청 수 제한. 넘으면 true
-async function rateLimited(db: ReturnType<typeof createClient>, req: Request) {
-  const ip = req.headers.get("x-forwarded-for")?.split(",")[0].trim() || "unknown";
-  const ipHash = await sha256(`nooki:${ip}`);
-  const now = Date.now();
-  const since = (ms: number) => new Date(now - ms).toISOString();
-
-  const count = async (ms: number) => {
-    const { count, error } = await db.from("nooki_chat_requests")
-      .select("id", { count: "exact", head: true })
-      .eq("ip_hash", ipHash).gte("created_at", since(ms));
-    if (error) throw error;
-    return count ?? 0;
-  };
-
-  if (await count(60_000) >= LIMIT_PER_MINUTE || await count(86_400_000) >= LIMIT_PER_DAY) return true;
-
-  await db.from("nooki_chat_requests").insert({ ip_hash: ipHash });
-  await db.from("nooki_chat_requests").delete().lt("created_at", since(2 * 86_400_000)); // 오래된 기록 정리
-  return false;
-}
-
 function cleanHistory(raw: unknown): Turn[] {
   if (!Array.isArray(raw)) return [];
   const turns: Turn[] = raw
@@ -154,9 +125,6 @@ Deno.serve(async (req) => {
     if (!question) return reply({ error: "질문을 입력해 주세요." }, 400);
     if (question.length > MAX_QUESTION_CHARS) {
       return reply({ error: `질문은 ${MAX_QUESTION_CHARS}자 이내로 입력해 주세요.` }, 400);
-    }
-    if (await rateLimited(db, req)) {
-      return reply({ error: "질문이 너무 많아요. 잠시 후 다시 시도해 주세요." }, 429);
     }
 
     const history = cleanHistory(body.history);

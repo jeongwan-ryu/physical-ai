@@ -16,26 +16,4 @@ physicalAI/
     └── report.md      ← 과제 보고서 (과정, 회고, 배운 점)
 ```
 
-## GitHub Pages 배포 방법
 
-cd 
-git init
-git add .
-git commit -m "처음 커밋"
-
-git remote remove origin
-
-git remote add origin https://github.com/jeongwan-ryu/physical-ai
-git branch -M main
-git push -u origin main --force
-
-
----
-
-git init
-git branch -M main
-git remote remove origin
-git remote add origin 
-git add .
-git commit -m "수정 내용에 대한 설명"
-git push -u origin main --force

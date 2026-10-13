@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>내 DB 문서 리스트 (보안 적용)</title>
+    <!-- Supabase 라이브러리 불러오기 -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+      body { font-family: sans-serif; padding: 20px; }
+      .login-box { background: #f0f4f8; padding: 15px; border-radius: 8px; margin-bottom: 20px; width: 300px; }
+      .login-box input { display: block; width: 90%; margin-bottom: 10px; padding: 8px; }
+      .login-box button { width: 100%; padding: 8px; background: #3ecf8e; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    </style>
+  </head>
+  <body>
+    <h2>🔐 로그인 후 내 문서 확인하기</h2>
+
+    <!-- 1. 로그인 폼 추가 -->
+    <div class="login-box">
+      <h3>로그인</h3>
+      <input type="email" id="email" placeholder="이메일 (예: userA@test.com)" />
+      <input type="password" id="password" placeholder="비밀번호" />
+      <button onclick="handleLogin()">로그인</button>
+      <p id="user-info" style="font-size: 12px; color: green;"></p>
+    </div>
+
+    <h2>📄 내 DB에 저장된 문서 목록</h2>
+    <ul id="document-list">
+      로그인이 필요합니다.
+    </ul>
+
+    <script>
+      const SUPABASE_URL = "https://somiyetvungpiupzktav.supabase.co";
+      const SUPABASE_ANON_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNvbWl5ZXR2dW5ncGl1cHprdGF2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE4NDAxMzIsImV4cCI6MjEwNzQxNjEzMn0.mNST10jqL_tRf5ty6odHllIYpcf__7iDVcj6UXiG0AU";
+
+      const supabaseClient = supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+      );
+
+      // 2. 로그인 처리 함수
+      async function handleLogin() {
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        // Supabase 로그인 API 호출
+        const { data, error } = await supabaseClient.auth.signInWithPassword({
+          email: email,
+          password: password,
+        });
+
+        if (error) {
+          alert("로그인 실패: " + error.message);
+          return;
+        }
+
+        document.getElementById("user-info").innerText = `로그인 성공! (${data.user.email})`;
+        // 로그인 성공 후 내 문서 불러오기 실행
+        loadDocuments();
+      }
+
+      // 3. 문서 불러오기 함수
+      async function loadDocuments() {
+        const listEl = document.getElementById("document-list");
+        listEl.innerHTML = "데이터를 불러오는 중...";
+
+        // RLS가 켜져 있으면, 현재 로그인한 유저의 세션(토큰)을 자동으로 사용합니다.
+        const { data, error } = await supabaseClient
+          .from("documents")
+          .select("id, title, chunks(content)");
+
+        listEl.innerHTML = "";
+
+        if (error) {
+          listEl.innerHTML = `<li>오류 발생: ${error.message}</li>`;
+          return;
+        }
+
+        if (data.length === 0) {
+          listEl.innerHTML = `<li>조회된 문서가 없습니다. (다른 계정의 문서이거나 작성된 글이 없음)</li>`;
+          return;
+        }
+
+        data.forEach((doc) => {
+          const li = document.createElement("li");
+          li.style.marginBottom = "10px";
+          // chunks는 document_id로 연결된 내용들의 배열로 들어옵니다.
+          const contents = doc.chunks.map((chunk) => chunk.content).join("<br>");
+          li.innerHTML = `<strong>[ID: ${doc.id}] ${doc.title}</strong><br>${contents || "(내용 없음)"}`;
+          listEl.appendChild(li);
+        });
+      }
+    </script>
+  </body>
+</html>

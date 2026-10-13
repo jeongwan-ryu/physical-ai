@@ -1,0 +1,44 @@
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>내 DB 문서 리스트</title>
+  <!-- Supabase 라이브러리 불러오기 -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <h2>📄 내 DB에 저장된 문서 목록</h2>
+  <ul id="document-list">데이터를 불러오는 중...</ul>
+
+  <script>
+    // 1. 수강생 본인의 Supabase URL과 Anon Key 복사해서 넣기
+    const SUPABASE_URL = "https://somiyetvungpiupzktav.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNvbWl5ZXR2dW5ncGl1cHprdGF2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE4NDAxMzIsImV4cCI6MjEwNzQxNjEzMn0.mNST10jqL_tRf5ty6odHllIYpcf__7iDVcj6UXiG0AU";
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    async function loadDocuments() {
+      // 2. documents 테이블의 제목과 연결된 chunks 테이블의 content 조회
+      const { data, error } = await supabaseClient
+        .from("documents")
+        .select("id, title, chunks(content)")
+        .order("id");
+      const listEl = document.getElementById('document-list');
+      listEl.innerHTML = '';
+
+      if (error) {
+        listEl.innerHTML = `<li>오류 발생: ${error.message}</li>`;
+        return;
+      }
+
+      data.forEach(doc => {
+        const li = document.createElement('li');
+        li.style.marginBottom = '10px';
+        const content = doc.chunks.map(chunk => chunk.content).join('<br>') || '(내용 없음)';
+        li.innerHTML = `<strong>[ID: ${doc.id}] ${doc.title}</strong><br>${content}`;
+        listEl.appendChild(li);
+      });
+    }
+
+    loadDocuments();
+  </script>
+</body>
+</html>

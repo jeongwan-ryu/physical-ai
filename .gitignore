@@ -1,3 +1,6 @@
 # >100MB, GitHub limit (ultralytics auto-downloads it)
 test/yoloe/mobileclip_blt.ts
 __pycache__/
+
+# Claude Code local settings
+DB/.claude/

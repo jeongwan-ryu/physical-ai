@@ -199,8 +199,9 @@ main section:first-child .font-body-lg{font-size:15px;}
 .nooki-hw-stats dd{font-size:26px;font-weight:600;color:#00375e;margin:0;white-space:nowrap;letter-spacing:-.02em;}
 .nooki-hw-stats small{font-size:14px;font-weight:400;}
 .nooki-hw-panel{margin:0;background:#fff;border:1px solid #dce6ee;border-radius:24px;padding:32px;}
-.nooki-hw-panel-heading{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px 20px;margin-bottom:28px;}
-.nooki-hw-panel-heading h3{font-size:20px;line-height:1.45;font-weight:600;color:#123d57;letter-spacing:-.03em;}
+.nooki-hw-panel-heading{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:10px 20px;margin-bottom:28px;padding-bottom:18px;border-bottom:1px solid #dce6ee;}
+.nooki-hw-panel-heading h3{font-size:26px;line-height:1.3;font-weight:700;color:#00375e;letter-spacing:-.04em;}
+.nooki-hw-panel-heading h3::before{content:"";display:block;width:28px;height:4px;border-radius:2px;background:#d9773a;margin-bottom:12px;}
 .nooki-hw-legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:12px;color:#526978;}
 .nooki-hw-legend span{display:inline-flex;align-items:center;gap:7px;}
 .nooki-hw-legend i{display:inline-block;width:22px;border-top:2px solid var(--hw-c);}
@@ -210,16 +211,18 @@ main section:first-child .font-body-lg{font-size:15px;}
 .nooki-hw-cell{position:relative;align-self:stretch;display:flex;flex-direction:column;justify-content:center;}
 .nooki-hw-cell.is-rail{border-left:2px solid var(--hw-power);}
 .nooki-hw-cell.is-rail-end::before,.nooki-hw-cell.is-rail-start::before{content:"";position:absolute;left:0;border-left:2px solid var(--hw-power);}
-.nooki-hw-cell.is-rail-start::before{top:40px;bottom:0;}
-.nooki-hw-cell.is-rail-end::before{top:0;height:50%;}
+.nooki-hw-cell.is-rail-start::before{top:41px;bottom:0;}
+.nooki-hw-cell.is-rail-end::before{top:0;height:calc(50% + 1px);}
 .nooki-hw-power{position:relative;margin-left:18px;border:1.5px solid var(--hw-power);border-radius:12px;background:#fffaf5;padding:11px 12px;text-align:center;}
-.nooki-hw-cell.is-rail .nooki-hw-power,.nooki-hw-cell.is-rail-end .nooki-hw-power{margin-left:16px;}
-.nooki-hw-power::before{content:"";position:absolute;left:-19px;top:50%;width:17px;border-top:2px solid var(--hw-power);}
+.nooki-hw-cell.is-rail .nooki-hw-power{margin-left:16px;}
+.nooki-hw-power::before{content:"";position:absolute;left:-17.5px;top:calc(50% - 1px);width:16px;border-top:2px solid var(--hw-power);}
 .nooki-hw-cell.is-rail .nooki-hw-power::after,.nooki-hw-cell.is-rail-end .nooki-hw-power::after{content:"";position:absolute;left:-7px;top:calc(50% - 4px);border-left:6px solid var(--hw-power);border-top:5px solid transparent;border-bottom:5px solid transparent;}
 .nooki-hw-power+.nooki-hw-power{margin-top:10px;}
 .nooki-hw-power strong{display:block;font-size:15px;line-height:1.4;font-weight:600;color:#123d57;}
 .nooki-hw-power span{display:block;font-size:12px;line-height:1.5;color:var(--hw-power-text);margin-top:2px;}
+.nooki-hw-bat .nooki-hw-power,.nooki-hw-cell.is-rail-end .nooki-hw-power{margin-left:18px;}
 .nooki-hw-bat{grid-area:bat;justify-content:flex-start;}
+.nooki-hw-bat .nooki-hw-power{min-height:84px;display:flex;flex-direction:column;justify-content:center;}
 .nooki-hw-pa{grid-area:pa;}.nooki-hw-r3{grid-area:r3;}.nooki-hw-pb{grid-area:pb;}.nooki-hw-mot{grid-area:mot;}
 .nooki-hw-brain{align-self:stretch;display:flex;flex-direction:column;justify-content:center;border:2px solid var(--hw-data);border-radius:14px;background:#eef5fc;padding:16px 18px;}
 .nooki-hw-brain h4{font-size:17px;line-height:1.4;font-weight:600;color:#123d57;}
@@ -229,13 +232,14 @@ main section:first-child .font-body-lg{font-size:15px;}
 .nooki-hw-pi{grid-area:pi;}.nooki-hw-esp{grid-area:esp;}
 .nooki-hw-wire{position:relative;align-self:center;height:2px;background:var(--hw-c);color:var(--hw-c);}
 .nooki-hw-wire.is-power{--hw-c:var(--hw-power);}.nooki-hw-wire.is-data{--hw-c:var(--hw-data);}
-.nooki-hw-wire.is-power::after{content:"";position:absolute;right:-1px;top:-4px;border-left:7px solid currentColor;border-top:5px solid transparent;border-bottom:5px solid transparent;}
+.nooki-hw-wire.is-power::after{content:"";position:absolute;right:0;top:-4px;border-left:7px solid currentColor;border-top:5px solid transparent;border-bottom:5px solid transparent;}
 .nooki-hw-wire span{position:absolute;left:0;right:6px;bottom:6px;text-align:center;font-size:11px;color:var(--hw-power-text);}
 .nooki-hw-a1{grid-area:a1;}.nooki-hw-a2{grid-area:a2;}.nooki-hw-b1{grid-area:b1;}.nooki-hw-b2{grid-area:b2;}
 .nooki-hw-parts{position:relative;display:grid;gap:8px;padding-left:20px!important;}
-.nooki-hw-parts::after{content:"";position:absolute;left:0;top:22px;bottom:22px;border-left:2px solid var(--hw-data);}
+.nooki-hw-parts li::after{content:"";position:absolute;left:-22px;top:-5px;bottom:-5px;border-left:2px solid var(--hw-data);}
+.nooki-hw-parts li:first-child::after{top:calc(50% - 1px);}.nooki-hw-parts li:last-child::after{bottom:calc(50% - 1px);}
 .nooki-hw-parts li{position:relative;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:2px 12px;min-height:44px;border:1px solid #dce6ee;border-radius:10px;background:#fff;padding:9px 14px;font-size:14px;line-height:1.4;color:#123d57;}
-.nooki-hw-parts li::before{content:"";position:absolute;left:-21px;top:50%;width:20px;border-top:2px solid var(--hw-data);}
+.nooki-hw-parts li::before{content:"";position:absolute;left:-22px;top:calc(50% - 1px);width:21px;border-top:2px solid var(--hw-data);}
 .nooki-hw-parts small{font-size:12px;color:var(--hw-data);font-weight:500;white-space:nowrap;}
 .nooki-hw-parts em{font-style:normal;color:var(--hw-power-text);}
 .nooki-hw-parts li.is-motor{border-color:var(--hw-power);background:#fffaf5;}
@@ -245,20 +249,20 @@ main section:first-child .font-body-lg{font-size:15px;}
 .nooki-hw-dash strong{display:block;font-size:14px;font-weight:600;color:#123d57;}
 .nooki-hw-dash>div:first-child span{font-size:12px;color:#526978;}
 .nooki-hw-link{position:relative;width:100%;font-size:11.5px;line-height:1.5;color:#526978;}
-.nooki-hw-link::before{content:"";position:absolute;left:50%;top:4px;bottom:4px;border-left:2px solid var(--hw-data);}
+.nooki-hw-link::before{content:"";position:absolute;left:calc(50% - 1px);top:0;bottom:0;border-left:2px solid var(--hw-data);}
 .nooki-hw-link span{position:absolute;left:calc(50% + 12px);top:50%;transform:translateY(-50%);white-space:nowrap;}
 .nooki-hw-wifi{height:56px;}.nooki-hw-wifi::before{border-left-style:dashed;}
 .nooki-hw-usb{grid-area:usb;height:88px;}
-.nooki-hw-usb::after,.nooki-hw-usb i::before{content:"";position:absolute;left:calc(50% - 4px);border-left:5px solid transparent;border-right:5px solid transparent;}
-.nooki-hw-usb::after{bottom:2px;border-top:7px solid var(--hw-data);}
-.nooki-hw-usb i::before{top:2px;border-bottom:7px solid var(--hw-data);}
+.nooki-hw-usb::after,.nooki-hw-usb i::before{content:"";position:absolute;left:calc(50% - 5px);border-left:5px solid transparent;border-right:5px solid transparent;}
+.nooki-hw-usb::after{bottom:0;border-top:7px solid var(--hw-data);}
+.nooki-hw-usb i::before{top:0;border-bottom:7px solid var(--hw-data);}
 .nooki-hw-w5{grid-area:w5;align-self:center;height:2px;background:var(--hw-power);}
 .nooki-hw-w5 span{display:block;transform:translateY(-22px);text-align:center;font-size:11.5px;color:var(--hw-power-text);}
 .nooki-hw-up{grid-area:up;position:relative;align-self:stretch;}
 .nooki-hw-up::before{content:"";position:absolute;left:0;top:calc(50% - 1px);width:calc(50% + 10px);border-top:2px solid var(--hw-power);}
 .nooki-hw-up::after{content:"";position:absolute;left:calc(50% + 9px);top:7px;height:calc(50% - 6px);border-left:2px solid var(--hw-power);}
 .nooki-hw-up i{position:absolute;left:calc(50% + 5px);top:0;border-bottom:7px solid var(--hw-power);border-left:5px solid transparent;border-right:5px solid transparent;}
-.nooki-hw-mot .nooki-hw-power{margin-top:18px;margin-bottom:4px;}
+.nooki-hw-cell.nooki-hw-mot .nooki-hw-power{margin-top:14px;margin-bottom:14px;}
 .nooki-hw-label{display:none;}
 #hardware-report tbody td:first-child{white-space:nowrap;}
 .nooki-hw-figcaption{margin-top:22px;padding-top:16px;border-top:1px solid #dce6ee;font-size:12px;line-height:1.8;color:#526978;word-break:keep-all;}
@@ -275,8 +279,14 @@ main section:first-child .font-body-lg{font-size:15px;}
 .nooki-hw-cell.is-rail-start::before,.nooki-hw-cell.is-rail-end::before,.nooki-hw-power::before,.nooki-hw-power::after{display:none;}
 .nooki-hw-brain{align-self:auto;}
 .nooki-hw-power,.nooki-hw-cell.is-rail .nooki-hw-power,.nooki-hw-cell.is-rail-end .nooki-hw-power{margin:8px 0 0;}
-.nooki-hw-mot .nooki-hw-power{margin:8px 0 0;}
-.nooki-hw-pp,.nooki-hw-ep{margin:12px 0 0 14px!important;}
+.nooki-hw-cell.nooki-hw-mot .nooki-hw-power,.nooki-hw-bat .nooki-hw-power{margin:8px 0 0;}
+.nooki-hw-bat .nooki-hw-power{min-height:0;}
+.nooki-hw-panel-heading h3{font-size:22px;}
+.nooki-hw-pp,.nooki-hw-ep{margin:0 0 0 28px!important;padding-top:14px!important;padding-bottom:0!important;}
+.nooki-hw-parts li:first-child::after{top:-15px;}
+.nooki-hw-pp::before{content:"";position:absolute;left:-18px;top:0;bottom:0;border-left:2px solid var(--hw-data);}
+.nooki-hw-pp::after{content:"";position:absolute;left:-22px;top:0;border-bottom:7px solid var(--hw-data);border-left:5px solid transparent;border-right:5px solid transparent;}
+.nooki-hw-usb{height:72px;}.nooki-hw-usb::before{left:10px;}.nooki-hw-usb::after{left:6px;}.nooki-hw-usb i{display:none;}.nooki-hw-usb span{left:26px;}
 .nooki-hw-label{display:block;grid-area:label;margin-top:26px;font-size:12px;font-weight:600;color:var(--hw-power-text);}
 .nooki-hw-points{grid-template-columns:1fr;gap:20px;}
 }
@@ -947,7 +957,7 @@ main section:first-child .font-body-lg{font-size:15px;}
 </dl>
 <figure class="nooki-hw-panel" aria-labelledby="hardware-diagram-title">
 <div class="nooki-hw-panel-heading">
-<h3 id="hardware-diagram-title">하드웨어 관계도 · 모든 부품은 두 보드 중 하나에 연결됩니다</h3>
+<h3 id="hardware-diagram-title">하드웨어 관계도</h3>
 <div class="nooki-hw-legend" aria-hidden="true"><span><i style="--hw-c:#d9773a"></i>전원</span><span><i style="--hw-c:#2f6fb3"></i>데이터</span><span><i class="is-dashed" style="--hw-c:#2f6fb3"></i>무선</span></div>
 </div>
 <div class="nooki-hw-diagram">

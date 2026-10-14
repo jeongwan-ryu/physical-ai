@@ -1,0 +1,859 @@
+<title>하드웨어 설계 예습 노트</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@400;500;700&display=swap">
+<style>
+/* Layout: 왼쪽 고정 목차 + 오른쪽 학습 모듈 열(벤치 위 실험 카드). 색은 강의와 같게: 전원=호박색, 신호=청록, 구동=보라 */
+:root{
+  --bg:#F3F5F7; --surface:#FFFFFF; --sunk:#E9EDF1; --ink:#15202B; --muted:#56687A; --line:#D3DBE3;
+  --pow:#B36A00; --pow-tint:rgba(179,106,0,.12);
+  --sig:#00808A; --sig-tint:rgba(0,128,138,.11);
+  --mech:#6B47C2; --mech-tint:rgba(107,71,194,.11);
+  --ok:#1D8549; --ok-tint:rgba(29,133,73,.12);
+  --bad:#C4372D; --bad-tint:rgba(196,55,45,.11);
+  --sans:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0D131A; --surface:#141D27; --sunk:#0A1016; --ink:#E4ECF3; --muted:#8FA2B5; --line:#24323F;
+  --pow:#F0A31E; --pow-tint:rgba(240,163,30,.14);
+  --sig:#2ED3D9; --sig-tint:rgba(46,211,217,.12);
+  --mech:#B18CFF; --mech-tint:rgba(177,140,255,.13);
+  --ok:#4BD98A; --ok-tint:rgba(75,217,138,.12);
+  --bad:#FF6B60; --bad-tint:rgba(255,107,96,.12);
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0D131A; --surface:#141D27; --sunk:#0A1016; --ink:#E4ECF3; --muted:#8FA2B5; --line:#24323F;
+  --pow:#F0A31E; --pow-tint:rgba(240,163,30,.14);
+  --sig:#2ED3D9; --sig-tint:rgba(46,211,217,.12);
+  --mech:#B18CFF; --mech-tint:rgba(177,140,255,.13);
+  --ok:#4BD98A; --ok-tint:rgba(75,217,138,.12);
+  --bad:#FF6B60; --bad-tint:rgba(255,107,96,.12);
+  color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15.5px;line-height:1.7;margin:0}
+h1,h2,h3{text-wrap:balance;margin:0;line-height:1.25}
+a{color:var(--sig)}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--sig);outline-offset:2px}
+.mono,.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:20px;padding-block:28px 80px;display:grid;grid-template-columns:210px minmax(0,1fr);gap:44px}
+/* 목차 */
+aside{position:sticky;top:calc(env(safe-area-inset-top,0px) + 20px);align-self:start;max-height:calc(100vh - 40px);overflow:auto}
+.toc-title{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.toc{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.toc a{display:flex;gap:10px;align-items:baseline;padding:6px 8px;border-radius:5px;text-decoration:none;color:var(--ink);font-size:14px}
+.toc a:hover{background:var(--sunk)}
+.toc .n{font-family:var(--mono);font-size:11px;color:var(--muted);width:18px;flex:none}
+.toc .ck{margin-left:auto;font-size:12px;color:var(--ok);visibility:hidden}
+.toc a.done .ck{visibility:visible}
+.prog{margin-top:16px;font-size:12.5px;color:var(--muted)}
+.prog .bar{height:6px;background:var(--sunk);border-radius:3px;overflow:hidden;margin-top:6px}
+.prog .bar i{display:block;height:100%;width:0;background:var(--ok);transition:width .3s}
+@media(max-width:900px){
+  .wrap{grid-template-columns:minmax(0,1fr);gap:20px}
+  aside{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);max-height:none;overflow:visible;padding-block:8px;border-bottom:1px solid var(--line)}
+  .toc-title{display:none}
+  .toc{display:flex;overflow-x:auto;gap:6px;padding-bottom:4px}
+  .toc a{white-space:nowrap;border:1px solid var(--line);font-size:13px}
+  .prog{margin-top:6px}
+}
+/* 머리말 */
+.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--sig);margin:0 0 10px}
+.hero h1{font-size:clamp(28px,4.4vw,42px);font-weight:700;letter-spacing:-.025em;margin-bottom:14px}
+.lead{color:var(--muted);max-width:64ch;margin:0 0 12px}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--muted);margin-top:8px}
+.legend span::before{content:"";display:inline-block;width:14px;height:3px;margin-right:6px;vertical-align:middle;background:currentColor}
+.l-pow{color:var(--pow)} .l-sig{color:var(--sig)} .l-mech{color:var(--mech)}
+.map-wrap{overflow-x:auto;margin-top:22px;border:1px solid var(--line);border-radius:6px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:500}
+tr:last-child td{border-bottom:0}
+.chiplink{display:inline-block;font-size:12.5px;padding:2px 9px;margin:2px 4px 2px 0;border:1px solid var(--line);border-radius:999px;text-decoration:none;color:var(--ink);white-space:nowrap}
+.chiplink:hover{border-color:var(--sig);color:var(--sig)}
+/* 모듈 */
+.mod{padding-top:44px;margin-top:44px;border-top:1px solid var(--line);scroll-margin-top:70px}
+.mod-head{display:flex;gap:16px;align-items:flex-start;margin-bottom:14px}
+.mod-no{font-family:var(--mono);font-size:13px;color:var(--muted);padding-top:6px;flex:none}
+.mod-head h2{font-size:clamp(21px,2.6vw,27px);font-weight:700;letter-spacing:-.02em}
+.en{font-family:var(--mono);font-weight:500;font-size:.6em;color:var(--muted);letter-spacing:0;margin-left:6px;white-space:nowrap}
+.uses{font-size:12.5px;color:var(--muted);margin-top:4px}
+.badge{margin-left:auto;flex:none;font-family:var(--mono);font-size:11px;padding:3px 9px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+.badge.on{border-color:var(--ok);color:var(--ok);background:var(--ok-tint)}
+.prose{max-width:68ch}
+.prose p{margin:0 0 12px}
+.keyen{font-family:var(--mono);font-size:13.5px;color:var(--ink);background:var(--sunk);border-left:3px solid var(--sig);padding:10px 14px;margin:6px 0 18px;max-width:68ch;border-radius:0 4px 4px 0}
+.keyen b{color:var(--sig);font-weight:600}
+.bench{border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:18px;display:grid;gap:16px}
+.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:20px;align-items:start}
+@media(max-width:760px){.cols{grid-template-columns:minmax(0,1fr)}}
+.ctl{display:grid;gap:12px;min-width:0}
+.lbl{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;color:var(--muted);gap:8px}
+.lbl b{font-family:var(--mono);color:var(--ink);font-size:14px;font-weight:600}
+input[type=range]{width:100%;accent-color:var(--sig)}
+input[type=number],input[type=text],select{font:inherit;font-family:var(--mono);font-size:14px;padding:7px 10px;border:1px solid var(--line);border-radius:5px;background:var(--bg);color:var(--ink);min-width:0}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:13px;padding:5px 11px;border:1px solid var(--line);border-radius:999px;background:var(--bg);cursor:pointer}
+.chip:hover{border-color:var(--sig)}
+.chip.sel{background:var(--sig);border-color:var(--sig);color:var(--surface);font-weight:500}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.stat{background:var(--sunk);border-radius:5px;padding:10px 12px;min-width:0}
+.stat .k{font-size:11.5px;color:var(--muted)}
+.stat .v{font-family:var(--mono);font-size:21px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.3;overflow-wrap:anywhere}
+.stat .v small{font-size:12px;color:var(--muted);font-weight:400;margin-left:3px}
+.formula{font-family:var(--mono);font-size:13.5px;background:var(--sunk);padding:10px 12px;border-radius:5px;overflow-x:auto;white-space:nowrap}
+.say{font-size:14px;padding:11px 14px;border-radius:5px;border:1px solid var(--line);background:var(--bg)}
+.say.ok{border-color:var(--ok);background:var(--ok-tint)}
+.say.warn{border-color:var(--pow);background:var(--pow-tint)}
+.say.bad{border-color:var(--bad);background:var(--bad-tint)}
+.svgbox{background:var(--sunk);border-radius:5px;padding:8px;overflow-x:auto}
+.svgbox svg{display:block;width:100%;height:auto}
+canvas{display:block;width:100%;height:auto;background:var(--sunk);border-radius:5px}
+.toggle{display:flex;align-items:center;gap:10px;font-size:14px;cursor:pointer;border:1px solid var(--line);border-radius:5px;padding:8px 12px;background:var(--bg);text-align:left}
+.toggle i{width:30px;height:17px;border-radius:9px;background:var(--line);position:relative;flex:none;transition:.2s}
+.toggle i::after{content:"";position:absolute;left:2px;top:2px;width:13px;height:13px;border-radius:50%;background:var(--surface);transition:.2s}
+.toggle.on i{background:var(--ok)}
+.toggle.on i::after{left:15px}
+/* SVG 색 */
+.s-wire{stroke:var(--muted);fill:none;stroke-width:2.5}
+.s-pow{stroke:var(--pow);fill:none}
+.s-sig{stroke:var(--sig);fill:none}
+.s-bad{stroke:var(--bad);fill:none}
+.f-ink{fill:var(--ink)} .f-muted{fill:var(--muted)} .f-pow{fill:var(--pow)} .f-sig{fill:var(--sig)} .f-ok{fill:var(--ok)} .f-bad{fill:var(--bad)} .f-mech{fill:var(--mech)}
+.f-surface{fill:var(--surface)} .f-sunk{fill:var(--sunk)}
+.s-line{stroke:var(--line)} .s-ink{stroke:var(--ink)}
+svg text{font-family:var(--mono)}
+@media (prefers-reduced-motion:reduce){.dot{display:none}*{transition:none!important}}
+/* 확인 문제 */
+.check{margin-top:16px;border:1px dashed var(--line);border-radius:6px;padding:14px 16px}
+.check .q{font-weight:500;margin-bottom:10px}
+.check .q::before{content:"확인 문제 · Check";display:block;font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin-bottom:4px;font-weight:400}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{padding:7px 13px;border:1px solid var(--line);border-radius:5px;background:var(--bg);cursor:pointer;font-size:14px}
+.opt:hover{border-color:var(--sig)}
+.opt.right{border-color:var(--ok);background:var(--ok-tint);color:var(--ok);font-weight:500}
+.opt.wrong{border-color:var(--bad);background:var(--bad-tint);color:var(--bad)}
+.check .fb{margin-top:10px;font-size:14px;min-height:1px}
+/* 배터리 셀 */
+.pack{display:grid;gap:6px;justify-content:start}
+.cell{width:46px;height:24px;border:2px solid var(--pow);border-radius:4px;position:relative;display:grid;place-items:center;font-family:var(--mono);font-size:10px;color:var(--pow);background:var(--pow-tint)}
+.cell::after{content:"";position:absolute;right:-6px;top:6px;width:4px;height:8px;background:var(--pow);border-radius:0 2px 2px 0}
+/* 비트 */
+.bits{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:6px;max-width:520px}
+.bit{border:1px solid var(--line);border-radius:5px;background:var(--bg);padding:8px 0;text-align:center;cursor:pointer;font-family:var(--mono)}
+.bit b{display:block;font-size:22px}
+.bit span{font-size:10.5px;color:var(--muted)}
+.bit.on{border-color:var(--sig);background:var(--sig-tint)}
+.bit.on b{color:var(--sig)}
+.bit:nth-child(4){margin-right:8px}
+/* 분류 */
+.bins{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.bin{border:1px solid var(--line);border-radius:6px;padding:10px;background:var(--bg);text-align:left;cursor:pointer;min-height:96px;display:flex;flex-direction:column;gap:6px}
+.bin:hover{border-color:var(--sig)}
+.bin .t{font-weight:700;font-size:14px}
+.bin .t small{font-family:var(--mono);font-weight:400;color:var(--muted);margin-left:4px}
+.bin .in{display:flex;flex-wrap:wrap;gap:4px}
+.tagp{font-size:11.5px;padding:1px 7px;border-radius:999px;border:1px solid var(--line)}
+.tagp.r{border-color:var(--ok);color:var(--ok)} .tagp.w{border-color:var(--bad);color:var(--bad)}
+.chip.used{opacity:.35;pointer-events:none}
+/* 용어 사전 */
+.gl{display:grid;gap:0;border:1px solid var(--line);border-radius:6px;background:var(--surface);overflow:hidden}
+.gl .row{display:grid;grid-template-columns:minmax(0,190px) minmax(0,1fr) auto;gap:14px;padding:10px 14px;border-bottom:1px solid var(--line);align-items:baseline}
+.gl .row:last-child{border-bottom:0}
+.gl .ko{font-weight:700}
+.gl .ko span{display:block;font-family:var(--mono);font-weight:400;font-size:12px;color:var(--sig)}
+.gl .pd{font-family:var(--mono);font-size:11px;color:var(--muted);white-space:nowrap}
+@media(max-width:620px){.gl .row{grid-template-columns:minmax(0,1fr)}.gl .pd{order:-1}}
+/* 퀴즈 */
+.qz{display:grid;gap:14px}
+.qz .item{border:1px solid var(--line);border-radius:6px;padding:14px 16px;background:var(--surface)}
+.qz .item .q{font-weight:500;margin-bottom:10px}
+.qz .item .q .no{font-family:var(--mono);color:var(--muted);margin-right:8px}
+.qz .opt.pick{border-color:var(--sig);background:var(--sig-tint)}
+.btn{font-weight:500;padding:9px 18px;border-radius:5px;border:1px solid var(--sig);background:var(--sig);color:var(--surface);cursor:pointer}
+.btn.ghost{background:transparent;color:var(--sig)}
+footer{margin-top:60px;font-size:13px;color:var(--muted)}
+</style>
+
+<div class="wrap">
+<aside>
+  <div class="toc-title">목차 · Contents</div>
+  <ol class="toc" id="toc"></ol>
+  <div class="prog"><span id="progTxt">완료 0 / 11</span><div class="bar"><i id="progBar"></i></div></div>
+</aside>
+
+<main>
+<header class="hero">
+  <p class="eyebrow">Physical AI 하드웨어 설계 · 예습</p>
+  <h1>강의 실험을 읽기 위한 기초 10가지</h1>
+  <p class="lead">강의는 “전압은 맞추고 전류는 확보한다”, “풀업”, “0x68”, “9600bps” 같은 말을 이미 아는 것으로 보고 시작합니다. 이 노트는 그 바탕을 손으로 만져보며 익히는 곳입니다. 각 장의 실험을 해보고 맨 아래 확인 문제를 맞히면 완료로 표시됩니다.</p>
+  <p class="lead">하드웨어 자료와 데이터시트는 대부분 영어입니다. 영어 표현이 더 정확하거나 외우기 쉬운 곳은 <span class="mono">English</span>로 함께 적었습니다.</p>
+  <div class="legend"><span class="l-pow">전원 · 전류 (Power)</span><span class="l-sig">신호 · 데이터 (Signal)</span><span class="l-mech">구동 (Actuation)</span></div>
+  <div class="map-wrap">
+    <table>
+      <thead><tr><th>강의 교시</th><th>먼저 보면 좋은 기초</th></tr></thead>
+      <tbody id="mapBody"></tbody>
+    </table>
+  </div>
+</header>
+
+<!-- 01 단위 -->
+<section class="mod" id="units">
+  <div class="mod-head"><span class="mod-no">01</span><div><h2>단위와 접두어<span class="en">Units &amp; SI prefixes</span></h2><div class="uses">강의 전체 · 데이터시트를 읽는 첫걸음</div></div><span class="badge" data-badge="units">미완료</span></div>
+  <div class="prose">
+    <p>하드웨어 숫자는 대부분 아주 크거나 아주 작습니다. 그래서 <b>접두어</b>를 붙여 읽기 쉬운 크기로 바꿉니다. 0.02A보다 20mA가, 0.00001초보다 10µs가 읽기 쉽습니다.</p>
+    <p>규칙은 하나입니다. 접두어 한 칸 = 1000배. <span class="mono">k</span>(킬로)는 ×1000, <span class="mono">m</span>(밀리)는 ÷1000, <span class="mono">µ</span>(마이크로)는 ÷1,000,000입니다. 소문자 m(밀리)과 대문자 M(메가)은 10억 배 차이이므로 대소문자를 꼭 구분하세요.</p>
+  </div>
+  <div class="keyen"><b>k</b> = kilo = 10³ · <b>m</b> = milli = 10⁻³ · <b>µ</b> = micro = 10⁻⁶ · <b>M</b> = mega = 10⁶<br>“Move the decimal point three places per prefix.”</div>
+  <div class="bench">
+    <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+      <label for="unVal" class="lbl" style="margin:0">값</label>
+      <input type="number" id="unVal" value="20" step="any" style="width:130px">
+      <select id="unPfx" aria-label="접두어"><option value="1e6">M</option><option value="1e3">k</option><option value="1">(없음)</option><option value="1e-3" selected>m</option><option value="1e-6">µ</option></select>
+      <select id="unQty" aria-label="물리량"><option value="A" selected>A 전류</option><option value="V">V 전압</option><option value="Ω">Ω 저항</option><option value="s">s 시간</option><option value="Hz">Hz 주파수</option></select>
+    </div>
+    <div class="chips" id="unEx"></div>
+    <div class="map-wrap" style="margin:0"><table><thead><tr><th>접두어</th><th>같은 값</th><th>읽는 법</th></tr></thead><tbody id="unOut"></tbody></table></div>
+    <div class="say" id="unSay"></div>
+  </div>
+  <div class="check" data-mod="units"></div>
+</section>
+
+<!-- 02 전압 전류 저항 -->
+<section class="mod" id="ohm">
+  <div class="mod-head"><span class="mod-no">02</span><div><h2>전압 · 전류 · 저항<span class="en">Voltage · Current · Resistance</span></h2><div class="uses">1교시 전원 · 강의 원칙 1의 바탕</div></div><span class="badge" data-badge="ohm">미완료</span></div>
+  <div class="prose">
+    <p>물에 비유하면 쉽습니다. <b>전압(V)</b>은 물을 미는 압력, <b>전류(A)</b>는 실제로 흐르는 물의 양, <b>저항(Ω)</b>은 파이프가 좁은 정도입니다. 셋은 <b>옴의 법칙</b> V = I × R로 묶여 있습니다.</p>
+    <p>LED처럼 전류를 스스로 제한하지 못하는 부품은 저항을 함께 달아 전류를 정해줘야 합니다. LED는 켜지는 데 일정 전압(순방향 전압, Vf)을 먼저 쓰고, 남은 전압이 저항에 걸립니다.</p>
+  </div>
+  <div class="keyen"><b>Voltage pushes, current flows, resistance limits.</b><br>Ohm's law: V = I × R &nbsp;→&nbsp; I = V / R</div>
+  <div class="bench">
+    <div class="cols">
+      <div class="ctl">
+        <div><div class="lbl"><span>전원 전압</span><b id="ohVv">5.0 V</b></div><input type="range" id="ohV" min="0" max="12" step="0.1" value="5"></div>
+        <div><div class="lbl"><span>저항</span><b id="ohRv">150 Ω</b></div><div class="chips" id="ohR"></div></div>
+        <button class="toggle on" type="button" id="ohLed"><i></i>빨간 LED 연결 (Vf 2.0V, 정격 20mA)</button>
+        <div class="stats">
+          <div class="stat"><div class="k">전류 I</div><div class="v" id="ohI">–</div></div>
+          <div class="stat"><div class="k">저항이 먹는 전력</div><div class="v" id="ohP">–</div></div>
+        </div>
+      </div>
+      <div class="svgbox"><svg viewBox="0 0 420 240" id="ohSvg" role="img" aria-label="전원, 저항, LED로 된 회로"></svg></div>
+    </div>
+    <div class="formula" id="ohF"></div>
+    <div class="say" id="ohSay"></div>
+  </div>
+  <div class="check" data-mod="ohm"></div>
+</section>
+
+<!-- 03 전력 배터리 -->
+<section class="mod" id="power">
+  <div class="mod-head"><span class="mod-no">03</span><div><h2>전력과 배터리<span class="en">Power, Energy &amp; Battery packs</span></h2><div class="uses">1교시 전력 예산표 · 사용시간 계산</div></div><span class="badge" data-badge="power">미완료</span></div>
+  <div class="prose">
+    <p><b>전력(W)</b>은 전압 × 전류입니다. 같은 1A라도 12V에서는 12W, 5V에서는 5W입니다. 배터리 사용시간은 <b>에너지(Wh)</b>를 전력으로 나눠서 구합니다.</p>
+    <p>리튬 셀 하나는 공칭 3.7V입니다. 셀을 <b>직렬(S)</b>로 이으면 전압이, <b>병렬(P)</b>로 이으면 용량(mAh)이 늘어납니다. “2S2P”는 2개 직렬 묶음을 2줄 병렬로 놓았다는 뜻입니다.</p>
+  </div>
+  <div class="keyen"><b>P = V × I</b> · <b>Wh = V × Ah</b><br><b>S</b>eries adds Voltage. <b>P</b>arallel adds capacity.</div>
+  <div class="bench">
+    <div class="cols">
+      <div class="ctl">
+        <div><div class="lbl"><span>직렬 셀 수 (S)</span><b id="bpSv">2S</b></div><div class="chips" id="bpS"></div></div>
+        <div><div class="lbl"><span>병렬 줄 수 (P)</span><b id="bpPv">2P</b></div><div class="chips" id="bpP"></div></div>
+        <div><div class="lbl"><span>셀 하나의 용량</span><b id="bpCv">3000 mAh</b></div><input type="range" id="bpC" min="1000" max="3500" step="100" value="3000"></div>
+        <div><div class="lbl"><span>로봇 평균 소비전력</span><b id="bpWv">18 W</b></div><input type="range" id="bpW" min="1" max="60" step="1" value="18"></div>
+      </div>
+      <div class="ctl">
+        <div class="svgbox" style="padding:14px"><div class="pack" id="bpPack"></div><div style="font-size:12px;color:var(--muted);margin-top:8px">가로 = 직렬(전압↑) · 세로 = 병렬(용량↑)</div></div>
+        <div class="stats">
+          <div class="stat"><div class="k">팩 전압 (공칭)</div><div class="v" id="bpV">–</div></div>
+          <div class="stat"><div class="k">팩 용량</div><div class="v" id="bpAh">–</div></div>
+          <div class="stat"><div class="k">에너지</div><div class="v" id="bpWh">–</div></div>
+          <div class="stat"><div class="k">사용시간 (여유 30%)</div><div class="v" id="bpT">–</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="formula" id="bpF"></div>
+  </div>
+  <div class="check" data-mod="power"></div>
+</section>
+
+<!-- 04 회로 -->
+<section class="mod" id="circuit">
+  <div class="mod-head"><span class="mod-no">04</span><div><h2>회로, 단락, 공통 GND<span class="en">Closed / Open / Short circuit · Common ground</span></h2><div class="uses">1교시 브라운아웃 · 6교시 디버깅</div></div><span class="badge" data-badge="circuit">미완료</span></div>
+  <div class="prose">
+    <p>전류는 <b>한 바퀴 닫힌 길</b>이 있을 때만 흐릅니다. 길이 끊기면 <b>개방(Open)</b>, 부하를 거치지 않고 +와 −가 바로 이어지면 <b>단락(Short)</b>입니다. 단락에서는 저항이 거의 0이라 전류가 폭주해 배터리와 선이 뜨거워집니다.</p>
+    <p><b>GND(접지)</b>는 모든 전압을 재는 기준점, 즉 0V입니다. 전원이 두 개여도 GND는 하나로 묶어야 서로의 신호를 읽을 수 있습니다.</p>
+  </div>
+  <div class="keyen"><b>Current needs a complete loop.</b><br><b>Every signal needs a shared reference</b> — common ground.</div>
+  <div class="bench">
+    <div class="chips" id="ciMode"></div>
+    <div class="svgbox"><svg viewBox="0 0 520 240" id="ciSvg" role="img" aria-label="회로 상태 그림"></svg></div>
+    <div class="say" id="ciSay"></div>
+  </div>
+  <div class="check" data-mod="circuit"></div>
+</section>
+
+<!-- 05 디지털 -->
+<section class="mod" id="logic">
+  <div class="mod-head"><span class="mod-no">05</span><div><h2>디지털 신호와 로직 레벨<span class="en">Digital signal · Logic levels</span></h2><div class="uses">2교시 GPIO · 1교시 분압 저항 실험</div></div><span class="badge" data-badge="logic">미완료</span></div>
+  <div class="prose">
+    <p>디지털 핀은 전압을 <b>1(HIGH)</b> 아니면 <b>0(LOW)</b>으로만 읽습니다. 경계는 칼같이 나뉘지 않습니다. 일정 전압 이상(VIH)이면 HIGH, 이하(VIL)면 LOW이고, 그 사이는 <b>어느 쪽으로 읽힐지 보장되지 않는 구간</b>입니다.</p>
+    <p>보드마다 기준이 다릅니다. ESP32와 Raspberry Pi는 <b>3.3V 로직</b>, Arduino Uno는 <b>5V 로직</b>입니다. 3.3V 핀에 5V를 넣으면 망가질 수 있습니다.</p>
+  </div>
+  <div class="keyen"><b>HIGH</b> = logic 1 · <b>LOW</b> = logic 0<br>V<sub>IH</sub>: minimum voltage read as HIGH · V<sub>IL</sub>: maximum voltage read as LOW</div>
+  <div class="bench">
+    <div class="cols">
+      <div class="ctl">
+        <div><div class="lbl"><span>보드</span></div><div class="chips" id="lgB"></div></div>
+        <div><div class="lbl"><span>핀에 들어오는 전압</span><b id="lgVv">2.0 V</b></div><input type="range" id="lgV" min="0" max="5" step="0.05" value="2"></div>
+        <div class="chips" id="lgEx"></div>
+        <div class="stats"><div class="stat"><div class="k">digitalRead()</div><div class="v" id="lgR">–</div></div></div>
+      </div>
+      <div class="svgbox"><svg viewBox="0 0 420 300" id="lgSvg" role="img" aria-label="로직 레벨 구간 그림"></svg></div>
+    </div>
+    <div class="say" id="lgSay"></div>
+  </div>
+  <div class="check" data-mod="logic"></div>
+</section>
+
+<!-- 06 ADC -->
+<section class="mod" id="adc">
+  <div class="mod-head"><span class="mod-no">06</span><div><h2>아날로그와 ADC<span class="en">Analog · ADC · Resolution</span></h2><div class="uses">3교시 토양수분 센서 · 캘리브레이션</div></div><span class="badge" data-badge="adc">미완료</span></div>
+  <div class="prose">
+    <p>아날로그 센서는 0과 1이 아니라 <b>연속적인 전압</b>을 냅니다. MCU는 이것을 <b>ADC</b>로 숫자로 바꿉니다. ADC가 몇 <b>비트</b>냐에 따라 전압을 몇 칸으로 나눌지가 정해집니다.</p>
+    <p>ESP32의 ADC는 12비트, 즉 2¹² = 4096칸(0–4095)입니다. 그래서 강의 그림에 4095가 자주 나옵니다. 또 1초에 몇 번 재는지(<b>샘플링</b>)가 적으면 빠른 변화를 놓칩니다.</p>
+  </div>
+  <div class="keyen"><b>ADC</b> = Analog-to-Digital Converter<br><b>n-bit → 2ⁿ levels.</b> 12-bit → 4096 levels (0–4095). Step = V<sub>ref</sub> / 2ⁿ</div>
+  <div class="bench">
+    <div class="cols">
+      <div class="ctl">
+        <div><div class="lbl"><span>ADC 비트 수 (분해능)</span><b id="adBv">3 bit</b></div><input type="range" id="adB" min="1" max="12" step="1" value="3"></div>
+        <div><div class="lbl"><span>한 화면에서 재는 횟수 (샘플링)</span><b id="adNv">24 회</b></div><input type="range" id="adN" min="4" max="96" step="1" value="24"></div>
+        <div class="stats">
+          <div class="stat"><div class="k">나눌 수 있는 칸</div><div class="v" id="adL">–</div></div>
+          <div class="stat"><div class="k">한 칸의 크기</div><div class="v" id="adS">–</div></div>
+        </div>
+      </div>
+      <canvas id="adCv" width="640" height="300" aria-label="아날로그 신호와 ADC 결과 비교"></canvas>
+    </div>
+    <div class="say" id="adSay"></div>
+  </div>
+  <div class="check" data-mod="adc"></div>
+</section>
+
+<!-- 07 주파수 -->
+<section class="mod" id="freq">
+  <div class="mod-head"><span class="mod-no">07</span><div><h2>주파수 · 주기 · 듀티비<span class="en">Frequency · Period · Duty cycle</span></h2><div class="uses">2교시 PWM · 5교시 서보 · 3교시 UART</div></div><span class="badge" data-badge="freq">미완료</span></div>
+  <div class="prose">
+    <p><b>주파수(Hz)</b>는 1초에 몇 번 반복하느냐, <b>주기</b>는 한 번 반복하는 데 걸리는 시간입니다. 둘은 서로의 역수입니다. 1kHz면 한 주기는 1ms입니다.</p>
+    <p>한 주기 중 HIGH인 시간의 비율이 <b>듀티비</b>입니다. PWM은 듀티비로 평균 전압을 조절하고, 서보는 HIGH인 시간의 길이로 각도를 정합니다.</p>
+  </div>
+  <div class="keyen"><b>f</b> = cycles per second (Hz) · <b>T = 1 / f</b><br><b>Duty cycle</b> = ON time / Period × 100%</div>
+  <div class="bench">
+    <div class="chips" id="fqEx"></div>
+    <div class="cols">
+      <div class="ctl">
+        <div><div class="lbl"><span>주파수</span><b id="fqFv">1 kHz</b></div><input type="range" id="fqF" min="0" max="1000" step="1" value="500"></div>
+        <div><div class="lbl"><span>듀티비</span><b id="fqDv">25%</b></div><input type="range" id="fqD" min="0" max="100" step="0.5" value="25"></div>
+        <div class="stats">
+          <div class="stat"><div class="k">주기 T</div><div class="v" id="fqT">–</div></div>
+          <div class="stat"><div class="k">HIGH 시간</div><div class="v" id="fqOn">–</div></div>
+        </div>
+      </div>
+      <div class="svgbox"><svg viewBox="0 0 420 180" id="fqSvg" role="img" aria-label="세 주기의 사각파"></svg></div>
+    </div>
+    <div class="formula" id="fqF2"></div>
+    <div class="say" id="fqSay"></div>
+  </div>
+  <div class="check" data-mod="freq"></div>
+</section>
+
+<!-- 08 2진수 -->
+<section class="mod" id="binary">
+  <div class="mod-head"><span class="mod-no">08</span><div><h2>2진수 · 16진수 · 바이트<span class="en">Binary · Hexadecimal · Byte</span></h2><div class="uses">3교시 I2C 주소 0x68 · UART 바이트</div></div><span class="badge" data-badge="binary">미완료</span></div>
+  <div class="prose">
+    <p>통신선 위로 오가는 것은 0과 1, 즉 <b>비트</b>입니다. 비트 8개가 <b>1바이트</b>이고, 0부터 255까지 나타낼 수 있습니다. 2진수는 길어서 사람이 읽기 어렵기 때문에 4비트씩 묶어 <b>16진수(0–F)</b> 한 자리로 씁니다. <span class="mono">0x</span>가 붙으면 16진수입니다.</p>
+    <p>아래 비트를 눌러 숫자를 만들어보세요. I2C 센서 주소, UART로 보내는 글자가 모두 이런 숫자입니다.</p>
+  </div>
+  <div class="keyen"><b>1 hex digit = 4 bits</b> (a nibble) · <b>2 hex digits = 1 byte</b><br>0x prefix = hexadecimal · 0b prefix = binary</div>
+  <div class="bench">
+    <div class="bits" id="bnBits"></div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+      <label for="bnIn" style="font-size:13px;color:var(--muted)">직접 입력 (예: 104, 0x68, 0b01101000)</label>
+      <input type="text" id="bnIn" value="0x68" style="width:160px">
+    </div>
+    <div class="chips" id="bnEx"></div>
+    <div class="stats">
+      <div class="stat"><div class="k">10진수 Decimal</div><div class="v" id="bnD">–</div></div>
+      <div class="stat"><div class="k">16진수 Hex</div><div class="v" id="bnH">–</div></div>
+      <div class="stat"><div class="k">2진수 Binary</div><div class="v" id="bnB">–</div></div>
+      <div class="stat"><div class="k">ASCII 글자</div><div class="v" id="bnA">–</div></div>
+    </div>
+    <div class="say" id="bnSay"></div>
+  </div>
+  <div class="check" data-mod="binary"></div>
+</section>
+
+<!-- 09 통신 -->
+<section class="mod" id="comm">
+  <div class="mod-head"><span class="mod-no">09</span><div><h2>유선 통신의 기본 개념<span class="en">Serial · Clock · Bus · Address</span></h2><div class="uses">3교시 인터페이스 · 4교시 통신 방식</div></div><span class="badge" data-badge="comm">미완료</span></div>
+  <div class="prose">
+    <p>센서와 보드는 비트를 한 줄로 차례차례 보내는 <b>직렬(Serial)</b> 통신을 씁니다. 받는 쪽이 비트를 언제 읽을지 정하는 방법은 두 가지입니다. 박자를 알려주는 <b>클럭 선</b>을 같이 보내거나(동기식), 미리 속도를 약속합니다(비동기식).</p>
+    <p>여러 장치가 같은 선을 나눠 쓰면 <b>버스(Bus)</b>이고, 누구에게 말하는지 구분하려고 <b>주소</b>나 <b>선택선(CS)</b>을 씁니다. 프로토콜을 눌러 연결 모양을 비교해보세요.</p>
+  </div>
+  <div class="keyen"><b>Synchronous</b> = shares a clock line (I2C, SPI) · <b>Asynchronous</b> = both sides agree on a speed, the baud rate (UART)<br>Controller / Peripheral (old terms: master / slave)</div>
+  <div class="bench">
+    <div class="chips" id="cmP"></div>
+    <div class="svgbox"><svg viewBox="0 0 560 250" id="cmSvg" role="img" aria-label="통신 배선 그림"></svg></div>
+    <div class="map-wrap" style="margin:0"><table><tbody id="cmT"></tbody></table></div>
+  </div>
+  <div class="check" data-mod="comm"></div>
+</section>
+
+<!-- 10 부품 역할 -->
+<section class="mod" id="parts">
+  <div class="mod-head"><span class="mod-no">10</span><div><h2>부품은 역할로 나눈다<span class="en">Sense · Think · Act · Drive · Power</span></h2><div class="uses">개요 5계층 · 2교시 역할 분담 · 5교시 출력</div></div><span class="badge" data-badge="parts">미완료</span></div>
+  <div class="prose">
+    <p>부품 이름을 외우기보다 <b>무슨 일을 하는지</b>로 나누면 설계가 쉬워집니다. 센서는 세상을 재고, 컨트롤러는 판단하고, 액추에이터는 움직입니다. 그 사이에서 <b>드라이버</b>는 MCU의 약한 신호를 큰 전류로 바꿔주고, <b>전원 부품</b>은 전압을 맞춥니다.</p>
+    <p>부품을 하나 고른 뒤 알맞은 칸을 누르세요.</p>
+  </div>
+  <div class="keyen"><b>Sensors</b> measure, <b>controllers</b> decide, <b>actuators</b> move,<br><b>drivers</b> deliver the current, <b>regulators</b> set the voltage.</div>
+  <div class="bench">
+    <div class="chips" id="ptParts"></div>
+    <div class="bins" id="ptBins"></div>
+    <div class="say" id="ptSay">부품을 먼저 고르세요.</div>
+  </div>
+  <div class="check" data-mod="parts"></div>
+</section>
+
+<!-- 11 용어 사전 -->
+<section class="mod" id="glossary">
+  <div class="mod-head"><span class="mod-no">11</span><div><h2>용어 사전<span class="en">Glossary</span></h2><div class="uses">강의에 나오는 용어 · 영문 표기 포함</div></div></div>
+  <div class="bench" style="gap:12px">
+    <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+      <input type="text" id="glQ" placeholder="검색 (예: 풀업, PWM, ground)" aria-label="용어 검색" style="flex:1;min-width:200px">
+      <div class="chips" id="glP"></div>
+    </div>
+    <div class="gl" id="glList"></div>
+  </div>
+</section>
+
+<!-- 12 퀴즈 -->
+<section class="mod" id="quiz">
+  <div class="mod-head"><span class="mod-no">12</span><div><h2>강의 전 준비도 체크<span class="en">Readiness check</span></h2><div class="uses">10문제 · 8개 이상 맞히면 강의를 따라갈 준비 완료</div></div><span class="badge" data-badge="quiz">미완료</span></div>
+  <div class="qz" id="qz"></div>
+  <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap"><button class="btn" type="button" id="qzGo">채점하기</button><button class="btn ghost" type="button" id="qzReset">다시 풀기</button></div>
+  <div class="say" id="qzSay" style="margin-top:14px" hidden></div>
+</section>
+
+<footer>값은 학습용 대표값입니다. 실제 설계에서는 부품 데이터시트(datasheet)의 값을 따르세요.</footer>
+</main>
+</div>
+
+<script>
+"use strict";
+const $=(s,r)=>(r||document).querySelector(s), $$=(s,r)=>Array.from((r||document).querySelectorAll(s));
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+function chips(box,items,sel,onPick){box.innerHTML="";items.forEach((t,i)=>{const b=document.createElement("button");b.type="button";b.className="chip"+(i===sel?" sel":"");b.textContent=t;b.addEventListener("click",()=>{$$(".chip",box).forEach(c=>c.classList.remove("sel"));b.classList.add("sel");onPick(i);});box.appendChild(b);});}
+function fmtN(v,d){if(!isFinite(v))return"∞";const a=Math.abs(v);if(a!==0&&(a<1e-4||a>=1e9))return v.toExponential(2);return Number(v.toPrecision(d||4)).toLocaleString("en-US",{maximumFractionDigits:6});}
+function siFmt(v,unit){const P=[[1e6,"M"],[1e3,"k"],[1,""],[1e-3,"m"],[1e-6,"µ"],[1e-9,"n"]];if(v===0)return"0 "+unit;for(const[p,s]of P){if(Math.abs(v)>=p*0.9995)return fmtN(v/p,4)+" "+s+unit;}return fmtN(v/1e-9,4)+" n"+unit;}
+
+/* ---------- 진행 상황 ---------- */
+const MODS=[["units","단위와 접두어"],["ohm","전압·전류·저항"],["power","전력과 배터리"],["circuit","회로와 GND"],["logic","로직 레벨"],["adc","아날로그·ADC"],["freq","주파수·듀티비"],["binary","2진수·16진수"],["comm","통신 기본"],["parts","부품 역할"],["glossary","용어 사전"],["quiz","준비도 체크"]];
+let DONE={};
+try{DONE=JSON.parse(localStorage.getItem("hwprep-done")||"{}")||{};}catch(e){DONE={};}
+function saveDone(){try{localStorage.setItem("hwprep-done",JSON.stringify(DONE));}catch(e){}}
+const toc=$("#toc");
+MODS.forEach(([id,name],i)=>{const li=document.createElement("li");li.innerHTML='<a href="#'+id+'" data-toc="'+id+'"><span class="n">'+String(i+1).padStart(2,"0")+'</span><span>'+name+'</span><span class="ck">✓</span></a>';toc.appendChild(li);});
+const COUNTED=MODS.map(m=>m[0]).filter(k=>k!=="glossary");
+function refresh(){
+  const n=COUNTED.filter(k=>DONE[k]).length;
+  $("#progTxt").textContent="완료 "+n+" / "+COUNTED.length;
+  $("#progBar").style.width=(n/COUNTED.length*100)+"%";
+  COUNTED.forEach(k=>{const b=$('[data-badge="'+k+'"]');if(b){b.textContent=DONE[k]?"완료 ✓":"미완료";b.classList.toggle("on",!!DONE[k]);}
+    const t=$('[data-toc="'+k+'"]');if(t)t.classList.toggle("done",!!DONE[k]);});
+}
+function markDone(k){if(!DONE[k]){DONE[k]=1;saveDone();refresh();}}
+
+/* ---------- 교시 지도 ---------- */
+const MAP=[["1교시 · 전기와 전원",["units","ohm","power","circuit"]],["2교시 · MCU와 GPIO",["logic","freq","parts"]],["3교시 · 센서와 인터페이스",["adc","binary","comm","logic"]],["4교시 · 통신 방식",["comm","binary","freq"]],["5교시 · 동작 구현",["freq","parts","circuit"]],["6교시 · 통합과 디버깅",["circuit","ohm","glossary"]]];
+const NAME=Object.fromEntries(MODS);
+$("#mapBody").innerHTML=MAP.map(([p,ms])=>'<tr><td style="white-space:nowrap">'+p+'</td><td>'+ms.map(m=>'<a class="chiplink" href="#'+m+'">'+NAME[m]+'</a>').join("")+'</td></tr>').join("");
+
+/* ---------- 확인 문제 ---------- */
+const CHECKS={
+  units:{q:"0.02A는 몇 mA일까요?",o:["2 mA","20 mA","200 mA","0.2 mA"],a:1,why:"A → mA는 ×1000입니다. 0.02 × 1000 = 20mA. LED 하나에 흔히 흘리는 전류입니다.",hint:"m(밀리)는 1/1000입니다. 같은 양을 mA로 쓰면 숫자는 커져야 합니다."},
+  ohm:{q:"5V 전원으로 빨간 LED(Vf 2V)에 20mA를 흘리려면 저항은?",o:["100 Ω","150 Ω","250 Ω","1 kΩ"],a:1,why:"R = (5 − 2) ÷ 0.02 = 150Ω. LED가 먼저 2V를 쓰고 남은 3V가 저항에 걸립니다.",hint:"저항에 걸리는 전압은 5V 전체가 아니라 LED가 쓰고 남은 전압입니다."},
+  power:{q:"3.7V 셀 2개를 직렬(2S)로 연결하면?",o:["3.7V, 용량 2배","7.4V, 용량 그대로","7.4V, 용량 2배","3.7V, 용량 그대로"],a:1,why:"직렬은 전압을 더하고 용량은 그대로입니다. 용량까지 늘리려면 병렬(P)을 추가합니다.",hint:"Series adds Voltage."},
+  circuit:{q:"전원 +와 −가 부하 없이 바로 연결된 상태를 무엇이라 할까요?",o:["개방 (Open)","단락 (Short)","병렬 (Parallel)","접지 (Ground)"],a:1,why:"단락입니다. 저항이 거의 0이라 전류가 폭주하고 선과 배터리가 뜨거워집니다. 퓨즈가 이걸 막습니다.",hint:"길이 끊긴 것이 아니라 너무 짧게 이어진 경우입니다."},
+  logic:{q:"3.3V 보드(ESP32)의 입력 핀에 5V 센서 출력을 바로 넣으면?",o:["HIGH로 잘 읽힌다, 문제없다","LOW로 읽힌다","핀이 손상될 수 있다","값이 2배로 읽힌다"],a:2,why:"ESP32 핀은 약 3.6V까지만 견딥니다. 분압 저항이나 레벨 시프터로 3.3V 근처로 낮춰야 합니다.",hint:"게이지에서 빨간 구간을 확인해보세요."},
+  adc:{q:"12비트 ADC, 기준 3.3V일 때 한 칸의 크기는 약?",o:["0.8 mV","3.3 mV","0.27 V","12 mV"],a:0,why:"3.3V ÷ 4096 ≈ 0.0008V = 0.8mV. 이보다 작은 변화는 같은 숫자로 읽힙니다.",hint:"2¹² = 4096칸으로 3.3V를 나눕니다."},
+  freq:{q:"서보 신호는 50Hz입니다. 한 주기는?",o:["2 ms","20 ms","50 ms","200 ms"],a:1,why:"T = 1 ÷ 50 = 0.02초 = 20ms. 서보는 20ms마다 오는 펄스 하나의 길이(0.5–2.5ms)로 각도를 정합니다.",hint:"T = 1 / f"},
+  binary:{q:"I2C 주소 0x68을 10진수로 바꾸면?",o:["68","104","86","0.68"],a:1,why:"0x68 = 6 × 16 + 8 = 104. 0x가 붙으면 16진수라는 뜻입니다.",hint:"16진수 첫 자리는 16의 자리입니다."},
+  comm:{q:"두 보드의 UART를 연결하는 올바른 방법은?",o:["TX–TX, RX–RX","TX–RX, RX–TX, GND–GND","TX만 연결","아무렇게나 연결해도 된다"],a:1,why:"말하는 입(TX)은 상대의 귀(RX)에 엇갈려 연결하고, 기준을 맞추려 GND도 연결합니다.",hint:"한쪽의 송신(TX)은 다른 쪽의 수신(RX)으로 가야 합니다."},
+  parts:{q:"MCU 핀으로 DC 모터를 직접 돌리지 않고 모터 드라이버를 쓰는 가장 큰 이유는?",o:["코드가 짧아져서","GPIO 핀은 수십 mA밖에 못 내서","모터가 디지털 신호를 몰라서","드라이버가 더 싸서"],a:1,why:"모터는 기동할 때 1A 이상을 씁니다. GPIO는 약 20–40mA가 한계라, 핀이 손상되거나 MCU가 리셋됩니다.",hint:"강의 원칙 3: MCU는 지시만, 힘은 드라이버가 쓴다."}
+};
+Object.entries(CHECKS).forEach(([k,c])=>{
+  const box=$('.check[data-mod="'+k+'"]'); if(!box)return;
+  box.innerHTML='<div class="q">'+c.q+'</div><div class="opts"></div><div class="fb" aria-live="polite"></div>';
+  const opts=$(".opts",box), fb=$(".fb",box);
+  c.o.forEach((t,i)=>{const b=document.createElement("button");b.type="button";b.className="opt";b.textContent=t;
+    b.addEventListener("click",()=>{
+      if(i===c.a){$$(".opt",opts).forEach(x=>x.classList.remove("wrong"));b.classList.add("right");fb.className="fb say ok";fb.innerHTML="<b>정답.</b> "+c.why;markDone(k);}
+      else{b.classList.add("wrong");fb.className="fb say warn";fb.innerHTML="<b>다시 생각해보세요.</b> "+c.hint;}
+    });opts.appendChild(b);});
+  if(DONE[k]){const r=$$(".opt",opts)[c.a];r.classList.add("right");fb.className="fb say ok";fb.innerHTML="<b>정답.</b> "+c.why;}
+});
+
+/* ---------- 01 단위 ---------- */
+const UN_P=[[1e6,"M","메가 mega"],[1e3,"k","킬로 kilo"],[1,"","(기본 단위)"],[1e-3,"m","밀리 milli"],[1e-6,"µ","마이크로 micro"]];
+const UN_EX=[["LED 전류 20mA",20,1e-3,"A"],["ESP32 로직 3.3V",3.3,1,"V"],["풀업 저항 4.7kΩ",4.7,1e3,"Ω"],["초음파 TRIG 10µs",10,1e-6,"s"],["서보 주기 20ms",20,1e-3,"s"],["I2C 400kHz",400,1e3,"Hz"],["ESP32 클럭 240MHz",240,1e6,"Hz"]];
+chips($("#unEx"),UN_EX.map(e=>e[0]),-1,i=>{const e=UN_EX[i];$("#unVal").value=e[1];$("#unPfx").value=String(e[2]);$("#unQty").value=e[3];unUpd();});
+["unVal","unPfx","unQty"].forEach(id=>$("#"+id).addEventListener("input",unUpd));
+function unUpd(){
+  const v=parseFloat($("#unVal").value), p=parseFloat($("#unPfx").value), u=$("#unQty").value;
+  if(!isFinite(v)){$("#unOut").innerHTML='<tr><td colspan="3">숫자를 입력하세요.</td></tr>';return;}
+  const base=v*p; let best=null;
+  $("#unOut").innerHTML=UN_P.map(([f,s,r])=>{const x=base/f;const good=Math.abs(x)>=1&&Math.abs(x)<1000;if(good&&!best)best=fmtN(x)+" "+s+u;
+    return '<tr'+(good?' style="background:var(--sig-tint)"':'')+'><td class="mono">'+(s||"—")+'</td><td class="mono">'+fmtN(x,6)+' '+s+u+'</td><td>'+r+'</td></tr>';}).join("");
+  $("#unSay").innerHTML=best?"색칠된 줄이 가장 읽기 쉬운 표기입니다: <b class='mono'>"+best+"</b>. 숫자가 1–999 사이에 오도록 접두어를 고릅니다.":"값이 0이거나 표 범위를 벗어났습니다.";
+}
+unUpd();
+
+/* ---------- 02 옴의 법칙 ---------- */
+const OH_R=[47,100,150,220,330,1000,10000];
+const OH={v:5,r:150,led:true};
+chips($("#ohR"),OH_R.map(r=>r>=1000?(r/1000)+"kΩ":r+"Ω"),2,i=>{OH.r=OH_R[i];ohUpd();});
+$("#ohV").addEventListener("input",e=>{OH.v=+e.target.value;ohUpd();});
+$("#ohLed").addEventListener("click",()=>{OH.led=!OH.led;$("#ohLed").classList.toggle("on",OH.led);ohUpd();});
+function ohUpd(){
+  const Vf=2.0, V=OH.v, R=OH.r;
+  const I=OH.led?(V>Vf?(V-Vf)/R:0):V/R, P=I*I*R, mA=I*1000;
+  $("#ohVv").textContent=V.toFixed(1)+" V"; $("#ohRv").textContent=(R>=1000?(R/1000)+" kΩ":R+" Ω");
+  $("#ohI").innerHTML=fmtN(mA,3)+"<small>mA</small>"; $("#ohP").innerHTML=fmtN(P*1000,3)+"<small>mW</small>";
+  $("#ohF").textContent=OH.led?(V>Vf?"I = (V − Vf) / R = ("+V.toFixed(1)+" − 2.0) / "+R+" = "+fmtN(mA,3)+" mA":"V("+V.toFixed(1)+") < Vf(2.0) → LED가 켜질 만큼의 전압이 안 됨 → I = 0"):"I = V / R = "+V.toFixed(1)+" / "+R+" = "+fmtN(mA,3)+" mA";
+  const hot=P>0.25; let ledState="off";
+  if(OH.led&&I>0){ledState=mA<=20.5?"ok":(mA<=30?"bright":"burnt");}
+  const s=$("#ohSay");
+  if(hot){s.className="say bad";s.innerHTML="<b>저항이 뜨겁다.</b> 흔히 쓰는 1/4W(250mW) 저항보다 많은 "+fmtN(P*1000,3)+"mW를 열로 버린다. 저항값을 키우거나 더 큰 W의 저항을 쓴다.";}
+  else if(ledState==="burnt"){s.className="say bad";s.innerHTML="<b>LED가 탄다.</b> "+fmtN(mA,3)+"mA는 LED 한계(약 30mA)를 넘는다. 저항이 너무 작다.";}
+  else if(ledState==="bright"){s.className="say warn";s.innerHTML="<b>지나치게 밝다.</b> 정격 20mA를 넘어 수명이 줄어든다. 저항을 한 단계 키워보세요.";}
+  else if(OH.led&&ledState==="off"){s.className="say";s.innerHTML="LED가 꺼져 있다. 전압이 Vf(2V)보다 낮거나 0이다.";}
+  else if(OH.led&&mA<5){s.className="say";s.innerHTML="LED가 희미하다. 전류가 "+fmtN(mA,3)+"mA뿐이다. 저항이 크면 전류가 줄어든다.";}
+  else if(OH.led){s.className="say ok";s.innerHTML="<b>알맞다.</b> LED에 "+fmtN(mA,3)+"mA가 흐른다. 전압을 바꾸면 전류가 비례해서 바뀌는 것을 확인해보세요.";}
+  else{s.className="say";s.innerHTML="LED 없이 저항만 있을 때 I = V / R. 전압을 2배로 하면 전류도 2배, 저항을 2배로 하면 전류는 절반이다.";}
+  // 그림
+  const sv=$("#ohSvg"), dur=I>0?Math.max(.5,Math.min(8,0.06/Math.max(I,1e-4))):0;
+  const led=OH.led, glow=ledState==="ok"?Math.min(1,mA/20):(ledState==="bright"?1:0);
+  let h='<path class="s-wire" d="M70 100 V50 H160 M260 50 H350 V'+(led?'95':'190')+(led?' M350 145 V190':'')+' H70 V140"/>';
+  h+='<line x1="52" y1="104" x2="88" y2="104" class="s-pow" stroke-width="3"/><line x1="60" y1="118" x2="80" y2="118" class="s-pow" stroke-width="3"/><line x1="52" y1="126" x2="88" y2="126" class="s-pow" stroke-width="3"/><line x1="60" y1="140" x2="80" y2="140" class="s-pow" stroke-width="3"/>';
+  h+='<text x="20" y="96" font-size="12" class="f-pow">+</text><text x="20" y="150" font-size="12" class="f-muted">−</text><text x="24" y="124" font-size="11" class="f-pow">'+V.toFixed(1)+'V</text>';
+  h+='<path d="M160 50 l8 -10 l12 20 l12 -20 l12 20 l12 -20 l12 20 l12 -20 l8 10" fill="none" stroke-width="2.5" class="'+(hot?'s-bad':'s-sig')+'"/>';
+  h+='<text x="210" y="24" text-anchor="middle" font-size="12" class="f-ink">R = '+(R>=1000?(R/1000)+'kΩ':R+'Ω')+'</text>';
+  if(hot)h+='<text x="210" y="82" text-anchor="middle" font-size="11" class="f-bad">뜨거움 '+fmtN(P,2)+'W</text>';
+  if(led){
+    const col=ledState==="burnt"?"f-muted":"f-bad";
+    if(glow>0)h+='<circle cx="350" cy="120" r="34" class="f-bad" opacity="'+(0.28*glow).toFixed(2)+'"/>';
+    h+='<path d="M334 95 H366 L350 125 Z" class="'+col+'" opacity="'+(ledState==="off"||ledState==="burnt"?0.35:0.95)+'"/><line x1="334" y1="127" x2="366" y2="127" class="s-ink" stroke-width="2.5"/><path class="s-wire" d="M350 125 V145"/>';
+    h+='<text x="378" y="116" font-size="11" class="f-ink">LED</text><text x="378" y="131" font-size="10" class="f-muted">Vf 2V</text>';
+    if(ledState==="burnt")h+='<text x="350" y="172" text-anchor="middle" font-size="11" class="f-bad">탐 ✕</text>';
+  }
+  h+='<text x="210" y="222" text-anchor="middle" font-size="11" class="f-muted">점 = 전류의 흐름 · 빠를수록 많이 흐른다</text>';
+  if(dur){const path=led?"M70 100 V50 H350 V190 H70 V140":"M70 100 V50 H350 V190 H70 V140";for(let k=0;k<6;k++)h+='<circle class="dot f-pow" r="3.5"><animateMotion dur="'+dur.toFixed(2)+'s" begin="'+(-k*dur/6).toFixed(2)+'s" repeatCount="indefinite" path="'+path+'"/></circle>';}
+  sv.innerHTML=h;
+}
+ohUpd();
+
+/* ---------- 03 배터리 ---------- */
+const BP={s:2,p:2};
+chips($("#bpS"),["1S","2S","3S","4S"],1,i=>{BP.s=i+1;bpUpd();});
+chips($("#bpP"),["1P","2P","3P"],1,i=>{BP.p=i+1;bpUpd();});
+["bpC","bpW"].forEach(id=>$("#"+id).addEventListener("input",bpUpd));
+function bpUpd(){
+  const c=+$("#bpC").value, w=+$("#bpW").value, V=3.7*BP.s, Ah=c*BP.p/1000, Wh=V*Ah, min=Wh*0.7/w*60, A=w/V;
+  $("#bpSv").textContent=BP.s+"S"; $("#bpPv").textContent=BP.p+"P"; $("#bpCv").textContent=c+" mAh"; $("#bpWv").textContent=w+" W";
+  $("#bpPack").style.gridTemplateColumns="repeat("+BP.s+",54px)";
+  $("#bpPack").innerHTML=Array.from({length:BP.s*BP.p},()=>'<div class="cell">3.7V</div>').join("");
+  $("#bpV").innerHTML=V.toFixed(1)+"<small>V</small>"; $("#bpAh").innerHTML=(c*BP.p)+"<small>mAh</small>";
+  $("#bpWh").innerHTML=Wh.toFixed(1)+"<small>Wh</small>"; $("#bpT").innerHTML=(min>=90?(min/60).toFixed(1)+"<small>시간</small>":Math.round(min)+"<small>분</small>");
+  $("#bpF").innerHTML="에너지 = "+V.toFixed(1)+"V × "+Ah.toFixed(1)+"Ah = "+Wh.toFixed(1)+"Wh &nbsp;·&nbsp; 사용시간 = "+Wh.toFixed(1)+" × 0.7 ÷ "+w+"W = "+Math.round(min)+"분 &nbsp;·&nbsp; 배터리 전류 = "+w+"W ÷ "+V.toFixed(1)+"V = "+A.toFixed(2)+"A";
+}
+bpUpd();
+
+/* ---------- 04 회로 ---------- */
+const CI_MODES=["닫힌 회로 Closed","열린 회로 Open","단락 Short","GND 분리 No common ground","공통 GND Common ground"];
+let ciM=0;
+chips($("#ciMode"),CI_MODES,0,i=>{ciM=i;ciUpd();});
+function dots(path,n,dur,cls){let h="";for(let k=0;k<n;k++)h+='<circle class="dot '+(cls||"f-pow")+'" r="3.5"><animateMotion dur="'+dur+'s" begin="'+(-k*dur/n).toFixed(2)+'s" repeatCount="indefinite" path="'+path+'"/></circle>';return h;}
+function ciUpd(){
+  const s=$("#ciSvg"), say=$("#ciSay"); let h="";
+  if(ciM<=2){
+    const open=ciM===1, short=ciM===2;
+    h+='<path class="s-wire" d="M80 100 V40 H200 M250 40 H440 V95 M440 145 V200 H80 V150"/>';
+    h+='<line x1="62" y1="104" x2="98" y2="104" class="s-pow" stroke-width="3"/><line x1="70" y1="118" x2="90" y2="118" class="s-pow" stroke-width="3"/><line x1="62" y1="132" x2="98" y2="132" class="s-pow" stroke-width="3"/><line x1="70" y1="146" x2="90" y2="146" class="s-pow" stroke-width="3"/>';
+    h+='<text x="30" y="128" font-size="11" class="f-pow">배터리</text>';
+    h+=open?'<line x1="200" y1="40" x2="244" y2="16" class="s-ink" stroke-width="3"/><circle cx="200" cy="40" r="3.5" class="f-ink"/><circle cx="250" cy="40" r="3.5" class="f-ink"/>':'<line x1="200" y1="40" x2="250" y2="40" class="s-ink" stroke-width="3"/><circle cx="200" cy="40" r="3.5" class="f-ink"/><circle cx="250" cy="40" r="3.5" class="f-ink"/>';
+    h+='<text x="225" y="66" text-anchor="middle" font-size="11" class="f-muted">스위치</text>';
+    const lit=ciM===0;
+    if(lit)h+='<circle cx="440" cy="120" r="34" class="f-pow" opacity=".22"/>';
+    h+='<circle cx="440" cy="120" r="22" class="f-surface" stroke-width="2.5" stroke="currentColor" style="color:var(--'+(lit?'pow':'muted')+')"/><path d="M426 106 L454 134 M454 106 L426 134" stroke-width="2" style="stroke:var(--'+(lit?'pow':'muted')+')"/>';
+    h+='<text x="472" y="124" font-size="11" class="f-muted">전구</text>';
+    if(short){h+='<path d="M330 40 V200" class="s-bad" stroke-width="3"/><text x="338" y="124" font-size="11" class="f-bad">단락선</text><text x="80" y="230" font-size="12" class="f-bad">배터리 과열 · 전류 폭주</text>';h+=dots("M80 100 V40 H330 V200 H80 V150",10,0.6,"f-bad");}
+    else if(!open)h+=dots("M80 100 V40 H440 V200 H80 V150",7,3);
+    else h+='<text x="225" y="230" text-anchor="middle" font-size="12" class="f-muted">길이 끊겨 전류 0</text>';
+    if(ciM===0){say.className="say ok";say.innerHTML="<b>닫힌 회로.</b> 배터리 + → 스위치 → 전구 → 배터리 −로 한 바퀴가 이어져 전류가 흐르고 전구가 켜진다.";}
+    if(open){say.className="say";say.innerHTML="<b>열린 회로.</b> 한 곳만 끊겨도 전체에 전류가 흐르지 않는다. 헐거운 점퍼선, 냉납, 빠진 커넥터가 실습실에서 가장 흔한 개방 고장이다.";}
+    if(short){say.className="say bad";say.innerHTML="<b>단락.</b> 전류가 저항이 거의 없는 지름길로 몰려 전구는 꺼지고 배터리와 선이 뜨거워진다. 퓨즈는 이런 순간 끊어져 화재를 막는다.";}
+  }else{
+    const gnd=ciM===4;
+    h+='<rect x="30" y="50" width="160" height="110" rx="6" class="f-surface s-line" stroke-width="1.5"/><text x="110" y="76" text-anchor="middle" font-size="12" class="f-ink">센서 보드</text><text x="110" y="94" text-anchor="middle" font-size="10" class="f-muted">전원 A (5V)</text>';
+    h+='<rect x="330" y="50" width="160" height="110" rx="6" class="f-surface s-line" stroke-width="1.5"/><text x="410" y="76" text-anchor="middle" font-size="12" class="f-ink">MCU</text><text x="410" y="94" text-anchor="middle" font-size="10" class="f-muted">전원 B (USB)</text>';
+    h+='<path d="M190 112 H330" class="s-sig" stroke-width="2.5"/><text x="260" y="104" text-anchor="middle" font-size="11" class="f-sig">신호 3.3V</text>';
+    h+='<text x="110" y="148" text-anchor="middle" font-size="10" class="f-muted">GND</text><text x="410" y="148" text-anchor="middle" font-size="10" class="f-muted">GND</text>';
+    h+=gnd?'<path d="M110 160 V200 H410 V160" class="s-wire"/><text x="260" y="194" text-anchor="middle" font-size="11" class="f-ink">GND 공통 연결</text>':'<path d="M110 160 V190" class="s-wire" stroke-dasharray="4 4"/><path d="M410 160 V190" class="s-wire" stroke-dasharray="4 4"/><text x="260" y="196" text-anchor="middle" font-size="11" class="f-bad">GND 연결 없음</text>';
+    h+='<text x="410" y="128" text-anchor="middle" font-size="12" class="'+(gnd?'f-ok':'f-bad')+'">'+(gnd?'읽은 값: 1':'읽은 값: 1? 0? ?')+'</text>';
+    h+=dots("M190 112 H330",3,1.4,"f-sig");
+    if(gnd){say.className="say ok";say.innerHTML="<b>공통 GND.</b> 두 보드가 같은 0V를 기준으로 쓰므로 “3.3V”가 양쪽에서 같은 뜻이 된다. 전원이 여러 개라도 GND는 한 점에서 모은다.";}
+    else{say.className="say bad";say.innerHTML="<b>GND가 따로 논다.</b> 전압은 두 점 사이의 차이라서 기준이 다르면 “3.3V”의 뜻이 사라진다. 값이 튀거나 통신이 끊긴다. 강의 1교시의 세 번째 조건이 이것이다.";}
+  }
+  s.innerHTML=h;
+}
+ciUpd();
+
+/* ---------- 05 로직 레벨 ---------- */
+const LG_B=[{n:"ESP32 / Raspberry Pi (3.3V)",vdd:3.3,vil:0.825,vih:2.475,max:3.6},{n:"Arduino Uno (5V)",vdd:5,vil:1.5,vih:3.0,max:5.5}];
+let lgI=0;
+chips($("#lgB"),LG_B.map(b=>b.n),0,i=>{lgI=i;lgUpd();});
+chips($("#lgEx"),["5V 센서 출력","3.3V 보드 출력","분압 후 3.33V","풀업 없는 떠 있는 핀 1.6V"],-1,i=>{$("#lgV").value=[5,3.3,3.33,1.6][i];lgUpd();});
+$("#lgV").addEventListener("input",lgUpd);
+function lgUpd(){
+  const B=LG_B[lgI], v=+$("#lgV").value; $("#lgVv").textContent=v.toFixed(2)+" V";
+  const y=x=>270-Math.min(x,5)/5*240;
+  let zone=v>B.max?"bad":(v>=B.vih?"hi":(v<=B.vil?"lo":"mid"));
+  const r=$("#lgR"), s=$("#lgSay");
+  r.textContent=zone==="hi"?"1 (HIGH)":zone==="lo"?"0 (LOW)":zone==="mid"?"? (불확실)":"손상 위험";
+  r.style.color=zone==="bad"?"var(--bad)":zone==="mid"?"var(--pow)":"var(--ink)";
+  if(zone==="bad"){s.className="say bad";s.innerHTML="<b>핀 최대 전압 "+B.max+"V를 넘었다.</b> 지금은 HIGH로 읽혀도 핀이 서서히 망가진다. 분압 저항이나 레벨 시프터(level shifter)로 낮춘다.";}
+  else if(zone==="mid"){s.className="say warn";s.innerHTML="<b>불확실 구간 ("+B.vil+"–"+B.vih+"V).</b> 그때그때 0이나 1로 읽힌다. 풀업 없는 버튼 입력이 이렇게 흔들린다(강의 2교시).";}
+  else if(zone==="hi"){s.className="say ok";s.innerHTML="<b>HIGH.</b> "+B.vih+"V 이상이면 1로 읽힌다."+(lgI===1&&v<3.6?" 3.3V 보드의 출력이 5V 보드에서 겨우 HIGH로 읽히는 경우다. 경계에 가까우면 불안정할 수 있다.":"");}
+  else{s.className="say ok";s.innerHTML="<b>LOW.</b> "+B.vil+"V 이하면 0으로 읽힌다.";}
+  const zr=(a,b,cls,op)=>'<rect x="110" y="'+y(b)+'" width="70" height="'+(y(a)-y(b))+'" class="'+cls+'" opacity="'+op+'"/>';
+  let h='<rect x="110" y="30" width="70" height="240" class="f-surface s-line" stroke-width="1"/>';
+  h+=zr(0,B.vil,"f-muted",.22)+zr(B.vil,B.vih,"f-pow",.3)+zr(B.vih,Math.min(B.max,5),"f-sig",.3);
+  if(B.max<5)h+=zr(B.max,5,"f-bad",.3);
+  [[B.vil/2,"LOW → 0","f-muted"],[(B.vil+B.vih)/2,"불확실","f-pow"],[(B.vih+Math.min(B.max,5))/2,"HIGH → 1","f-sig"]].forEach(([vv,t,c])=>h+='<text x="192" y="'+(y(vv)+4)+'" font-size="12" class="'+c+'">'+t+'</text>');
+  if(B.max<5)h+='<text x="192" y="'+(y((B.max+5)/2)+4)+'" font-size="12" class="f-bad">손상 위험</text>';
+  [[B.vil,"VIL "+B.vil+"V"],[B.vih,"VIH "+B.vih+"V"]].forEach(([vv,t])=>h+='<line x1="104" x2="186" y1="'+y(vv)+'" y2="'+y(vv)+'" class="s-ink" stroke-width="1" stroke-dasharray="3 3"/><text x="292" y="'+(y(vv)+4)+'" font-size="10" class="f-muted">'+t+'</text>');
+  [0,1,2,3,4,5].forEach(t=>h+='<text x="98" y="'+(y(t)+4)+'" text-anchor="end" font-size="10" class="f-muted">'+t+'V</text>');
+  h+='<path d="M64 '+y(v)+' l40 0 m-10 -7 l10 7 l-10 7" stroke-width="2.5" fill="none" class="'+(zone==="bad"?"s-bad":"s-ink")+'"/><text x="58" y="'+(y(v)+4)+'" text-anchor="end" font-size="12" class="f-ink">'+v.toFixed(2)+'</text>';
+  $("#lgSvg").innerHTML=h;
+}
+lgUpd();
+
+/* ---------- 06 ADC ---------- */
+function adDraw(){
+  const c=$("#adCv"), g=c.getContext("2d"), W=c.width, H=c.height, bits=+$("#adB").value, N=+$("#adN").value;
+  const levels=2**bits, step=3.3/levels;
+  $("#adBv").textContent=bits+" bit"; $("#adNv").textContent=N+" 회";
+  $("#adL").innerHTML=levels.toLocaleString()+"<small>칸 (0–"+(levels-1)+")</small>";
+  $("#adS").innerHTML=(step*1000>=10?fmtN(step*1000,3):fmtN(step*1000,2))+"<small>mV</small>";
+  const x0=46,x1=W-12,yT=16,yB=H-30, X=t=>x0+t*(x1-x0), Y=v=>yB-v/3.3*(yB-yT);
+  const sig=t=>1.65+1.15*Math.sin(2*Math.PI*t)+0.32*Math.sin(6*Math.PI*t+0.7);
+  const ink=css("--ink"),muted=css("--muted"),line=css("--line"),sg=css("--sig"),pw=css("--pow");
+  g.clearRect(0,0,W,H);
+  g.font="12px "+css("--mono"); g.fillStyle=muted; g.textAlign="right";
+  g.fillText("3.3V",x0-6,yT+4); g.fillText("0V",x0-6,yB+4);
+  if(levels<=64){g.strokeStyle=line;g.lineWidth=1;for(let k=1;k<levels;k++){const yy=Y(k*step);g.beginPath();g.moveTo(x0,yy);g.lineTo(x1,yy);g.stroke();}}
+  g.strokeStyle=line;g.beginPath();g.moveTo(x0,yT);g.lineTo(x0,yB);g.lineTo(x1,yB);g.stroke();
+  g.strokeStyle=muted;g.lineWidth=2;g.beginPath();for(let i=0;i<=300;i++){const t=i/300;i?g.lineTo(X(t),Y(sig(t))):g.moveTo(X(t),Y(sig(t)));}g.stroke();
+  g.strokeStyle=sg;g.lineWidth=2.5;g.beginPath();
+  let err=0;
+  for(let i=0;i<N;i++){const t=i/N, v=sig(t), code=Math.min(levels-1,Math.floor(v/step)), q=(code+0.5)*step;err+=Math.abs(q-v);
+    const xa=X(t), xb=X((i+1)/N), yy=Y(q); if(i)g.lineTo(xa,yy);else g.moveTo(xa,yy); g.lineTo(xb,yy);}
+  g.stroke();
+  g.fillStyle=pw;for(let i=0;i<N;i++){const t=i/N;g.beginPath();g.arc(X(t),Y(sig(t)),3,0,6.3);g.fill();}
+  g.textAlign="left";g.fillStyle=muted;g.fillText("회색 = 실제 전압 · 청록 = MCU가 본 값 · 점 = 측정 순간",x0,H-8);
+  const avgErr=err/N*1000, s=$("#adSay");
+  if(bits<=4){s.className="say warn";s.innerHTML="<b>칸이 "+levels+"개뿐.</b> 계단이 거칠어서 평균 "+fmtN(avgErr,3)+"mV씩 틀린다. 비트를 올려보세요.";}
+  else if(N<10){s.className="say warn";s.innerHTML="<b>너무 드물게 잰다.</b> 분해능이 좋아도 측정 사이의 변화를 놓친다. 빠르게 변하는 신호일수록 자주 재야 한다.";}
+  else{s.className="say ok";s.innerHTML="<b>실제 전압을 잘 따라간다.</b> 평균 오차 약 "+fmtN(avgErr,3)+"mV. 강의 3교시의 토양수분 값 0–4095가 바로 12비트 ADC의 결과다.";}
+}
+["adB","adN"].forEach(id=>$("#"+id).addEventListener("input",adDraw));
+adDraw();
+
+/* ---------- 07 주파수 ---------- */
+const fqToX=f=>Math.round(Math.log10(f)/6*1000), xToF=x=>Math.pow(10,x/1000*6);
+const FQ_EX=[["서보 50Hz",50,7.5],["모터 PWM 1kHz",1000,60],["조명 LED PWM 20kHz",20000,40],["I2C 400kHz",400000,50],["UART 9600bps의 한 비트",9600,50]];
+let fqExact=null;
+chips($("#fqEx"),FQ_EX.map(e=>e[0]),-1,i=>{const e=FQ_EX[i];fqExact=e[1];$("#fqF").value=fqToX(e[1]);$("#fqD").value=e[2];fqUpd(i);});
+$("#fqF").addEventListener("input",()=>{fqExact=null;$$("#fqEx .chip").forEach(c=>c.classList.remove("sel"));fqUpd(-1);});
+$("#fqD").addEventListener("input",()=>fqUpd(-2));
+function fqUpd(ex){
+  let f=fqExact||xToF(+$("#fqF").value); if(!fqExact)f=Number(f.toPrecision(2));
+  const d=+$("#fqD").value/100, T=1/f, pc=fmtN(d*100,3);
+  $("#fqFv").textContent=siFmt(f,"Hz"); $("#fqDv").textContent=pc+"%";
+  $("#fqT").textContent=siFmt(T,"s"); $("#fqOn").textContent=siFmt(T*d,"s");
+  $("#fqF2").textContent="T = 1 / f = 1 / "+siFmt(f,"Hz")+" = "+siFmt(T,"s")+"   ·   HIGH 시간 = T × "+pc+"% = "+siFmt(T*d,"s")+"   ·   1초에 "+fmtN(f,4)+"번 반복";
+  const say={0:"서보: 20ms마다 펄스 하나. 펄스 길이 1.5ms(듀티 7.5%) → 90°. 듀티비가 아니라 HIGH 시간의 길이가 각도를 정한다.",1:"모터 PWM: 1초에 1000번 켰다 껐다. 듀티 60%면 평균 전압이 60%가 되어 모터가 그만큼의 힘으로 돈다.",2:"조명 LED: 20kHz 이상이면 카메라 롤링셔터에 줄무늬가 덜 생기고 사람 귀에도 들리지 않는다(Nooki PRD 조건).",3:"I2C 고속 모드: 클럭 선(SCL)이 1초에 40만 번 박자를 친다. 한 박자 2.5µs마다 비트 하나.",4:"UART 9600bps: 비트 하나가 약 104µs. 받는 쪽도 같은 박자로 읽어야 글자가 깨지지 않는다."};
+  const s=$("#fqSay"); s.className="say";
+  s.innerHTML=say[ex]!=null?say[ex]:"주파수를 10배 올리면 주기는 1/10로 짧아진다. 예시 버튼으로 강의에 나오는 신호를 확인해보세요.";
+  let h='<line x1="40" y1="140" x2="410" y2="140" class="s-line" stroke-width="1"/><text x="34" y="44" text-anchor="end" font-size="10" class="f-muted">HIGH</text><text x="34" y="144" text-anchor="end" font-size="10" class="f-muted">LOW</text>';
+  const per=120, x0=50; let p="M"+x0+" "+(d>0?40:140);
+  for(let k=0;k<3;k++){const a=x0+k*per,b=a+per*d;p+=" L"+a+" "+(d>0?40:140)+" L"+b+" "+(d>0?40:140)+" L"+b+" "+(d<1?140:40)+" L"+(a+per)+" "+(d<1?140:40);}
+  h+='<path d="'+p+'" fill="none" stroke-width="2.5" class="s-sig"/>';
+  h+='<path d="M'+x0+' 160 h'+per+' M'+x0+' 155 v10 M'+(x0+per)+' 155 v10" class="s-ink" stroke-width="1.2" fill="none"/><text x="'+(x0+per/2)+'" y="176" text-anchor="middle" font-size="11" class="f-ink">T = '+siFmt(T,"s")+'</text>';
+  if(d>0&&d<1)h+='<path d="M'+(x0+per)+' 26 h'+(per*d)+'" class="s-ink" stroke-width="1.2"/><text x="'+(x0+per+per*d/2)+'" y="20" text-anchor="middle" font-size="10" class="f-ink">HIGH '+pc+'%</text>';
+  $("#fqSvg").innerHTML=h;
+}
+fqUpd(-1);
+
+/* ---------- 08 2진수 ---------- */
+let BN=[0,1,1,0,1,0,0,0];
+const bnBox=$("#bnBits");
+for(let i=0;i<8;i++){const b=document.createElement("button");b.type="button";b.className="bit";b.innerHTML='<b>0</b><span>2<sup>'+(7-i)+'</sup>='+(2**(7-i))+'</span>';b.addEventListener("click",()=>{BN[i]=BN[i]?0:1;bnUpd();});bnBox.appendChild(b);}
+const BN_EX=[["MPU6050 주소 0x68",0x68],["BH1750 주소 0x23",0x23],["글자 'O' = 0x4F",0x4F],["글자 'K' = 0x4B",0x4B],["최대값 255 = 0xFF",255]];
+chips($("#bnEx"),BN_EX.map(e=>e[0]),-1,i=>bnSet(BN_EX[i][1]));
+function bnSet(n){BN=Array.from({length:8},(_,i)=>(n>>(7-i))&1);bnUpd();}
+$("#bnIn").addEventListener("change",()=>{
+  const t=$("#bnIn").value.trim().toLowerCase().replace(/_/g,""); let n;
+  if(/^0x[0-9a-f]+$/.test(t))n=parseInt(t.slice(2),16); else if(/^0b[01]+$/.test(t))n=parseInt(t.slice(2),2); else if(/^\d+$/.test(t))n=parseInt(t,10);
+  const s=$("#bnSay");
+  if(n==null||isNaN(n)){s.className="say warn";s.innerHTML="읽을 수 없는 값입니다. 104, 0x68, 0b01101000 같은 형식으로 입력하세요.";return;}
+  if(n>255){s.className="say warn";s.innerHTML=n+"은 8비트(0–255)를 넘습니다. 1바이트로는 못 보내고 2바이트가 필요합니다. 12비트 ADC 값 4095(0xFFF)도 그래서 2바이트로 보냅니다.";return;}
+  bnSet(n);
+});
+function bnUpd(){
+  const n=BN.reduce((a,b)=>a*2+b,0), hx=n.toString(16).toUpperCase().padStart(2,"0"), bs=BN.join("");
+  $$(".bit",bnBox).forEach((b,i)=>{b.classList.toggle("on",!!BN[i]);$("b",b).textContent=BN[i];});
+  $("#bnD").textContent=n; $("#bnH").textContent="0x"+hx; $("#bnB").textContent=bs.slice(0,4)+" "+bs.slice(4);
+  $("#bnA").textContent=(n>=32&&n<127)?"'"+String.fromCharCode(n)+"'":"(제어 문자)";
+  const s=$("#bnSay"); s.className="say";
+  const terms=BN.map((b,i)=>b?(2**(7-i)):0).filter(x=>x);
+  s.innerHTML="<span class='mono'>"+bs.slice(0,4)+"</span> → <b class='mono'>"+hx[0]+"</b>, <span class='mono'>"+bs.slice(4)+"</span> → <b class='mono'>"+hx[1]+"</b>. 앞 4비트와 뒤 4비트가 각각 16진수 한 자리가 된다. 10진수: "+(terms.length?terms.join(" + ")+" = "+n:"0");
+}
+bnUpd();
+
+/* ---------- 09 통신 ---------- */
+const CM=[
+ {n:"UART",rows:[["선",'TX, RX (+ GND)'],["박자","비동기 — 양쪽이 같은 속도(baud rate)를 미리 약속"],["상대","1:1"],["강의 예","GPS, LiDAR, ESP32 ↔ Pi"]]},
+ {n:"I2C",rows:[["선","SDA(데이터), SCL(클럭) 2가닥 + 풀업 저항"],["박자","동기 — 컨트롤러가 SCL로 박자를 친다"],["상대","1:N — 7비트 주소(예: 0x68)로 구분"],["강의 예","MPU6050, BH1750, 온습도 센서"]]},
+ {n:"SPI",rows:[["선","SCK, MOSI(COPI), MISO(CIPO) + 장치마다 CS"],["박자","동기 — 수 MHz로 빠름"],["상대","1:N — CS 선을 LOW로 내린 장치와만 대화"],["강의 예","디스플레이, SD카드"]]}
+];
+let cmI=0;
+chips($("#cmP"),CM.map(c=>c.n),0,i=>{cmI=i;cmUpd();});
+function box(x,y,w,h,t,sub){return '<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="6" class="f-surface s-line" stroke-width="1.5"/><text x="'+(x+w/2)+'" y="'+(y+22)+'" text-anchor="middle" font-size="12" class="f-ink">'+t+'</text>'+(sub?'<text x="'+(x+w/2)+'" y="'+(y+38)+'" text-anchor="middle" font-size="10" class="f-muted">'+sub+'</text>':'');}
+function cmUpd(){
+  let h="";
+  if(cmI===0){
+    h+=box(30,60,150,130,"보드 A","ESP32")+box(380,60,150,130,"보드 B","GPS 모듈");
+    [["TX",100],["RX",130],["GND",160]].forEach(([t,y])=>{h+='<text x="168" y="'+(y+4)+'" text-anchor="end" font-size="11" class="f-ink">'+t+'</text>';});
+    [["RX",100],["TX",130],["GND",160]].forEach(([t,y])=>{h+='<text x="392" y="'+(y+4)+'" font-size="11" class="f-ink">'+t+'</text>';});
+    h+='<path d="M180 100 C 280 100, 280 100, 380 100" class="s-sig" stroke-width="2"/><path d="M180 130 C 280 130, 280 130, 380 130" class="s-sig" stroke-width="2"/><path d="M180 160 H380" class="s-wire"/>';
+    h+='<text x="280" y="92" text-anchor="middle" font-size="10" class="f-sig">A의 TX(입) → B의 RX(귀)</text><text x="280" y="148" text-anchor="middle" font-size="10" class="f-sig">B의 TX → A의 RX</text>';
+    h+='<text x="280" y="226" text-anchor="middle" font-size="11" class="f-muted">클럭 선이 없다 → 둘 다 9600bps처럼 같은 속도로 맞춘다</text>';
+    h+=dots("M180 100 H380",3,1.6,"f-sig");
+  }else if(cmI===1){
+    h+=box(20,80,110,70,"컨트롤러","ESP32");
+    h+='<path d="M130 100 H540" class="s-sig" stroke-width="2.5"/><path d="M130 130 H540" class="s-pow" stroke-width="2.5"/>';
+    h+='<text x="536" y="94" text-anchor="end" font-size="11" class="f-sig">SDA 데이터</text><text x="536" y="148" text-anchor="end" font-size="11" class="f-pow">SCL 클럭</text>';
+    [[170,"MPU6050","0x68"],[290,"BH1750","0x23"],[410,"BME280","0x76"]].forEach(([x,n,a])=>{h+='<path d="M'+(x+30)+' 100 V180 M'+(x+60)+' 130 V180" class="s-wire" stroke-width="1.5"/>'+box(x,180,90,52,n,"주소 "+a);});
+    h+='<path d="M150 100 V44 M160 130 V44" class="s-wire" stroke-width="1.5"/><rect x="144" y="54" width="12" height="26" rx="2" class="f-sunk s-ink" stroke-width="1"/><rect x="154" y="54" width="12" height="26" rx="2" class="f-sunk s-ink" stroke-width="1"/><text x="174" y="44" font-size="10" class="f-muted">풀업 저항 → 3.3V</text>';
+    h+=dots("M130 130 H540",4,1.2,"f-pow");
+  }else{
+    h+=box(20,70,120,110,"컨트롤러","ESP32");
+    const L=[["SCK",90,"s-pow"],["MOSI",115,"s-sig"],["MISO",140,"s-sig"]];
+    L.forEach(([t,y,c])=>{h+='<path d="M140 '+y+' H330" class="'+c+'" stroke-width="2"/><text x="146" y="'+(y-4)+'" font-size="10" class="f-ink">'+t+'</text>';});
+    h+='<path d="M330 90 V60 H380 M330 90 V180 H380 M330 115 V70 H380 M330 115 V190 H380 M330 140 V80 H380 M330 140 V200 H380" class="s-wire" stroke-width="1.2" fill="none"/>';
+    h+=box(380,40,150,60,"디스플레이","CS1")+box(380,170,150,60,"SD 카드","CS2");
+    h+='<path d="M140 165 H300 V50 H380" class="s-bad" stroke-width="2" fill="none"/><path d="M140 175 H310 V215 H380" class="s-wire" stroke-width="2" fill="none" stroke-dasharray="5 4"/>';
+    h+='<text x="146" y="160" font-size="10" class="f-bad">CS1 = LOW (선택됨)</text><text x="146" y="192" font-size="10" class="f-muted">CS2 = HIGH (대기)</text>';
+    h+=dots("M140 115 H330 V70 H380",3,1.2,"f-sig");
+  }
+  $("#cmSvg").innerHTML=h;
+  $("#cmT").innerHTML=CM[cmI].rows.map(r=>'<tr><th style="width:90px">'+r[0]+'</th><td>'+r[1]+'</td></tr>').join("");
+}
+cmUpd();
+
+/* ---------- 10 부품 역할 ---------- */
+const PT_BINS=[["sense","감지","Sensor"],["think","판단","Controller"],["act","행동","Actuator"],["drive","전달","Driver"],["power","전원","Power"],["passive","수동 소자","Passive"]];
+const PT=[["초음파 거리 센서 HC-SR04","sense","소리가 돌아오는 시간으로 거리를 잰다."],["IMU MPU6050","sense","기울기와 회전을 잰다."],["카메라 모듈","sense","빛을 영상 데이터로 바꾼다."],["ESP32-S3","think","실시간 제어를 맡는 MCU."],["Raspberry Pi 5","think","AI 추론을 맡는 SBC."],["DC 기어모터","act","전류를 회전으로 바꾼다."],["서보 모터","act","펄스 폭에 맞는 각도로 간다."],["워터 펌프","act","물을 밀어낸다 — 출력은 모터만이 아니다."],["TB6612 모터 드라이버","drive","MCU의 약한 신호로 모터에 큰 전류를 준다."],["MOSFET","drive","작은 게이트 전압으로 큰 전류를 켜고 끄는 스위치."],["릴레이","drive","전기로 움직이는 기계식 스위치. 펌프처럼 켜고 끄기만 하면 될 때."],["Buck 컨버터","power","높은 전압을 효율 좋게 낮춘다(12V→5V)."],["LDO 레귤레이터","power","전압을 조금 낮춰 안정시킨다(5V→3.3V). 남는 전압은 열이 된다."],["리튬 배터리","power","에너지를 저장한다."],["저항","passive","전류를 제한하거나 전압을 나눈다."],["커패시터","passive","전기를 잠깐 저장해 전압 출렁임을 흡수한다."]];
+let ptSel=null; const ptPlaced={};
+function ptRender(){
+  const pb=$("#ptParts"); pb.innerHTML="";
+  PT.forEach((p,i)=>{const b=document.createElement("button");b.type="button";b.className="chip"+(ptSel===i?" sel":"")+(ptPlaced[i]?" used":"");b.textContent=p[0];b.addEventListener("click",()=>{ptSel=i;ptRender();$("#ptSay").className="say";$("#ptSay").innerHTML="<b>"+p[0]+"</b> — 어느 칸일까요?";});pb.appendChild(b);});
+  const bb=$("#ptBins"); bb.innerHTML="";
+  PT_BINS.forEach(([k,ko,en])=>{const b=document.createElement("button");b.type="button";b.className="bin";
+    const inn=Object.entries(ptPlaced).filter(([i,v])=>v.bin===k).map(([i,v])=>'<span class="tagp '+(v.ok?"r":"w")+'">'+PT[i][0]+'</span>').join("");
+    b.innerHTML='<span class="t">'+ko+'<small>'+en+'</small></span><span class="in">'+inn+'</span>';
+    b.addEventListener("click",()=>ptDrop(k)); bb.appendChild(b);});
+}
+function ptDrop(k){
+  const s=$("#ptSay");
+  if(ptSel==null){s.className="say warn";s.textContent="부품을 먼저 고르세요.";return;}
+  const p=PT[ptSel], ok=p[1]===k; ptPlaced[ptSel]={bin:k,ok};
+  const right=PT_BINS.find(b=>b[0]===p[1]);
+  s.className="say "+(ok?"ok":"bad"); s.innerHTML=(ok?"<b>맞다.</b> ":"<b>아니다 — 정답은 ‘"+right[1]+"’.</b> ")+p[0]+": "+p[2];
+  ptSel=null; ptRender();
+  const n=Object.keys(ptPlaced).length;
+  if(n===PT.length){const c=Object.values(ptPlaced).filter(v=>v.ok).length;s.className="say "+(c>=13?"ok":"warn");s.innerHTML="<b>"+PT.length+"개 중 "+c+"개 정답.</b> "+(c>=13?"5계층을 잘 구분했다. ":"빨간 표시 부품의 설명을 다시 읽어보세요. ")+"헷갈리기 쉬운 곳은 ‘전달(드라이버)’이다: 스스로 움직이지 않고, MCU 대신 큰 전류를 다룬다.";}
+}
+ptRender();
+
+/* ---------- 11 용어 사전 ---------- */
+const GL=[
+["전압","Voltage (V)","전기를 미는 힘. 두 점 사이의 차이로만 의미가 있다.",1],["전류","Current (A)","실제로 흐르는 전기의 양. 부품이 필요한 만큼 가져간다.",1],["저항","Resistance (Ω)","전류의 흐름을 막는 정도.",1],["전력","Power (W)","W = V × A. 발열과 배터리 소모를 결정한다.",1],["옴의 법칙","Ohm's law","V = I × R.",1],["접지","GND, Ground","모든 전압의 기준점, 0V.",1],["공통 접지","Common ground","전원이 여러 개여도 GND를 한 점에서 묶는 것.",1],["단락","Short circuit","부하 없이 +와 −가 바로 이어진 상태. 전류 폭주.",1],["브라운아웃","Brownout","전압이 순간 떨어져 MCU가 리셋되는 현상.",1],["레귤레이터","Regulator (LDO)","전압을 일정하게 낮춰 유지한다. 남는 전압은 열이 된다.",1],["벅 컨버터","Buck converter","스위칭 방식으로 전압을 효율 좋게 낮춘다. Step-down.",1],["분압 저항","Voltage divider","저항 두 개의 비율로 전압을 나눈다. 5V → 3.3V.",1],["레벨 시프터","Level shifter","3.3V와 5V 로직을 양방향으로 변환하는 부품.",1],["커패시터","Capacitor","전기를 잠깐 저장해 전압 출렁임을 흡수한다.",1],["밀리암페어시","mAh / Wh","배터리 용량 / 에너지. Wh = V × Ah.",1],["피크 전류","Peak current","순간 최대 전류. 전원은 평균이 아니라 피크로 설계한다.",1],
+["MCU","Microcontroller","OS 없이 즉시 반응하는 작은 컴퓨터. ESP32, Arduino.",2],["SBC","Single-board computer","Linux가 도는 보드 컴퓨터. Raspberry Pi.",2],["GPIO","General-purpose I/O","입출력을 코드로 정하는 범용 핀.",2],["PWM","Pulse-width modulation","빠르게 켰다 껐다 해서 평균 전압을 조절.",2],["듀티비","Duty cycle","한 주기 중 HIGH인 시간의 비율.",2],["풀업 저항","Pull-up resistor","입력 핀의 기본값을 HIGH로 묶는 저항.",2],["플로팅","Floating input","어디에도 연결되지 않아 값이 흔들리는 입력.",2],["디바운스","Debounce","버튼 접점의 떨림(채터링)을 무시하는 처리.",2],["스트래핑 핀","Strapping pin","부팅 모드를 정하는 핀. 부품을 달면 안 된다.",2],["인터럽트","Interrupt","신호가 바뀌면 하던 일을 멈추고 즉시 처리하는 기능.",2],
+["ADC","Analog-to-digital converter","전압을 숫자로 바꾼다. ESP32는 12비트(0–4095).",3],["분해능","Resolution","ADC가 구분하는 칸의 수. 2ⁿ.",3],["캘리브레이션","Calibration","센서 값에 기준점을 맞춰 의미를 주는 작업.",3],["I2C","Inter-Integrated Circuit","SDA·SCL 2가닥, 주소로 여러 센서를 한 버스에.",3],["SPI","Serial Peripheral Interface","4가닥 + CS, 빠른 동기식 통신.",3],["UART","Universal Asynchronous Receiver-Transmitter","TX·RX 1:1 비동기 시리얼.",3],["보레이트","Baud rate","UART 속도. 9600, 115200bps. 양쪽이 같아야 한다.",3],["주소","Address","I2C 버스에서 장치를 구분하는 번호. 0x68 등.",3],
+["프로토콜","Protocol","데이터를 주고받는 약속(순서·형식·속도).",4],["대역폭","Bandwidth","단위 시간에 보낼 수 있는 데이터 양.",4],["지연","Latency","보낸 뒤 도착하기까지 걸리는 시간.",4],["BLE","Bluetooth Low Energy","가까운 거리, 적은 전력, 적은 데이터.",4],["MQTT","MQTT","Wi-Fi로 센서 데이터를 주고받는 가벼운 메시지 방식.",4],
+["액추에이터","Actuator","전기를 움직임·빛·소리 등으로 바꾸는 부품.",5],["모터 드라이버","Motor driver","MCU 신호로 모터에 큰 전류를 준다.",5],["H-브리지","H-bridge","스위치 4개로 모터 방향을 바꾸는 회로.",5],["엔코더","Encoder","바퀴가 얼마나 돌았는지 펄스로 알려준다.",5],["IMU","Inertial measurement unit","가속도 + 자이로. 기울기·회전을 잰다.",5],["오픈 루프 / 클로즈드 루프","Open loop / Closed loop","결과를 재지 않는 제어 / 재서 보정하는 제어(피드백).",5],["상태 머신","State machine","동작을 상태와 전환 조건으로 나눠 설계.",5],["페일세이프","Fail-safe","고장이 나면 안전한 쪽(정지)으로 가게 하는 설계.",5],
+["멀티미터","Multimeter","전압·전류·저항을 재는 계측기.",6],["데이터시트","Datasheet","부품 제조사의 공식 사양 문서. 최종 기준.",6],["핀맵","Pinout","보드 핀의 번호와 기능 배치도.",6]];
+let glP=0;
+chips($("#glP"),["전체","1교시","2교시","3교시","4교시","5교시","6교시"],0,i=>{glP=i;glRender();});
+$("#glQ").addEventListener("input",glRender);
+function glRender(){
+  const q=$("#glQ").value.trim().toLowerCase();
+  const list=GL.filter(g=>(!glP||g[3]===glP)&&(!q||(g[0]+g[1]+g[2]).toLowerCase().includes(q)));
+  $("#glList").innerHTML=list.length?list.map(g=>'<div class="row"><div class="ko">'+g[0]+'<span>'+g[1]+'</span></div><div>'+g[2]+'</div><div class="pd">'+g[3]+'교시</div></div>').join(""):'<div class="row"><div>찾는 용어가 없습니다. 다른 철자나 영어로 검색해보세요.</div></div>';
+}
+glRender();
+
+/* ---------- 12 준비도 체크 ---------- */
+const QZ=[
+ {q:"12V 모터와 5V 보드를 함께 쓸 때 전원 구성으로 맞는 것은?",o:["한 전원에 모두 연결한다","전원 라인은 나누고 GND는 공통으로 묶는다","GND도 완전히 분리한다","모터 전원을 보드의 5V 핀에서 뽑는다"],a:1,m:"circuit"},
+ {q:"5V 3A 어댑터에 1A가 필요한 부품을 연결하면?",o:["3A가 밀려 들어가 부품이 탄다","부품은 필요한 1A만 가져간다","전압이 15V가 된다","작동하지 않는다"],a:1,m:"ohm"},
+ {q:"3.3V 핀으로 LED(Vf 2V)에 약 20mA를 흘리려면 저항은?",o:["약 68Ω","약 165Ω","약 1kΩ","저항이 필요 없다"],a:0,m:"ohm"},
+ {q:"ESP32 입력 핀에 1.5V가 들어오면?",o:["항상 HIGH","항상 LOW","어느 쪽으로 읽힐지 보장되지 않는다","핀이 손상된다"],a:2,m:"logic"},
+ {q:"3.3V 핀에서 듀티비 25%의 PWM을 내면 평균 전압은?",o:["0.25V","0.83V","2.5V","3.3V"],a:1,m:"freq"},
+ {q:"10비트 ADC가 낼 수 있는 가장 큰 값은?",o:["10","255","1023","4095"],a:2,m:"adc"},
+ {q:"2진수 0100 1111을 16진수로 쓰면?",o:["0x4F","0x94","0xF4","0x79"],a:0,m:"binary"},
+ {q:"I2C 버스에 주소가 같은 센서 두 개를 달면?",o:["자동으로 번호가 바뀐다","충돌해서 둘 다 제대로 읽히지 않는다","더 빨라진다","아무 문제 없다"],a:1,m:"comm"},
+ {q:"3000mAh 셀로 2S2P 팩을 만들면?",o:["3.7V, 3000mAh","7.4V, 6000mAh","7.4V, 3000mAh","14.8V, 12000mAh"],a:1,m:"power"},
+ {q:"주파수 1kHz 신호의 한 주기는?",o:["1 s","1 ms","1 µs","1000 s"],a:1,m:"freq"}
+];
+const qzPick={};
+function qzRender(){
+  $("#qz").innerHTML="";
+  QZ.forEach((x,i)=>{const d=document.createElement("div");d.className="item";d.innerHTML='<div class="q"><span class="no">'+String(i+1).padStart(2,"0")+'</span>'+x.q+'</div><div class="opts"></div>';
+    const o=$(".opts",d);
+    x.o.forEach((t,j)=>{const b=document.createElement("button");b.type="button";b.className="opt"+(qzPick[i]===j?" pick":"");b.textContent=t;b.addEventListener("click",()=>{qzPick[i]=j;$$(".opt",o).forEach(e=>e.classList.remove("pick"));b.classList.add("pick");});o.appendChild(b);});
+    $("#qz").appendChild(d);});
+}
+qzRender();
+$("#qzGo").addEventListener("click",()=>{
+  let c=0; const miss=new Set();
+  $$("#qz .item").forEach((d,i)=>{const bs=$$(".opt",d);bs.forEach(b=>b.classList.remove("right","wrong"));
+    bs[QZ[i].a].classList.add("right"); if(qzPick[i]===QZ[i].a)c++; else{miss.add(QZ[i].m);if(qzPick[i]!=null)bs[qzPick[i]].classList.add("wrong");}});
+  const s=$("#qzSay"); s.hidden=false;
+  const links=[...miss].map(m=>'<a class="chiplink" href="#'+m+'">'+NAME[m]+'</a>').join("");
+  if(c>=8){s.className="say ok";s.innerHTML="<b>10문제 중 "+c+"개.</b> 강의를 따라갈 준비가 됐습니다."+(links?" 틀린 부분만 한 번 더 보세요: "+links:"");markDone("quiz");}
+  else{s.className="say warn";s.innerHTML="<b>10문제 중 "+c+"개.</b> 아래 장을 먼저 복습하고 다시 풀어보세요: "+links;}
+  s.scrollIntoView({behavior:"smooth",block:"nearest"});
+});
+$("#qzReset").addEventListener("click",()=>{Object.keys(qzPick).forEach(k=>delete qzPick[k]);qzRender();$("#qzSay").hidden=true;});
+
+/* 테마가 바뀌면 캔버스 다시 그리기 */
+try{matchMedia("(prefers-color-scheme: dark)").addEventListener("change",adDraw);}catch(e){}
+new MutationObserver(adDraw).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
+refresh();
+</script>

@@ -32,7 +32,7 @@ Nooki 홈페이지(`index.html`) 오른쪽 아래에 뜨는 RAG 챗봇입니다.
 
 | 이름 | 설명 |
 |---|---|
-| `nooki_documents` | 지식 문서 (제목, 출처) |
+| `nooki_documents` | 지식 문서 (제목) |
 | `nooki_chunks` | 잘린 본문 + `embedding vector(768)` |
 | `nooki_match_chunks()` | 코사인 유사도 검색 함수 (anon/authenticated 실행 권한 없음) |
 | Edge Function `nooki-chat` | 챗봇 API |

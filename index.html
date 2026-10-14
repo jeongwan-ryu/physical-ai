@@ -192,7 +192,96 @@ main section:first-child .font-body-lg{font-size:15px;}
 .nooki-report-footer{display:flex;justify-content:space-between;align-items:center;gap:16px;border-top:1px solid #dce6ee;padding:16px 32px;background:#f5f8fa;font-size:12px;color:#526978;flex-shrink:0;}
 .nooki-report-footer button{padding:10px 18px;border-radius:8px;background:#123d57;color:#fff;font-size:13px;font-weight:600;cursor:pointer;}
 @media(max-width:767px){.nooki-report-dialog{width:calc(100% - 20px);height:calc(100dvh - 24px);max-height:calc(100dvh - 24px);border-radius:16px;}.nooki-report-header{padding:18px;}.nooki-report-header h2{font-size:20px;}.nooki-report-content{padding:20px;}.nooki-report-footer{padding:14px 20px;}.nooki-report-flow li{grid-template-columns:1fr;gap:4px;}.nooki-report-nav{font-size:12px;padding:7px 10px;}.nooki-nav{justify-content:flex-start;}}
-</style></head><body id="top" class="bg-surface font-body-md text-body-md text-on-surface antialiased"><a class="nooki-skip" href="#main-content">본문으로 바로가기</a><header class="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(31,78,121,0.04)]"><div class="h-20 max-w-[1280px] mx-auto px-gutter flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-md flex-shrink-0"><a class="flex items-center gap-space-sm" data-path="overview" href="#top"><span aria-hidden="true" class="material-symbols-outlined text-primary text-[32px]">travel_explore</span><span class="font-headline-sm text-headline-sm text-primary font-semibold tracking-tight">Nooki</span></a></div><nav class="nooki-nav" aria-label="주요 메뉴" data-active-classes="bg-surface-container text-primary font-semibold rounded-full"><a class="px-space-md py-space-sm rounded-full font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-colors duration-150" data-path="how-it-works" href="#how-it-works">작동 원리</a><a class="px-space-md py-space-sm rounded-full font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-colors duration-150" data-path="vision-quality" href="#vision-quality">인식 과정</a><a class="px-space-md py-space-sm rounded-full font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-colors duration-150" data-path="key-features" href="#key-features">핵심 기능</a><a class="px-space-md py-space-sm rounded-full font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-colors duration-150" data-path="app-preview" href="#app-preview">앱 미리보기</a><a class="px-space-md py-space-sm rounded-full font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-colors duration-150" data-path="faq" href="#faq">자주 묻는 질문</a><button type="button" class="nooki-report-nav" data-report-open aria-haspopup="dialog" aria-controls="technical-report" aria-expanded="false">기술 보고서</button></nav><div class="flex items-center gap-space-md flex-shrink-0"><a class="hidden sm:inline-flex items-center justify-center bg-secondary-container text-on-secondary-container hover:bg-secondary-fixed hover:text-on-secondary-fixed font-label-lg text-label-lg px-space-lg py-space-sm rounded-full shadow-[0_0_16px_rgba(254,174,44,0.35)] transition-all duration-200 active:scale-95" data-path="pre-order-reservation" href="#preorder">개발 소식</a></div></div></header><main class="w-full pt-20 bg-surface" id="main-content"><div class="flex flex-col w-full">
+/* 하드웨어 관계도 (report/Nooki_하드웨어_부품_정리_보고서.docx) */
+.nooki-hw-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin:0;}
+.nooki-hw-stats div{background:#fff;border:1px solid #dce6ee;border-radius:14px;padding:18px 20px;}
+.nooki-hw-stats dt{font-size:12px;color:#526978;margin-bottom:6px;}
+.nooki-hw-stats dd{font-size:26px;font-weight:600;color:#00375e;margin:0;white-space:nowrap;letter-spacing:-.02em;}
+.nooki-hw-stats small{font-size:14px;font-weight:400;}
+.nooki-hw-panel{margin:0;background:#fff;border:1px solid #dce6ee;border-radius:24px;padding:32px;}
+.nooki-hw-panel-heading{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px 20px;margin-bottom:28px;}
+.nooki-hw-panel-heading h3{font-size:20px;line-height:1.45;font-weight:600;color:#123d57;letter-spacing:-.03em;}
+.nooki-hw-legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:12px;color:#526978;}
+.nooki-hw-legend span{display:inline-flex;align-items:center;gap:7px;}
+.nooki-hw-legend i{display:inline-block;width:22px;border-top:2px solid var(--hw-c);}
+.nooki-hw-legend i.is-dashed{border-top-style:dashed;}
+.nooki-hw-diagram{--hw-power:#d9773a;--hw-power-text:#9a4a14;--hw-data:#2f6fb3;display:grid;grid-template-columns:200px 56px minmax(220px,1fr) 40px minmax(300px,1.3fr);grid-template-areas:"bat . dash . ." "pa a1 pi b1 pp" "r3 . usb . ." "pb a2 esp b2 ep" "mot w5 w5 w5 up";align-items:center;}
+.nooki-hw-diagram ul{list-style:none;margin:0;padding:0;}
+.nooki-hw-cell{position:relative;align-self:stretch;display:flex;flex-direction:column;justify-content:center;}
+.nooki-hw-cell.is-rail{border-left:2px solid var(--hw-power);}
+.nooki-hw-cell.is-rail-end::before,.nooki-hw-cell.is-rail-start::before{content:"";position:absolute;left:0;border-left:2px solid var(--hw-power);}
+.nooki-hw-cell.is-rail-start::before{top:40px;bottom:0;}
+.nooki-hw-cell.is-rail-end::before{top:0;height:50%;}
+.nooki-hw-power{position:relative;margin-left:18px;border:1.5px solid var(--hw-power);border-radius:12px;background:#fffaf5;padding:11px 12px;text-align:center;}
+.nooki-hw-cell.is-rail .nooki-hw-power,.nooki-hw-cell.is-rail-end .nooki-hw-power{margin-left:16px;}
+.nooki-hw-power::before{content:"";position:absolute;left:-19px;top:50%;width:17px;border-top:2px solid var(--hw-power);}
+.nooki-hw-cell.is-rail .nooki-hw-power::after,.nooki-hw-cell.is-rail-end .nooki-hw-power::after{content:"";position:absolute;left:-7px;top:calc(50% - 4px);border-left:6px solid var(--hw-power);border-top:5px solid transparent;border-bottom:5px solid transparent;}
+.nooki-hw-power+.nooki-hw-power{margin-top:10px;}
+.nooki-hw-power strong{display:block;font-size:15px;line-height:1.4;font-weight:600;color:#123d57;}
+.nooki-hw-power span{display:block;font-size:12px;line-height:1.5;color:var(--hw-power-text);margin-top:2px;}
+.nooki-hw-bat{grid-area:bat;justify-content:flex-start;}
+.nooki-hw-pa{grid-area:pa;}.nooki-hw-r3{grid-area:r3;}.nooki-hw-pb{grid-area:pb;}.nooki-hw-mot{grid-area:mot;}
+.nooki-hw-brain{align-self:stretch;display:flex;flex-direction:column;justify-content:center;border:2px solid var(--hw-data);border-radius:14px;background:#eef5fc;padding:16px 18px;}
+.nooki-hw-brain h4{font-size:17px;line-height:1.4;font-weight:600;color:#123d57;}
+.nooki-hw-brain p{font-size:12.5px;line-height:1.6;color:#526978;margin-top:4px;}
+.nooki-hw-brain ul{display:grid;gap:8px;margin-top:12px;}
+.nooki-hw-brain li{border:1px solid #c9d6e2;border-radius:8px;background:#fff;padding:8px 10px;font-size:13px;line-height:1.4;text-align:center;color:#123d57;}
+.nooki-hw-pi{grid-area:pi;}.nooki-hw-esp{grid-area:esp;}
+.nooki-hw-wire{position:relative;align-self:center;height:2px;background:var(--hw-c);color:var(--hw-c);}
+.nooki-hw-wire.is-power{--hw-c:var(--hw-power);}.nooki-hw-wire.is-data{--hw-c:var(--hw-data);}
+.nooki-hw-wire.is-power::after{content:"";position:absolute;right:-1px;top:-4px;border-left:7px solid currentColor;border-top:5px solid transparent;border-bottom:5px solid transparent;}
+.nooki-hw-wire span{position:absolute;left:0;right:6px;bottom:6px;text-align:center;font-size:11px;color:var(--hw-power-text);}
+.nooki-hw-a1{grid-area:a1;}.nooki-hw-a2{grid-area:a2;}.nooki-hw-b1{grid-area:b1;}.nooki-hw-b2{grid-area:b2;}
+.nooki-hw-parts{position:relative;display:grid;gap:8px;padding-left:20px!important;}
+.nooki-hw-parts::after{content:"";position:absolute;left:0;top:22px;bottom:22px;border-left:2px solid var(--hw-data);}
+.nooki-hw-parts li{position:relative;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:2px 12px;min-height:44px;border:1px solid #dce6ee;border-radius:10px;background:#fff;padding:9px 14px;font-size:14px;line-height:1.4;color:#123d57;}
+.nooki-hw-parts li::before{content:"";position:absolute;left:-21px;top:50%;width:20px;border-top:2px solid var(--hw-data);}
+.nooki-hw-parts small{font-size:12px;color:var(--hw-data);font-weight:500;white-space:nowrap;}
+.nooki-hw-parts em{font-style:normal;color:var(--hw-power-text);}
+.nooki-hw-parts li.is-motor{border-color:var(--hw-power);background:#fffaf5;}
+.nooki-hw-pp{grid-area:pp;padding-top:8px!important;padding-bottom:8px!important;}.nooki-hw-ep{grid-area:ep;padding-top:8px!important;}
+.nooki-hw-dash{grid-area:dash;align-self:start;display:flex;flex-direction:column;align-items:center;}
+.nooki-hw-dash>div:first-child{width:100%;border:1.5px dashed #a9b7c2;border-radius:12px;padding:9px 12px;text-align:center;}
+.nooki-hw-dash strong{display:block;font-size:14px;font-weight:600;color:#123d57;}
+.nooki-hw-dash>div:first-child span{font-size:12px;color:#526978;}
+.nooki-hw-link{position:relative;width:100%;font-size:11.5px;line-height:1.5;color:#526978;}
+.nooki-hw-link::before{content:"";position:absolute;left:50%;top:4px;bottom:4px;border-left:2px solid var(--hw-data);}
+.nooki-hw-link span{position:absolute;left:calc(50% + 12px);top:50%;transform:translateY(-50%);white-space:nowrap;}
+.nooki-hw-wifi{height:56px;}.nooki-hw-wifi::before{border-left-style:dashed;}
+.nooki-hw-usb{grid-area:usb;height:88px;}
+.nooki-hw-usb::after,.nooki-hw-usb i::before{content:"";position:absolute;left:calc(50% - 4px);border-left:5px solid transparent;border-right:5px solid transparent;}
+.nooki-hw-usb::after{bottom:2px;border-top:7px solid var(--hw-data);}
+.nooki-hw-usb i::before{top:2px;border-bottom:7px solid var(--hw-data);}
+.nooki-hw-w5{grid-area:w5;align-self:center;height:2px;background:var(--hw-power);}
+.nooki-hw-w5 span{display:block;transform:translateY(-22px);text-align:center;font-size:11.5px;color:var(--hw-power-text);}
+.nooki-hw-up{grid-area:up;position:relative;align-self:stretch;}
+.nooki-hw-up::before{content:"";position:absolute;left:0;top:calc(50% - 1px);width:calc(50% + 10px);border-top:2px solid var(--hw-power);}
+.nooki-hw-up::after{content:"";position:absolute;left:calc(50% + 9px);top:7px;height:calc(50% - 6px);border-left:2px solid var(--hw-power);}
+.nooki-hw-up i{position:absolute;left:calc(50% + 5px);top:0;border-bottom:7px solid var(--hw-power);border-left:5px solid transparent;border-right:5px solid transparent;}
+.nooki-hw-mot .nooki-hw-power{margin-top:18px;margin-bottom:4px;}
+.nooki-hw-label{display:none;}
+#hardware-report tbody td:first-child{white-space:nowrap;}
+.nooki-hw-figcaption{margin-top:22px;padding-top:16px;border-top:1px solid #dce6ee;font-size:12px;line-height:1.8;color:#526978;word-break:keep-all;}
+.nooki-hw-points{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;list-style:none;margin:0;padding:0;}
+.nooki-hw-points li{border-top:1px solid #cddce6;padding-top:18px;}
+.nooki-hw-points h3{font-size:17px;line-height:1.5;font-weight:600;color:#123d57;margin-bottom:8px;}
+.nooki-hw-points p{font-size:14px;line-height:1.8;color:#526978;word-break:keep-all;}
+@media(max-width:1023px){
+.nooki-hw-stats{grid-template-columns:repeat(2,minmax(0,1fr));}
+.nooki-hw-panel{padding:22px;}
+.nooki-hw-diagram{grid-template-columns:minmax(0,1fr);grid-template-areas:"dash" "pi" "pp" "usb" "esp" "ep" "label" "bat" "pa" "pb" "mot";}
+.nooki-hw-a1,.nooki-hw-a2,.nooki-hw-b1,.nooki-hw-b2,.nooki-hw-r3,.nooki-hw-w5,.nooki-hw-up{display:none;}
+.nooki-hw-cell.is-rail{border-left:0;}
+.nooki-hw-cell.is-rail-start::before,.nooki-hw-cell.is-rail-end::before,.nooki-hw-power::before,.nooki-hw-power::after{display:none;}
+.nooki-hw-brain{align-self:auto;}
+.nooki-hw-power,.nooki-hw-cell.is-rail .nooki-hw-power,.nooki-hw-cell.is-rail-end .nooki-hw-power{margin:8px 0 0;}
+.nooki-hw-mot .nooki-hw-power{margin:8px 0 0;}
+.nooki-hw-pp,.nooki-hw-ep{margin:12px 0 0 14px!important;}
+.nooki-hw-label{display:block;grid-area:label;margin-top:26px;font-size:12px;font-weight:600;color:var(--hw-power-text);}
+.nooki-hw-points{grid-template-columns:1fr;gap:20px;}
+}
+@media(max-width:420px){.nooki-hw-stats div{padding:14px 16px;}.nooki-hw-stats dd{font-size:22px;}.nooki-hw-panel{padding:16px;}.nooki-hw-parts li{font-size:13px;padding:8px 12px;}}
+</style></head><body id="top" class="bg-surface font-body-md text-body-md text-on-surface antialiased"><a class="nooki-skip" href="#main-content">본문으로 바로가기</a><header class="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(31,78,121,0.04)]"><div class="h-20 max-w-[1280px] mx-auto px-gutter flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-md flex-shrink-0"><a class="flex items-center gap-space-sm" data-path="overview" href="#top"><span aria-hidden="true" class="material-symbols-outlined text-primary text-[32px]">travel_explore</span><span class="font-headline-sm text-headline-sm text-primary font-semibold tracking-tight">Nooki</span></a></div><nav class="nooki-nav" aria-label="주요 메뉴" data-active-classes="bg-surface-container text-primary font-semibold rounded-full"><a class="px-space-md py-space-sm rounded-full font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-colors duration-150" data-path="how-it-works" href="#how-it-works">작동 원리</a><a class="px-space-md py-space-sm rounded-full font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-colors duration-150" data-path="vision-quality" href="#vision-quality">인식 과정</a><a class="px-space-md py-space-sm rounded-full font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-colors duration-150" data-path="key-features" href="#key-features">핵심 기능</a><a class="px-space-md py-space-sm rounded-full font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-colors duration-150" data-path="hardware" href="#hardware">하드웨어</a><a class="px-space-md py-space-sm rounded-full font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-colors duration-150" data-path="app-preview" href="#app-preview">앱 미리보기</a><a class="px-space-md py-space-sm rounded-full font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-colors duration-150" data-path="faq" href="#faq">자주 묻는 질문</a><button type="button" class="nooki-report-nav" data-report-open aria-haspopup="dialog" aria-controls="technical-report" aria-expanded="false">기술 보고서</button></nav><div class="flex items-center gap-space-md flex-shrink-0"><a class="hidden sm:inline-flex items-center justify-center bg-secondary-container text-on-secondary-container hover:bg-secondary-fixed hover:text-on-secondary-fixed font-label-lg text-label-lg px-space-lg py-space-sm rounded-full shadow-[0_0_16px_rgba(254,174,44,0.35)] transition-all duration-200 active:scale-95" data-path="pre-order-reservation" href="#preorder">개발 소식</a></div></div></header><main class="w-full pt-20 bg-surface" id="main-content"><div class="flex flex-col w-full">
 <!-- SECTION 1: HERO -->
 <section class="relative w-full overflow-hidden bg-surface py-space-xl lg:py-margin">
 <div class="max-w-[1280px] mx-auto px-gutter grid grid-cols-1 lg:grid-cols-12 gap-space-xl items-center">
@@ -842,8 +931,70 @@ main section:first-child .font-body-lg{font-size:15px;}
 </div>
 </div>
 </section>
+<!-- SECTION 7-1: HARDWARE (report/Nooki_하드웨어_부품_정리_보고서.docx, 2026-10-14). 전압·전류는 추정치, 일부 부품은 보고서 제안안 -->
+<section class="w-full bg-surface-container-low py-space-xl lg:py-margin" id="hardware" aria-labelledby="hardware-title">
+<div class="max-w-[1280px] mx-auto px-gutter flex flex-col gap-space-xl">
+<div class="flex flex-col items-center text-center gap-space-sm max-w-2xl mx-auto">
+<span class="font-label-technical text-label-technical text-secondary tracking-wider font-semibold">하드웨어 구성</span>
+<h2 id="hardware-title" class="font-headline-lg text-headline-lg text-primary font-semibold">AI는 Raspberry Pi 5가,<br>주행과 안전은 ESP32-S3가 맡습니다</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">높이 5.4cm 본체에 부품 19종을 담습니다. 느려도 되는 AI 판단과 늦으면 위험한 주행 제어를 두 보드로 나누고, 전원은 세 갈래로 분리합니다.</p>
+</div>
+<dl class="nooki-hw-stats" aria-label="하드웨어 설계 목표">
+<div><dt>부품 수</dt><dd>19 <small>종</small></dd></div>
+<div><dt>평균 전력</dt><dd>≈18 <small>W</small></dd></div>
+<div><dt>피크 전력</dt><dd>≈43 <small>W</small></dd></div>
+<div><dt>1회 충전 사용</dt><dd>≈100 <small>분</small></dd></div>
+</dl>
+<figure class="nooki-hw-panel" aria-labelledby="hardware-diagram-title">
+<div class="nooki-hw-panel-heading">
+<h3 id="hardware-diagram-title">하드웨어 관계도 · 모든 부품은 두 보드 중 하나에 연결됩니다</h3>
+<div class="nooki-hw-legend" aria-hidden="true"><span><i style="--hw-c:#d9773a"></i>전원</span><span><i style="--hw-c:#2f6fb3"></i>데이터</span><span><i class="is-dashed" style="--hw-c:#2f6fb3"></i>무선</span></div>
+</div>
+<div class="nooki-hw-diagram">
+<div class="nooki-hw-cell nooki-hw-bat is-rail-start"><div class="nooki-hw-power"><strong>배터리 2S2P</strong><span>7.4V · 6000mAh → 퓨즈 8A · 전원 스위치</span></div></div>
+<div class="nooki-hw-dash"><div><strong>웹 대시보드</strong><span>사용자 폰·PC (로봇 밖)</span></div><div class="nooki-hw-link nooki-hw-wifi"><span>Wi-Fi · rosbridge</span></div></div>
+<div class="nooki-hw-cell nooki-hw-pa is-rail"><div class="nooki-hw-power"><strong>Buck 5V-A</strong><span>5A · Pi 5·AI HAT+·카메라·LiDAR</span></div></div>
+<div class="nooki-hw-wire is-power nooki-hw-a1" aria-hidden="true"><span>5V</span></div>
+<div class="nooki-hw-brain nooki-hw-pi"><h4>Raspberry Pi 5</h4><p>YOLO 인식 · SLAM 지도 · Nav2 경로 · 음성</p><ul aria-label="Pi 5에 장착"><li>AI HAT+ 13 TOPS · PCIe</li><li>액티브 쿨러 · FAN 커넥터</li></ul></div>
+<div class="nooki-hw-wire is-data nooki-hw-b1" aria-hidden="true"></div>
+<ul class="nooki-hw-parts nooki-hw-pp" aria-label="Raspberry Pi 5에 연결되는 부품">
+<li>Camera Module 3 Wide<small>CSI-2</small></li>
+<li>2D LiDAR (RPLIDAR C1)<small>UART → USB</small></li>
+<li>조명 LED ×2 + MOSFET<small>PWM · <em>5V-B</em></small></li>
+<li>마이크 INMP441<small>I2S</small></li>
+<li>스피커 앰프 MAX98357A<small>I2S · <em>5V-B</em></small></li>
+<li>시작 버튼<small>GPIO 5</small></li>
+</ul>
+<div class="nooki-hw-cell nooki-hw-r3 is-rail" aria-hidden="true"></div>
+<div class="nooki-hw-link nooki-hw-usb"><i aria-hidden="true"></i><span>USB 시리얼 · micro-ROS</span></div>
+<div class="nooki-hw-cell nooki-hw-pb is-rail"><div class="nooki-hw-power"><strong>Buck 5V-B</strong><span>3A · ESP32·센서·LED·앰프</span></div></div>
+<div class="nooki-hw-wire is-power nooki-hw-a2" aria-hidden="true"><span>5V</span></div>
+<div class="nooki-hw-brain nooki-hw-esp"><h4>ESP32-S3</h4><p>주행 · 충돌 · 낙하 대응</p><p>Pi 5의 명령이 0.5초 끊기면 스스로 정지합니다.</p></div>
+<div class="nooki-hw-wire is-data nooki-hw-b2" aria-hidden="true"></div>
+<ul class="nooki-hw-parts nooki-hw-ep" aria-label="ESP32-S3에 연결되는 부품">
+<li>휠 엔코더 ×2 (모터 내장)<small>PCNT</small></li>
+<li>IMU MPU6050<small>I2C 0x68</small></li>
+<li>범퍼 스위치 ×2<small>GPIO 풀업</small></li>
+<li>낙하 방지 IR ×4<small>ADC1</small></li>
+<li class="is-motor">TB6612FNG → N20 모터 ×2<small>PWM + IN1/IN2 · <em>7.4V 직결</em></small></li>
+</ul>
+<p class="nooki-hw-label">전원 · 배터리에서 세 갈래로 나눕니다</p>
+<div class="nooki-hw-cell nooki-hw-mot is-rail-end"><div class="nooki-hw-power"><strong>모터 전원 7.4V 직결</strong><span>배터리 → TB6612 VM</span></div></div>
+<div class="nooki-hw-w5" aria-hidden="true"><span>7.4V 직결 → TB6612 VM (모터 전원)</span></div>
+<div class="nooki-hw-up" aria-hidden="true"><i></i></div>
+</div>
+<figcaption class="nooki-hw-figcaption">설계안입니다. 전압·전류는 일반적인 데이터시트 기준 추정치(≈)이며, PRD에 모델이 없는 모터·배터리·LiDAR·IMU·낙하 센서·오디오 부품은 보고서가 제안한 모델입니다. 부품 확정 후 실측으로 교체합니다.</figcaption>
+</figure>
+<ul class="nooki-hw-points">
+<li><h3>모터 전원을 따로 둡니다</h3><p>모터는 TB6612 드라이버를 거쳐 배터리에서 직접 전원을 받습니다. 출발하는 순간에도 Pi 5와 ESP32-S3가 재부팅되지 않습니다.</p></li>
+<li><h3>위험한 순간은 ESP32-S3가 바로 멈춥니다</h3><p>범퍼나 낙하 센서가 반응하면 Pi 5의 판단을 기다리지 않고 즉시 정지합니다.</p></li>
+<li><h3>영상은 로봇 안에서만 오갑니다</h3><p>부품끼리는 모두 선으로 연결합니다. 무선은 웹 대시보드와 대화하는 한 구간뿐입니다.</p></li>
+</ul>
+<button type="button" class="nooki-report-link" data-report-open aria-haspopup="dialog" aria-controls="hardware-report" aria-expanded="false" style="margin-top:0;">하드웨어 부품 보고서 보기 <span aria-hidden="true">↗</span></button>
+</div>
+</section>
 <!-- SECTION 8: SUPPORTED ITEMS -->
-<section class="w-full bg-surface-container-low py-space-xl lg:py-margin">
+<section class="w-full bg-surface py-space-xl lg:py-margin">
 <div class="max-w-[1280px] mx-auto px-gutter flex flex-col gap-space-xl">
 <div class="flex flex-col items-center text-center gap-space-xs max-w-2xl mx-auto">
 <span class="font-label-technical text-label-technical text-secondary uppercase tracking-wider font-semibold">인식 대상으로 준비하는 물건</span>
@@ -1028,7 +1179,7 @@ main section:first-child .font-body-lg{font-size:15px;}
       }
     }
   </script>
-</div></main><footer class="w-full bg-surface-container-low text-on-surface-variant"><div class="max-w-[1280px] mx-auto px-gutter py-space-xl flex flex-col gap-space-xl"><div class="flex flex-col md:flex-row md:items-start justify-between gap-space-xl"><div class="flex flex-col gap-space-sm max-w-sm"><div class="flex items-center gap-space-sm"><span class="font-headline-sm text-headline-sm text-primary font-semibold tracking-tight">Nooki</span></div><p class="font-body-sm text-body-sm text-on-surface-variant">초슬림 자율 수색 기술로 닿기 힘든 가구 아래 잃어버린 소중한 물건을 정밀하게 탐색합니다.</p><div class="flex items-center gap-space-xs mt-space-xs"><span class="material-symbols-outlined text-[16px] text-primary">verified_user</span><span class="font-label-technical text-label-technical text-on-surface">기기 내 영상 처리 설계</span></div></div><div class="grid grid-cols-2 sm:grid-cols-3 gap-space-lg"><div class="flex flex-col gap-space-sm"><span class="font-label-technical text-label-technical text-on-surface uppercase">제품 탐색</span><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors" data-path="how-it-works" href="#how-it-works">작동 원리</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors" data-path="key-features" href="#key-features">핵심 기능</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors" data-path="vision-quality" href="#vision-quality">인식 과정</a></div><div class="flex flex-col gap-space-sm"><span class="font-label-technical text-label-technical text-on-surface uppercase">소프트웨어</span><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors" data-path="app-preview" href="#app-preview">Nooki App</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors" data-path="security-privacy" href="#">프라이버시 &amp; 보안</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors" data-path="faq" href="#faq">자주 묻는 질문</a></div><div class="flex flex-col gap-space-sm col-span-2 sm:col-span-1"><span class="font-label-technical text-label-technical text-on-surface uppercase">사전 예약</span><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors" data-path="pre-order-reservation" href="#preorder">개발 소식</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors" data-path="contact" href="#">문의하기</a></div></div></div><div class="flex flex-col sm:flex-row items-center justify-between gap-space-md pt-space-lg text-on-surface-variant"><p class="font-body-sm text-body-sm">© 2025 Nooki Robotics Inc. All rights reserved.</p><div class="flex items-center gap-space-md"><a class="font-body-sm text-body-sm hover:text-on-surface transition-colors" data-path="security-privacy" href="#">개인정보처리방침</a><a class="font-body-sm text-body-sm hover:text-on-surface transition-colors" data-path="terms-of-service" href="#">이용약관</a></div></div></div></footer>
+</div></main><footer class="w-full bg-surface-container-low text-on-surface-variant"><div class="max-w-[1280px] mx-auto px-gutter py-space-xl flex flex-col gap-space-xl"><div class="flex flex-col md:flex-row md:items-start justify-between gap-space-xl"><div class="flex flex-col gap-space-sm max-w-sm"><div class="flex items-center gap-space-sm"><span class="font-headline-sm text-headline-sm text-primary font-semibold tracking-tight">Nooki</span></div><p class="font-body-sm text-body-sm text-on-surface-variant">초슬림 자율 수색 기술로 닿기 힘든 가구 아래 잃어버린 소중한 물건을 정밀하게 탐색합니다.</p><div class="flex items-center gap-space-xs mt-space-xs"><span class="material-symbols-outlined text-[16px] text-primary">verified_user</span><span class="font-label-technical text-label-technical text-on-surface">기기 내 영상 처리 설계</span></div></div><div class="grid grid-cols-2 sm:grid-cols-3 gap-space-lg"><div class="flex flex-col gap-space-sm"><span class="font-label-technical text-label-technical text-on-surface uppercase">제품 탐색</span><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors" data-path="how-it-works" href="#how-it-works">작동 원리</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors" data-path="key-features" href="#key-features">핵심 기능</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors" data-path="vision-quality" href="#vision-quality">인식 과정</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors" data-path="hardware" href="#hardware">하드웨어</a></div><div class="flex flex-col gap-space-sm"><span class="font-label-technical text-label-technical text-on-surface uppercase">소프트웨어</span><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors" data-path="app-preview" href="#app-preview">Nooki App</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors" data-path="security-privacy" href="#">프라이버시 &amp; 보안</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors" data-path="faq" href="#faq">자주 묻는 질문</a></div><div class="flex flex-col gap-space-sm col-span-2 sm:col-span-1"><span class="font-label-technical text-label-technical text-on-surface uppercase">사전 예약</span><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors" data-path="pre-order-reservation" href="#preorder">개발 소식</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors" data-path="contact" href="#">문의하기</a></div></div></div><div class="flex flex-col sm:flex-row items-center justify-between gap-space-md pt-space-lg text-on-surface-variant"><p class="font-body-sm text-body-sm">© 2025 Nooki Robotics Inc. All rights reserved.</p><div class="flex items-center gap-space-md"><a class="font-body-sm text-body-sm hover:text-on-surface transition-colors" data-path="security-privacy" href="#">개인정보처리방침</a><a class="font-body-sm text-body-sm hover:text-on-surface transition-colors" data-path="terms-of-service" href="#">이용약관</a></div></div></div></footer>
 
 <script>
 (() => {
@@ -1138,28 +1289,105 @@ main section:first-child .font-body-lg{font-size:15px;}
 </div>
 <div class="nooki-report-footer"><span>개발·검증 계획 요약</span><button type="button" data-report-close>보고서 닫기</button></div>
 </dialog>
+<!-- On-page summary of report/Nooki_하드웨어_부품_정리_보고서.docx; open the original document for full details. -->
+<dialog id="hardware-report" class="nooki-report-dialog" aria-labelledby="hw-report-title" aria-describedby="hw-report-description">
+<div class="nooki-report-header"><div><span class="nooki-model-label">Nooki · 하드웨어 보고서</span><h2 id="hw-report-title">하드웨어 부품 정리</h2></div><button type="button" class="nooki-report-close" data-report-close aria-label="하드웨어 보고서 닫기" autofocus><span aria-hidden="true">×</span></button></div>
+<div class="nooki-report-content">
+<p id="hw-report-description" class="nooki-report-intro">PRD의 하드웨어 구성을 전원·컴퓨팅·센싱·통신·구동 5계층으로 정리한 보고서의 핵심 내용입니다. 부품 19종을 평균 ≈18W·피크 ≈43W의 2S 배터리 시스템으로 설계하면 1회 충전에 약 100분 동작합니다.</p>
+<div class="nooki-report-meta"><span>보고서 기준 · 2026.10.14 · 근거 PRD 2026.10.06</span><span class="nooki-report-downloads"><a class="nooki-report-download" href="report/Nooki_%ED%95%98%EB%93%9C%EC%9B%A8%EC%96%B4_%EB%B6%80%ED%92%88_%EC%A0%95%EB%A6%AC_%EB%B3%B4%EA%B3%A0%EC%84%9C.docx" download>하드웨어 부품 정리 보고서 <span aria-hidden="true">↓</span></a></span></div>
+<section aria-labelledby="hw-report-system-title"><span class="nooki-model-step">01 · 시스템 구성</span><h3 id="hw-report-system-title">두뇌는 둘, 전원은 세 갈래</h3><p>느려도 되는 AI 판단은 Raspberry Pi 5가, 늦으면 위험한 주행·충돌·낙하 대응은 ESP32-S3가 맡습니다. Pi 5는 ESP32-S3에 "이 속도로 가라"만 보냅니다.</p>
+<ol class="nooki-report-flow"><li><strong>원칙 1</strong><span>전압은 맞추고, 전류는 확보합니다. 전원 라인을 3개로 나누고 평균이 아니라 피크 전류로 설계했습니다.</span></li><li><strong>원칙 2</strong><span>AI는 SBC에서, 실시간은 MCU에서. PRD에는 MCU가 없어 모터·엔코더·범퍼·낙하 센서를 맡을 ESP32-S3 추가를 제안합니다.</span></li><li><strong>원칙 3</strong><span>MCU는 지시만, 힘은 드라이버가 씁니다. 모터는 TB6612FNG, LED는 MOSFET 드라이버를 거칩니다.</span></li></ol></section>
+<section aria-labelledby="hw-report-parts-title"><span class="nooki-model-step">02 · 부품 총괄표</span><h3 id="hw-report-parts-title">힘을 쓰는 부품은 Pi 5와 모터뿐입니다</h3><p>나머지 센서는 모두 합쳐 0.1A 미만입니다. 전류는 1개 기준 추정치(≈)입니다.</p>
+<div class="nooki-report-table-wrap"><table><caption>부품 19종 · <span class="nooki-report-badge">제안</span> 은 PRD에 모델이나 부품이 없어 보고서가 고른 것</caption><thead><tr><th scope="col">계층</th><th scope="col">부품</th><th scope="col">수량</th><th scope="col">동작 전압</th><th scope="col">피크 전류</th><th scope="col">인터페이스</th><th scope="col">연결</th></tr></thead><tbody>
+<tr><td>전원</td><th scope="row">18650 배터리 2S2P + 2S BMS 10A <span class="nooki-report-badge">제안</span></th><td>1</td><td>7.4V (6.0–8.4V)</td><td>≈5.8A (전체)</td><td>—</td><td>퓨즈 8A → 스위치</td></tr>
+<tr><td>전원</td><th scope="row">Buck 컨버터 5V-A <span class="nooki-report-badge">제안</span></th><td>1</td><td>7.4V → 5.1V</td><td>한계 5A</td><td>—</td><td>Pi 5 계열</td></tr>
+<tr><td>전원</td><th scope="row">Buck 컨버터 5V-B <span class="nooki-report-badge">제안</span></th><td>1</td><td>7.4V → 5.0V</td><td>한계 3A</td><td>—</td><td>ESP32·LED·오디오</td></tr>
+<tr><td>컴퓨팅</td><th scope="row">Raspberry Pi 5 (8GB)</th><td>1</td><td>5V</td><td>≈3.0A</td><td>호스트 (ROS 2 Jazzy)</td><td>5V-A</td></tr>
+<tr><td>컴퓨팅</td><th scope="row">AI HAT+ 13 TOPS (Hailo-8L)</th><td>1</td><td>5V (Pi 경유)</td><td>≈0.5A</td><td>PCIe Gen3 x1</td><td>Pi 5 PCIe</td></tr>
+<tr><td>컴퓨팅</td><th scope="row">액티브 쿨러</th><td>1</td><td>5V (Pi 경유)</td><td>≈0.1A</td><td>PWM 팬 커넥터</td><td>Pi 5 FAN</td></tr>
+<tr><td>컴퓨팅</td><th scope="row">ESP32-S3 DevKitC <span class="nooki-report-badge">제안</span></th><td>1</td><td>5V · 3.3V 로직</td><td>≈0.35A</td><td>USB-CDC (micro-ROS)</td><td>5V-B, Pi 5 USB</td></tr>
+<tr><td>센싱</td><th scope="row">Camera Module 3 Wide</th><td>1</td><td>3.3V (Pi 공급)</td><td>≈0.3A</td><td>MIPI CSI-2</td><td>Pi 5 CAM0</td></tr>
+<tr><td>센싱</td><th scope="row">2D LiDAR (RPLIDAR C1) <span class="nooki-report-badge">모델 제안</span></th><td>1</td><td>5V</td><td>≈0.5A</td><td>UART 460800bps → USB</td><td>Pi 5 USB</td></tr>
+<tr><td>센싱</td><th scope="row">휠 엔코더 (모터 내장)</th><td>2</td><td>3.3V</td><td>—</td><td>A/B 직교 펄스 (PCNT)</td><td>ESP32-S3</td></tr>
+<tr><td>센싱</td><th scope="row">IMU (MPU6050) <span class="nooki-report-badge">모델 제안</span></th><td>1</td><td>3.3V</td><td>—</td><td>I2C 0x68</td><td>ESP32-S3</td></tr>
+<tr><td>센싱</td><th scope="row">범퍼 마이크로스위치</th><td>2</td><td>3.3V (풀업)</td><td>—</td><td>GPIO (디바운스)</td><td>ESP32-S3</td></tr>
+<tr><td>센싱</td><th scope="row">낙하 방지 IR (TCRT5000) <span class="nooki-report-badge">모델 제안</span></th><td>4</td><td>3.3V</td><td>—</td><td>ADC1</td><td>ESP32-S3</td></tr>
+<tr><td>센싱</td><th scope="row">마이크 (INMP441) <span class="nooki-report-badge">제안</span></th><td>1</td><td>3.3V</td><td>—</td><td>I2S</td><td>Pi 5</td></tr>
+<tr><td>구동</td><th scope="row">N20 기어모터 6V <span class="nooki-report-badge">제안</span></th><td>2</td><td>6V (PWM 상한 80%)</td><td>≈0.6A</td><td>드라이버 출력</td><td>TB6612FNG</td></tr>
+<tr><td>구동</td><th scope="row">모터 드라이버 TB6612FNG <span class="nooki-report-badge">제안</span></th><td>1</td><td>VM 7.4V · VCC 3.3V</td><td>채널당 3.2A</td><td>PWM + IN1·IN2</td><td>ESP32-S3</td></tr>
+<tr><td>출력</td><th scope="row">조명 LED 1W + MOSFET 드라이버</th><td>2</td><td>5V</td><td>≈0.3A</td><td>PWM ≥20kHz</td><td>Pi 5 GPIO 12 / 13</td></tr>
+<tr><td>출력</td><th scope="row">스피커 앰프 MAX98357A + 3W 스피커 <span class="nooki-report-badge">제안</span></th><td>1</td><td>5V</td><td>≈0.65A</td><td>I2S</td><td>Pi 5</td></tr>
+<tr><td>입력</td><th scope="row">시작 버튼</th><td>1</td><td>3.3V (풀업)</td><td>—</td><td>GPIO</td><td>Pi 5</td></tr>
+</tbody></table></div>
+<p class="nooki-report-footnote">N20 모터는 차체 높이 5.4cm 안에 들어가는 직경 12mm급 소형 모터라서 골랐습니다.</p></section>
+<section aria-labelledby="hw-report-power-title"><span class="nooki-model-step">03 · 전원 설계</span><h3 id="hw-report-power-title">가장 빠듯한 라인도 한계의 88%에서 멈춥니다</h3><p>모터 라인을 따로 떼어내야 모터가 기동하는 순간 Pi 5와 ESP32-S3가 재부팅되지 않습니다(브라운아웃 방지).</p>
+<div class="nooki-report-table-wrap"><table><caption>전원 라인별 부하</caption><thead><tr><th scope="col">전원 라인</th><th scope="col">공급 대상</th><th scope="col">평균</th><th scope="col">피크</th><th scope="col">한계</th><th scope="col">피크 사용률</th></tr></thead><tbody>
+<tr><th scope="row">5V-A (Buck 5A)</th><td>Pi 5, AI HAT+, 쿨러, 카메라, LiDAR</td><td>≈2.35A</td><td>≈4.4A</td><td>5.0A</td><td>88%</td></tr>
+<tr><th scope="row">5V-B (Buck 3A)</th><td>ESP32-S3, 센서류, LED ×2, 스피커 앰프, 마이크</td><td>≈0.5A</td><td>≈1.7A</td><td>3.0A</td><td>57%</td></tr>
+<tr><th scope="row">배터리 직결 (7.4V)</th><td>TB6612 VM → N20 모터 ×2</td><td>≈0.3A</td><td>≈1.2A</td><td>6.4A</td><td>19%</td></tr>
+</tbody></table></div>
+<ol class="nooki-report-flow"><li><strong>사용 시간</strong><span>7.4V × 6Ah = 44Wh, 여유율 30%를 빼면 31Wh ÷ 18W ≈ 100분. 방 하나 탐색 3분 목표 기준 약 30회 탐색할 수 있습니다.</span></li><li><strong>모터 전압</strong><span>배터리는 만충 시 8.4V입니다. 6V 모터에 직결하므로 PWM 듀티 상한을 80%로 묶습니다.</span></li><li><strong>Pi 5 설정</strong><span>Buck는 USB-C PD 협상을 하지 않아 USB 전류가 0.6A로 제한됩니다. config.txt에 usb_max_current_enable=1을 넣어야 LiDAR와 ESP32가 안정적으로 동작합니다.</span></li><li><strong>공통 GND</strong><span>배터리(−), Buck 2개, TB6612, Pi 5, ESP32의 GND를 한 점에서 묶고, TB6612 VM 단에 470µF 커패시터를 답니다.</span></li><li><strong>보호</strong><span>배터리 뒤에 8A 퓨즈와 전원 스위치를 둡니다.</span></li></ol></section>
+<section aria-labelledby="hw-report-comm-title"><span class="nooki-model-step">04 · 통신과 핀 배정</span><h3 id="hw-report-comm-title">로봇 안은 모두 선으로, 무선은 한 구간뿐</h3><p>집 안 영상을 밖으로 내보내지 않는다는 PRD 원칙에 맞춰, 무선은 웹 대시보드 구간에서만 씁니다.</p>
+<div class="nooki-report-table-wrap"><table><caption>통신 구간</caption><thead><tr><th scope="col">구간</th><th scope="col">방식</th><th scope="col">속도</th><th scope="col">고른 이유</th></tr></thead><tbody>
+<tr><th scope="row">카메라 → Pi 5</th><td>MIPI CSI-2</td><td>1280×720 @ 10fps 이상</td><td>영상은 데이터가 커서 전용 인터페이스가 필요합니다</td></tr>
+<tr><th scope="row">Pi 5 ↔ AI HAT+</th><td>PCIe Gen3 x1</td><td>≈8 Gbps</td><td>YOLO를 NPU에서 10fps 이상 돌리려면 대역폭이 커야 합니다</td></tr>
+<tr><th scope="row">LiDAR → Pi 5</th><td>UART → USB 어댑터</td><td>460800 bps</td><td>1:1 시리얼 스트림. 보레이트가 틀리면 값이 깨집니다</td></tr>
+<tr><th scope="row">ESP32-S3 ↔ Pi 5</th><td>USB-CDC (micro-ROS)</td><td>921600 bps</td><td>무선보다 끊김이 없고 지연이 일정합니다</td></tr>
+<tr><th scope="row">IMU → ESP32-S3</th><td>I2C</td><td>400 kHz</td><td>두 가닥으로 연결, 같은 버스에 센서를 더 붙일 수 있습니다</td></tr>
+<tr><th scope="row">마이크·스피커 ↔ Pi 5</th><td>I2S</td><td>16 / 44.1 kHz</td><td>Pi 5에는 아날로그 오디오 단자가 없습니다</td></tr>
+<tr><th scope="row">Pi 5 → 웹 대시보드</th><td>Wi-Fi (rosbridge)</td><td>—</td><td>사용자 폰·PC와 대화하는 유일한 무선 구간</td></tr>
+</tbody></table></div>
+<div class="nooki-report-table-wrap"><table><caption>ESP32-S3 핀 배정</caption><thead><tr><th scope="col">연결</th><th scope="col">GPIO</th><th scope="col">비고</th></tr></thead><tbody>
+<tr><th scope="row">낙하 IR 센서 ×4</th><td>1 / 2 / 3 / 4</td><td>ADC1 — Wi-Fi를 켜도 읽힙니다</td></tr>
+<tr><th scope="row">범퍼 좌 / 우</th><td>5 / 6</td><td>내부 풀업 + 20ms 디바운스, 눌림 = LOW</td></tr>
+<tr><th scope="row">IMU SDA / SCL</th><td>8 / 9</td><td>I2C, 주소 0x68</td></tr>
+<tr><th scope="row">엔코더 좌 A / B · 우 A / B</th><td>11 / 12 · 13 / 14</td><td>PCNT 하드웨어 카운터</td></tr>
+<tr><th scope="row">TB6612 PWMA / AIN1 / AIN2</th><td>15 / 16 / 17</td><td>왼쪽 모터</td></tr>
+<tr><th scope="row">TB6612 PWMB / BIN1 / BIN2</th><td>38 / 39 / 40</td><td>오른쪽 모터</td></tr>
+<tr><th scope="row">TB6612 STBY</th><td>21</td><td>LOW = 모터 전체 정지 (비상 정지)</td></tr>
+<tr><th scope="row">Pi 5와 통신</th><td>19 / 20</td><td>내장 USB D− / D+</td></tr>
+<tr><th scope="row">사용 금지</th><td>0 / 45 / 46, 35–37</td><td>스트래핑, PSRAM 모델의 예약 핀</td></tr>
+</tbody></table></div>
+<p class="nooki-report-footnote">Pi 5 핀 배정: LED PWM GPIO 12 / 13, I2S GPIO 18 / 19 / 20 / 21, 시작 버튼 GPIO 5 (풀업). Pi 5와 ESP32-S3는 둘 다 3.3V 로직이라 엔코더·IR 센서를 3.3V로 쓰면 레벨 시프터가 필요 없습니다.</p></section>
+<section aria-labelledby="hw-report-risk-title"><span class="nooki-model-step">05 · 설계 리스크</span><h3 id="hw-report-risk-title">가장 큰 리스크는 5.4cm 높이입니다</h3><p>Pi 5 + AI HAT+ + 쿨러를 쌓은 높이가 차체에 들어가는지, 부품 모델을 고르기 전에 실측으로 확인해야 합니다.</p>
+<div class="nooki-report-table-wrap"><table><caption>리스크와 대책</caption><thead><tr><th scope="col">리스크</th><th scope="col">증상</th><th scope="col">대책</th></tr></thead><tbody>
+<tr><th scope="row">차체 높이 초과</th><td>Pi 5 + AI HAT+ + 쿨러 적층이 차체에 들어가지 않습니다</td><td>적층 높이를 실측하고, 모자라면 Pi를 눕히거나 저상형 방열판으로 바꿉니다</td></tr>
+<tr><th scope="row">모터 기동 시 재부팅</th><td>출발할 때 Pi나 ESP32가 리셋됩니다</td><td>모터 라인 분리, 공통 GND, 470µF 커패시터, 가속 램프업</td></tr>
+<tr><th scope="row">Pi 5 USB 전류 제한</th><td>LiDAR가 간헐적으로 끊깁니다</td><td>usb_max_current_enable=1 설정, 5V-A를 5.1V로 맞춤</td></tr>
+<tr><th scope="row">발열 스로틀링</th><td>YOLO가 10fps 아래로 떨어집니다</td><td>쿨러 필수, throttled 값 확인, 탐색 중 음성 인식 중지</td></tr>
+<tr><th scope="row">낙하 센서 오인식</th><td>검은 바닥·유광 타일을 낙하로 판단합니다</td><td>바닥 재질별 ADC 기준값을 보정합니다</td></tr>
+<tr><th scope="row">LED 하이라이트</th><td>유광 타일에 비친 LED가 흰 이어버드처럼 보입니다</td><td>LED 밝기 상한, 확산판, 각도 조정</td></tr>
+<tr><th scope="row">모터 과전압</th><td>만충 8.4V가 6V 모터에 그대로 갑니다</td><td>PWM 상한 80% 고정, 또는 6V Buck 추가</td></tr>
+<tr><th scope="row">폭주</th><td>Pi와 통신이 끊겨도 바퀴가 계속 돕니다</td><td>ESP32가 명령을 0.5초 못 받으면 STBY를 LOW로 내립니다</td></tr>
+</tbody></table></div>
+<h5>부품을 주문하기 전에 정할 것</h5>
+<ol class="nooki-report-flow"><li><strong>모터</strong><span>N20 6V의 기어비·엔코더 분해능, 목표 주행 속도 0.2m/s를 낼 수 있는지 확정합니다.</span></li><li><strong>LiDAR</strong><span>RPLIDAR C1 높이가 차체에 들어가는지 확인합니다.</span></li><li><strong>배터리</strong><span>18650 ×4가 들어가지 않으면 저상형 리포 2S로 바꿉니다.</span></li><li><strong>MCU</strong><span>ESP32-S3 추가 여부를 확정해 PRD에 반영합니다.</span></li><li><strong>실측</strong><span>시제품으로 라인별 평균·피크 전류를 재서 추정치(≈)를 교체합니다.</span></li></ol></section>
+</div>
+<div class="nooki-report-footer"><span>하드웨어 설계안 요약 · 수치는 추정치</span><button type="button" data-report-close>보고서 닫기</button></div>
+</dialog>
 <script>
 (() => {
-  const report = document.getElementById('technical-report');
-  const triggers = document.querySelectorAll('[data-report-open]');
-  let savedOverflow = '';
-  triggers.forEach(button => button.addEventListener('click', () => {
-    if (report.open) return;
-    savedOverflow = document.body.style.overflow;
-    report.showModal();
-    document.body.style.overflow = 'hidden';
-    report.querySelector('.nooki-report-content').scrollTop = 0;
-    triggers.forEach(trigger => trigger.setAttribute('aria-expanded', 'true'));
-  }));
-  report.querySelectorAll('[data-report-close]').forEach(button => button.addEventListener('click', () => report.close()));
-  report.addEventListener('close', () => {
-    document.body.style.overflow = savedOverflow;
-    triggers.forEach(trigger => trigger.setAttribute('aria-expanded', 'false'));
-  });
-  report.addEventListener('click', event => {
-    if (event.target !== report) return;
-    const rect = report.getBoundingClientRect();
-    if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) report.close();
+  document.querySelectorAll('.nooki-report-dialog').forEach(report => {
+    const triggers = document.querySelectorAll(`[data-report-open][aria-controls="${report.id}"]`);
+    let savedOverflow = '';
+    triggers.forEach(button => button.addEventListener('click', () => {
+      if (report.open) return;
+      savedOverflow = document.body.style.overflow;
+      report.showModal();
+      document.body.style.overflow = 'hidden';
+      report.querySelector('.nooki-report-content').scrollTop = 0;
+      triggers.forEach(trigger => trigger.setAttribute('aria-expanded', 'true'));
+    }));
+    report.querySelectorAll('[data-report-close]').forEach(button => button.addEventListener('click', () => report.close()));
+    report.addEventListener('close', () => {
+      document.body.style.overflow = savedOverflow;
+      triggers.forEach(trigger => trigger.setAttribute('aria-expanded', 'false'));
+    });
+    report.addEventListener('click', event => {
+      if (event.target !== report) return;
+      const rect = report.getBoundingClientRect();
+      if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) report.close();
+    });
   });
 })();
 </script>

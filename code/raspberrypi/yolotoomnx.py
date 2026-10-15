@@ -3,7 +3,7 @@ YOLO26n .pt -> .onnx 변환 + ONNX 추론(bbox/라벨 시각화) + PT/ONNX parit
 
 실행:  python yolotoomnx.py
 출력:
-  yolo26n.onnx                 변환된 모델 (라즈베리파이로 복사해서 사용)
+  models/onnx/yolo26n.onnx    변환된 모델 (라즈베리파이로 복사해서 사용)
   runs/<이미지>_pt.jpg          PyTorch(.pt) 추론 결과
   runs/<이미지>_onnx.jpg        ONNX Runtime 추론 결과
 
@@ -17,8 +17,9 @@ import numpy as np
 import onnxruntime as ort
 
 HERE = Path(__file__).resolve().parent
-PT_PATH = HERE / "yolo26n.pt"
-IMAGES = [HERE / "bus.jpg", HERE / "zidane.jpg"]
+PT_PATH = HERE / "models" / "pt" / "yolo26n.pt"
+ONNX_PATH = HERE / "models" / "onnx" / "yolo26n.onnx"
+IMAGES = [HERE / "images" / "bus.jpg", HERE / "images" / "zidane.jpg"]
 OUT_DIR = HERE / "runs"
 IMGSZ = 640
 CONF = 0.25
@@ -39,8 +40,10 @@ def export_onnx():
     # 출력이 (1, 300, 6) = [x1, y1, x2, y2, conf, cls] 이 된다. (기본값이면 (1, 84, 8400) + 별도 NMS 필요)
     onnx_path = YOLO(str(PT_PATH)).export(format="onnx", imgsz=IMGSZ, opset=12, simplify=True,
                                           dynamic=False, nms=False)
+    ONNX_PATH.parent.mkdir(parents=True, exist_ok=True)
+    Path(onnx_path).replace(ONNX_PATH)  # .pt 옆에 생성되므로 models/onnx/ 로 이동
     # export 과정에서 모델 상태가 바뀌지 않도록 parity 비교용 .pt 모델은 새로 로드
-    return YOLO(str(PT_PATH)), Path(onnx_path)
+    return YOLO(str(PT_PATH)), ONNX_PATH
 
 
 # ---------------------------------------------------------------- 2. ONNX 추론 (라즈베리파이용)

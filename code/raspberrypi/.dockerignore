@@ -1,6 +1,8 @@
 # 배포 환경에 필요 없는 파일
-*.pt
+**/*.pt
 runs/
-__pycache__/
+**/__pycache__/
+models/ncnn/model_ncnn.py
+export_models.py
 Dockerfile
 .dockerignore

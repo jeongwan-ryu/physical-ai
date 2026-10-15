@@ -1,0 +1,4 @@
+# 라즈베리파이(배포 환경) 런타임 의존성 - torch/ultralytics 없음
+numpy
+opencv-python-headless
+onnxruntime

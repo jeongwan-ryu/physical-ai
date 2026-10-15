@@ -130,6 +130,7 @@ main section:first-child .font-body-lg{font-size:15px;}
 @media(max-width:767px){.nooki-model-summary{grid-template-columns:1fr;padding:18px;gap:20px;}.nooki-model-summary h4{font-size:24px;}.nooki-model-steps{grid-template-columns:1fr;}}
 
 .nooki-ultralytics-logo{display:inline-flex;align-items:center;background:#fff;padding:8px 0;margin:0 0 12px;}
+.nooki-runtime-logo{display:inline-flex;align-items:center;gap:8px;height:28px;margin-bottom:12px;font-weight:700;font-size:18px;color:#123d57;}.nooki-runtime-logo img{height:24px;width:auto;}
 .nooki-ultralytics-logo img{display:block;width:160px;height:38px;object-fit:contain;object-position:left center;}
 .nooki-detection-figure{margin:0;min-width:0;}.nooki-detection-figure svg{display:block;width:100%;height:auto;}
 .nooki-detection-figure .nooki-model-example{margin-top:12px;padding:12px 16px;}
@@ -577,8 +578,8 @@ main section:first-child .font-body-lg{font-size:15px;}
     <h4 id="inference-summary-title">기기 안에서 얼마나 빨리 인식할까</h4>
     <p>YOLO26n을 4가지 CPU 런타임(ONNX Runtime · NCNN · OpenVINO · TFLite)으로 비교했습니다. PC(x86)에서는 TFLite가 1회 31.9ms로 가장 빨랐지만, Raspberry Pi 5에서는 NCNN이 추론 67ms로 가장 빠릅니다. 목표인 10fps에 작은 물건용 화면 분할까지 하려면 CPU만으로는 부족해, <strong>AI HAT+(Hailo-8L)</strong>를 우선 검토합니다. AI HAT+ 없이 <strong>Raspberry Pi 5만 사용하는 시나리오</strong>도 함께 준비합니다.</p>
     <div class="nooki-model-pair">
-      <div><span class="nooki-model-step">시나리오 A · AI HAT+ 사용 · 권장</span><h5>NPU가 추론을 맡습니다</h5><p>Hailo-8L이 인식을 처리하고, Pi 5의 CPU는 지도 작성·주행·음성 인식에 씁니다.</p></div>
-      <div><span class="nooki-model-step">시나리오 B · Raspberry Pi 5만 사용</span><h5>NCNN으로 실행하고 목표를 맞춥니다</h5><p>Pi 5에서 가장 빠른 NCNN(추론 67ms)을 씁니다. FP16 연산, 목표 5fps, 바닥이 보이는 영역만 잘라 인식, 코어 1개는 주행용으로 남기는 방식으로 조정합니다.</p></div>
+      <div><a class="nooki-runtime-logo" href="https://hailo.ai/" target="_blank" rel="noopener noreferrer" aria-label="Hailo 공식 홈페이지 (새 창)"><img src="images/logos/hailo.png" alt="Hailo" width="301" height="52" loading="lazy" decoding="async"></a><span class="nooki-model-step">시나리오 A · AI HAT+ 사용 · 권장</span><h5>NPU가 추론을 맡습니다</h5><p>Hailo-8L이 인식을 처리하고, Pi 5의 CPU는 지도 작성·주행·음성 인식에 씁니다.</p></div>
+      <div><a class="nooki-runtime-logo" href="https://github.com/Tencent/ncnn" target="_blank" rel="noopener noreferrer" aria-label="NCNN 공식 저장소 (새 창)"><img src="images/logos/ncnn.png" alt="" width="256" height="256" loading="lazy" decoding="async"><span>ncnn</span></a><span class="nooki-model-step">시나리오 B · Raspberry Pi 5만 사용</span><h5>NCNN으로 실행하고 목표를 맞춥니다</h5><p>Pi 5에서 가장 빠른 NCNN(추론 67ms)을 씁니다. FP16 연산, 목표 5fps, 바닥이 보이는 영역만 잘라 인식, 코어 1개는 주행용으로 남기는 방식으로 조정합니다.</p></div>
     </div>
     <button type="button" class="nooki-report-link" data-report-open aria-haspopup="dialog" aria-controls="inference-report" aria-expanded="false" style="margin-top:0;">추론 백엔드 비교 보고서 보기 <span aria-hidden="true">↗</span></button>
   </div>

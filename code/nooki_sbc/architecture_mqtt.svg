@@ -1,0 +1,196 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1090" viewBox="0 0 1440 1090" font-family="Noto Sans CJK KR, Noto Sans CJK TC, Malgun Gothic, sans-serif">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
+    </marker>
+    <marker id="m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#d97706"/>
+    </marker>
+    <style>
+      .hw  { fill:#f1f5f9; stroke:#94a3b8; stroke-width:1.5 }
+      .off { fill:#e0f2fe; stroke:#0284c7; stroke-width:2 }
+      .dev { fill:#fff7ed; stroke:#ea580c; stroke-width:2 }
+      .orc { fill:#fef2f2; stroke:#dc2626; stroke-width:3 }
+      .brk { fill:#fef3c7; stroke:#d97706; stroke-width:3 }
+      .t   { font-size:17px; font-weight:700; fill:#0f172a }
+      .s   { font-size:13px; fill:#334155 }
+      .xs  { font-size:11.5px; fill:#475569 }
+      .ps  { font-size:11px; fill:#92400e; font-family:monospace }
+      .lb  { font-size:12.5px; fill:#1e293b; font-weight:600 }
+      .ln  { fill:none; stroke:#475569; stroke-width:1.8; marker-end:url(#a) }
+      .bi  { marker-start:url(#a) }
+      .mq  { fill:none; stroke:#d97706; stroke-width:3; marker-end:url(#m); marker-start:url(#m) }
+      .badge { font-size:12px; font-weight:700; fill:#fff }
+    </style>
+  </defs>
+  <rect width="1440" height="1090" fill="#ffffff"/>
+
+  <text x="30" y="44" font-size="26" font-weight="800" fill="#0f172a">Nooki SBC 아키텍처 — MQTT 버전</text>
+  <text x="440" y="44" class="s">모든 컨테이너는 broker 하나에만 연결 · 상자 아래 pub/sub = 주고받는 MQTT 토픽(nooki/… 생략)</text>
+
+  <!-- ===== 하드웨어 ===== -->
+  <text x="30" y="98" class="lb" fill="#64748b">하드웨어</text>
+  <rect class="hw" x="30" y="110" width="200" height="130" rx="10"/>
+  <text x="44" y="134" class="t">ESP32-S3</text>
+  <text x="44" y="155" class="xs">모터 · 엔코더 · IMU</text>
+  <text x="44" y="172" class="xs">범퍼 · 낙하 센서</text>
+  <text x="44" y="200" class="xs" fill="#dc2626" font-weight="700">충돌·낙하·통신 끊김 시</text>
+  <text x="44" y="216" class="xs" fill="#dc2626" font-weight="700">Pi 없이 혼자 즉시 정지</text>
+
+  <rect class="hw" x="30" y="262" width="200" height="50" rx="10"/>
+  <text x="44" y="293" class="t">2D LiDAR</text>
+  <rect class="hw" x="30" y="322" width="200" height="50" rx="10"/>
+  <text x="44" y="353" class="t">카메라</text>
+  <rect class="hw" x="30" y="382" width="200" height="44" rx="10"/>
+  <text x="44" y="410" class="t">LED 조명</text>
+
+  <rect class="hw" x="30" y="452" width="200" height="116" rx="10"/>
+  <text x="44" y="480" class="t">마이크 · 스피커</text>
+  <text x="44" y="502" class="t">시작 버튼</text>
+
+  <rect class="hw" x="30" y="650" width="200" height="62" rx="10"/>
+  <text x="44" y="675" class="t">AI HAT+</text>
+  <text x="44" y="696" class="xs">Hailo-8L NPU</text>
+
+  <!-- ===== Pi 5 ===== -->
+  <rect x="298" y="72" width="845" height="858" rx="18" fill="#fafafa" stroke="#334155" stroke-width="2.5" stroke-dasharray="8 5"/>
+  <text x="316" y="100" class="lb" font-size="15">Raspberry Pi 5 · Docker (bridge 네트워크)</text>
+
+  <!-- motor-safety-control -->
+  <rect class="dev" x="330" y="110" width="230" height="130" rx="10"/>
+  <rect x="510" y="120" width="40" height="22" rx="11" fill="#ea580c"/><text x="530" y="136" class="badge" text-anchor="middle">C</text>
+  <text x="346" y="138" class="t">motor-safety</text>
+  <text x="346" y="158" class="xs">ESP32 시리얼 ↔ MQTT 번역</text>
+  <text x="346" y="175" class="xs">0.5초 명령 없으면 정지 명령</text>
+  <text x="346" y="203" class="ps">pub: odom imu safety</text>
+  <text x="346" y="222" class="ps">sub: cmd/motor</text>
+
+  <!-- sensor-collector -->
+  <rect class="dev" x="330" y="262" width="230" height="164" rx="10"/>
+  <rect x="510" y="272" width="40" height="22" rx="11" fill="#ea580c"/><text x="530" y="288" class="badge" text-anchor="middle">A</text>
+  <text x="346" y="290" class="t">sensor-collector</text>
+  <text x="346" y="311" class="xs">Picamera2 → JPEG 압축 10fps</text>
+  <text x="346" y="328" class="xs">LiDAR SDK → 스캔 10Hz</text>
+  <text x="346" y="345" class="xs">어두우면 LED 켬 (노출×게인)</text>
+  <text x="346" y="380" class="ps">pub: camera/jpeg scan</text>
+  <text x="346" y="397" class="ps">     camera/led</text>
+
+  <!-- hmi -->
+  <rect class="dev" x="330" y="452" width="230" height="116" rx="10"/>
+  <rect x="510" y="462" width="40" height="22" rx="11" fill="#ea580c"/><text x="530" y="478" class="badge" text-anchor="middle">D</text>
+  <text x="346" y="480" class="t">hmi</text>
+  <text x="346" y="500" class="xs">whisper.cpp “에어팟 찾아줘”</text>
+  <text x="346" y="532" class="ps">pub: target cmd</text>
+  <text x="346" y="550" class="ps">sub: stt state found</text>
+
+  <!-- ai-inference -->
+  <rect class="dev" x="330" y="600" width="230" height="200" rx="10"/>
+  <rect x="510" y="610" width="40" height="22" rx="11" fill="#ea580c"/><text x="530" y="626" class="badge" text-anchor="middle">A</text>
+  <text x="346" y="628" class="t">ai-inference</text>
+  <text x="346" y="649" class="xs">JPEG 해제 → 전처리(타일)</text>
+  <text x="346" y="666" class="xs">→ YOLO(Hailo / 예비 NCNN)</text>
+  <text x="346" y="683" class="xs">→ 후처리 → 지도 좌표 → 확정</text>
+  <text x="346" y="707" class="xs" fill="#15803d" font-weight="700">OOM으로 죽어도 나머지는 계속</text>
+  <text x="346" y="742" class="ps">pub: found found/jpeg</text>
+  <text x="346" y="759" class="ps">     detections</text>
+  <text x="346" y="776" class="ps">sub: camera/jpeg pose target</text>
+
+  <!-- broker -->
+  <rect class="brk" x="640" y="370" width="220" height="190" rx="14"/>
+  <text x="658" y="400" class="t" font-size="20">broker</text>
+  <text x="658" y="423" class="s">Mosquitto MQTT</text>
+  <text x="658" y="447" class="xs" fill="#b45309" font-weight="700">시스템의 척추 · 자원 거의 안 씀</text>
+  <text x="658" y="476" class="xs">· 1883: 컨테이너끼리 (내부만)</text>
+  <text x="658" y="494" class="xs">· 9001: WebSocket (대시보드)</text>
+  <text x="658" y="512" class="xs">· 계정·ACL: 웹은 target/cmd만</text>
+  <text x="658" y="530" class="xs">  쓰기 가능</text>
+
+  <!-- nav -->
+  <rect class="dev" x="920" y="110" width="210" height="230" rx="10"/>
+  <rect x="1080" y="120" width="40" height="22" rx="11" fill="#ea580c"/><text x="1100" y="136" class="badge" text-anchor="middle">B</text>
+  <text x="936" y="138" class="t">nav</text>
+  <text x="936" y="158" class="xs">컨테이너 안에서만 ROS 2</text>
+  <text x="936" y="176" class="xs">· slam_toolbox: 지도 + 위치</text>
+  <text x="936" y="193" class="xs">· Nav2: 경로 · 장애물 회피</text>
+  <text x="936" y="210" class="xs">· 지그재그 커버리지</text>
+  <text x="936" y="227" class="xs">· MQTT ↔ ROS 브리지 노드</text>
+  <text x="936" y="262" class="ps">pub: cmd/motor pose map</text>
+  <text x="936" y="279" class="ps">     nav/status</text>
+  <text x="936" y="298" class="ps">sub: scan odom imu</text>
+  <text x="936" y="315" class="ps">     nav/cmd</text>
+
+  <!-- mission -->
+  <rect class="orc" x="920" y="380" width="210" height="190" rx="12"/>
+  <rect x="1080" y="390" width="40" height="22" rx="11" fill="#dc2626"/><text x="1100" y="406" class="badge" text-anchor="middle">E</text>
+  <text x="936" y="408" class="t">mission</text>
+  <text x="936" y="428" class="xs" fill="#dc2626" font-weight="700">지휘자 (상태머신)</text>
+  <text x="936" y="450" class="xs">대기 → 탐색 중 → 찾음/실패</text>
+  <text x="936" y="467" class="xs">3분 제한 · 사진·위치 저장</text>
+  <text x="936" y="500" class="ps">pub: state nav/cmd stt</text>
+  <text x="936" y="519" class="ps">sub: target cmd found</text>
+  <text x="936" y="538" class="ps">     nav/status safety</text>
+
+  <!-- web -->
+  <rect class="dev" x="920" y="610" width="210" height="100" rx="10"/>
+  <rect x="1080" y="620" width="40" height="22" rx="11" fill="#ea580c"/><text x="1100" y="636" class="badge" text-anchor="middle">E</text>
+  <text x="936" y="638" class="t">web</text>
+  <text x="936" y="659" class="s">nginx 정적 페이지</text>
+  <text x="936" y="678" class="xs">MQTT.js로 브라우저가</text>
+  <text x="936" y="695" class="xs">broker에 직접 연결</text>
+
+  <!-- 폰 -->
+  <rect class="hw" x="1220" y="600" width="190" height="150" rx="16"/>
+  <text x="1236" y="628" class="t">폰 / PC 브라우저</text>
+  <text x="1236" y="654" class="xs">· 물건 선택 + 시작</text>
+  <text x="1236" y="674" class="xs">· 진행 상황 · 지도</text>
+  <text x="1236" y="694" class="xs">· 검출 사진 · 위치</text>
+  <text x="1236" y="730" class="xs" fill="#0284c7" font-weight="700">집 안 Wi-Fi만</text>
+
+  <!-- 계층 막대 -->
+  <rect x="330" y="118" width="6" height="114" rx="3" fill="#0f172a"/>
+  <rect x="330" y="270" width="6" height="148" rx="3" fill="#0f172a"/>
+  <rect x="330" y="460" width="6" height="100" rx="3" fill="#0f172a"/>
+  <rect x="640" y="380" width="6" height="170" rx="3" fill="#0f172a"/>
+  <rect x="330" y="608" width="6" height="184" rx="3" fill="#16a34a"/>
+  <rect x="920" y="118" width="6" height="214" rx="3" fill="#16a34a"/>
+  <rect x="920" y="388" width="6" height="174" rx="3" fill="#16a34a"/>
+  <rect x="920" y="618" width="6" height="84" rx="3" fill="#16a34a"/>
+
+  <!-- ===== 하드웨어 ↔ 컨테이너 ===== -->
+  <path class="ln bi" d="M230,175 H330"/><text x="236" y="167" class="xs">USB 시리얼</text>
+  <path class="ln" d="M230,287 H330"/><text x="250" y="279" class="xs">USB</text>
+  <path class="ln" d="M230,347 H330"/><text x="250" y="339" class="xs">CSI</text>
+  <path class="ln" d="M330,404 H230"/><text x="248" y="396" class="xs">PWM</text>
+  <path class="ln bi" d="M230,510 H330"/><text x="236" y="502" class="xs">I2S·GPIO</text>
+  <path class="ln bi" d="M230,681 H330"/><text x="248" y="673" class="xs">PCIe</text>
+
+  <!-- ===== MQTT 연결 (모두 broker로) ===== -->
+  <path class="mq" d="M560,190 L690,368"/>
+  <path class="mq" d="M560,360 L638,420"/>
+  <path class="mq" d="M560,510 L638,495"/>
+  <path class="mq" d="M560,680 L690,562"/>
+  <path class="mq" d="M920,250 L810,368"/>
+  <path class="mq" d="M920,470 L862,470"/>
+
+  <!-- 웹 -->
+  <path class="ln" d="M1130,660 H1220"/><text x="1146" y="652" class="xs">HTTP</text>
+  <path class="ln bi" d="M750,560 V870 H1315 V750"/>
+  <text x="770" y="862" class="xs" fill="#b45309" font-weight="700">MQTT over WebSocket :9001 (계정·ACL) — 브라우저 ↔ broker 직접</text>
+
+  <!-- ===== 탐색 흐름 ===== -->
+  <rect x="30" y="950" width="1380" height="70" rx="12" fill="#f8fafc" stroke="#cbd5e1"/>
+  <text x="48" y="976" class="lb">탐색 한 번의 흐름</text>
+  <text x="48" y="1004" class="s">① hmi/웹이 target·start 발행  →  ② mission이 nav/cmd로 커버리지 시작  →  ③ nav가 cmd/motor 발행, 지그재그 주행  →  ④ ai-inference가 camera/jpeg 검사  →  ⑤ found 발행, mission이 정지·알림  →  ⑥ 웹에 사진·위치</text>
+
+  <!-- ===== 범례 ===== -->
+  <g transform="translate(30,1045)">
+    <rect class="hw" width="22" height="16" rx="4"/><text x="30" y="13" class="xs">하드웨어</text>
+    <rect class="dev" x="110" width="22" height="16" rx="4"/><text x="140" y="13" class="xs">직접 개발 (A~E = 담당자)</text>
+    <rect class="orc" x="300" width="22" height="16" rx="4"/><text x="330" y="13" class="xs">지휘</text>
+    <rect class="brk" x="390" width="22" height="16" rx="4"/><text x="420" y="13" class="xs">broker</text>
+    <path d="M490,8 H530" stroke="#d97706" stroke-width="3"/><text x="538" y="13" class="xs">MQTT 연결</text>
+    <rect x="640" y="0" width="6" height="16" rx="3" fill="#0f172a"/><text x="654" y="13" class="xs">장치 접근 · 죽으면 안 됨 · restart: always</text>
+    <rect x="930" y="0" width="6" height="16" rx="3" fill="#16a34a"/><text x="944" y="13" class="xs">권한 최소 · 죽어도 됨 · on-failure + mem_limit</text>
+    <text x="1250" y="13" class="xs">ESP32 펌웨어 = C</text>
+  </g>
+</svg>

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 200" role="img" aria-label="Raspberry Pi 5 위에 AI HAT+를 얹은 모습의 그림">
+  <!-- Pi 5 보드 (아래) -->
+  <rect x="40" y="70" width="270" height="118" rx="10" fill="#1f7a4d"/>
+  <rect x="40" y="70" width="270" height="118" rx="10" fill="none" stroke="#155c39" stroke-width="2"/>
+  <g fill="#c9a227"><circle cx="54" cy="84" r="5"/><circle cx="296" cy="84" r="5"/><circle cx="54" cy="174" r="5"/><circle cx="296" cy="174" r="5"/></g>
+  <!-- USB / 이더넷 -->
+  <rect x="300" y="96" width="34" height="26" rx="2" fill="#b8c2cc"/>
+  <rect x="300" y="128" width="34" height="26" rx="2" fill="#b8c2cc"/>
+  <rect x="300" y="158" width="34" height="24" rx="2" fill="#9aa6b2"/>
+  <!-- AI HAT+ (위) -->
+  <rect x="56" y="18" width="232" height="120" rx="10" fill="#0f2f45" opacity=".25" transform="translate(6 8)"/>
+  <rect x="56" y="18" width="232" height="120" rx="10" fill="#123d57"/>
+  <rect x="68" y="26" width="208" height="12" rx="3" fill="#0b2536"/>
+  <g fill="#e2b04a">
+    <rect x="72" y="29" width="5" height="6"/><rect x="82" y="29" width="5" height="6"/><rect x="92" y="29" width="5" height="6"/><rect x="102" y="29" width="5" height="6"/><rect x="112" y="29" width="5" height="6"/><rect x="122" y="29" width="5" height="6"/><rect x="132" y="29" width="5" height="6"/><rect x="142" y="29" width="5" height="6"/><rect x="152" y="29" width="5" height="6"/><rect x="162" y="29" width="5" height="6"/><rect x="172" y="29" width="5" height="6"/><rect x="182" y="29" width="5" height="6"/><rect x="192" y="29" width="5" height="6"/><rect x="202" y="29" width="5" height="6"/><rect x="212" y="29" width="5" height="6"/><rect x="222" y="29" width="5" height="6"/><rect x="232" y="29" width="5" height="6"/><rect x="242" y="29" width="5" height="6"/><rect x="252" y="29" width="5" height="6"/><rect x="262" y="29" width="5" height="6"/>
+  </g>
+  <!-- Hailo 칩 -->
+  <rect x="136" y="58" width="72" height="60" rx="6" fill="#2b2f36"/>
+  <rect x="136" y="58" width="72" height="60" rx="6" fill="none" stroke="#feae2c" stroke-width="2"/>
+  <text x="172" y="86" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="700" fill="#feae2c">NPU</text>
+  <text x="172" y="104" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#e6edf3">Hailo-8L</text>
+  <!-- PCIe 리본 -->
+  <path d="M276 120 C300 120 300 150 286 160" fill="none" stroke="#e2b04a" stroke-width="7" stroke-linecap="round"/>
+  <text x="74" y="128" font-family="sans-serif" font-size="11" font-weight="700" fill="#e6edf3">AI HAT+</text>
+  <text x="56" y="182" font-family="sans-serif" font-size="11" font-weight="700" fill="#e6f4ea">Raspberry Pi 5 · 8GB</text>
+</svg>

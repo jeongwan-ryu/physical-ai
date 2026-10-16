@@ -143,6 +143,8 @@ main section:first-child .font-body-lg{font-size:15px;}
 .nooki-model-pair>div{background:#f5f8fa;border-radius:12px;padding:18px;}
 .nooki-model-pair h5{font-size:18px;line-height:1.5;font-weight:600;color:#123d57;margin-bottom:6px;}
 .nooki-model-pair p{font-size:13px;line-height:1.8;color:#526978;word-break:keep-all;}
+.nooki-board-img{display:block;width:100%;max-width:320px;height:auto;margin:0 auto 14px;}
+.nooki-board-actions{display:flex;flex-wrap:wrap;gap:12px;}.nooki-board-actions>*{margin-top:0!important;}
 .nooki-model-loop-figure{margin:0;}
 .nooki-model-loop{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;}
 .nooki-model-loop li{position:relative;border:1px solid #dce6ee;border-radius:10px;padding:14px 12px;background:#fff;font-size:12.5px;line-height:1.7;color:#526978;word-break:keep-all;}
@@ -583,6 +585,20 @@ main section:first-child .font-body-lg{font-size:15px;}
     </div>
     <button type="button" class="nooki-report-link" data-report-open aria-haspopup="dialog" aria-controls="inference-report" aria-expanded="false" style="margin-top:0;">추론 백엔드 비교 보고서 보기 <span aria-hidden="true">↗</span></button>
   </div>
+  <!-- Summary of report/Nooki_MCU_SBC_분석_보고서.docx (2026-10-16); full tables live in #board-report. -->
+  <div class="nooki-model-expand" aria-labelledby="board-summary-title">
+    <span class="nooki-model-label">보드 선정 · 2026.10.16 분석 <span class="nooki-report-badge">NEW</span></span>
+    <h4 id="board-summary-title">어떤 보드에 담을까</h4>
+    <p>SBC 5개 안과 MCU 4종을 인식 성능·카메라·높이 5.4cm·전력·가격 기준으로 점수를 매겨 비교했습니다. 결론은 지금 구성인 <strong>Raspberry Pi 5 + AI HAT+</strong>와 <strong>ESP32-S3</strong>를 유지하는 것입니다. AI 판단은 Pi 5가, 늦으면 위험한 주행과 안전은 ESP32-S3가 나눠 맡습니다.</p>
+    <div class="nooki-model-pair">
+      <div><img class="nooki-board-img" src="images/boards/pi5_ai_hat.svg" alt="Raspberry Pi 5 위에 AI HAT+를 얹은 그림" width="360" height="200" loading="lazy" decoding="async"><span class="nooki-model-step">SBC · AI 판단 · 80점</span><h5>Raspberry Pi 5 + AI HAT+</h5><p>NPU가 인식을 맡고 CPU는 지도 작성·주행·음성에 씁니다. Camera Module 3의 밝기 정보를 그대로 쓸 수 있습니다. Jetson(65점)은 카메라·전원·높이·가격($399)에서 밀렸습니다. 화면 분할 인식이 느리면 26 TOPS 모델로 바꿉니다.</p></div>
+      <div><img class="nooki-board-img" src="images/boards/esp32_s3.svg" alt="ESP32-S3 개발 보드 그림" width="360" height="200" loading="lazy" decoding="async"><span class="nooki-model-step">MCU · 주행과 안전 · 90점</span><h5>ESP32-S3</h5><p>바퀴 회전 계수, 낙하 센서 4개, Pi 5와의 USB 연결, micro-ROS를 모두 갖췄고 가장 쌉니다. Teensy 4.1(93점)은 성능은 조금 높지만 가격이 2배 이상이라 예비안으로 둡니다.</p></div>
+    </div>
+    <div class="nooki-board-actions">
+      <button type="button" class="nooki-report-link" data-report-open aria-haspopup="dialog" aria-controls="board-report" aria-expanded="false">MCU · SBC 분석 보고서 보기 <span aria-hidden="true">↗</span></button>
+      <a class="nooki-report-link" href="report/Nooki_MCU_SBC_%EB%B6%84%EC%84%9D_%EB%B3%B4%EA%B3%A0%EC%84%9C.docx" download>보고서 내려받기 (.docx) <span aria-hidden="true">↓</span></a>
+    </div>
+  </div>
   <button type="button" class="nooki-report-link" data-report-open aria-haspopup="dialog" aria-controls="technical-report" aria-expanded="false">기술 보고서 보기 <span aria-hidden="true">↗</span></button>
 <p class="nooki-model-note">개발 중인 구성입니다. 모델·기기 사양은 검증 후 확정됩니다. YOLOE의 기기 가속 지원과 사진 수집 방식(개인정보 보호)은 확장 단계 전에 검증합니다.</p>
   <div class="nooki-model-sources"><span>모델 기술 자료</span><a href="https://docs.ultralytics.com/models/yolo11/" target="_blank" rel="noopener noreferrer">Ultralytics YOLO11 ↗</a><a href="https://docs.ultralytics.com/models/yoloe/" target="_blank" rel="noopener noreferrer">Ultralytics YOLOE ↗</a><a href="https://github.com/hailo-ai/hailo_model_zoo" target="_blank" rel="noopener noreferrer">Hailo Model Zoo ↗</a></div>
@@ -1012,7 +1028,10 @@ main section:first-child .font-body-lg{font-size:15px;}
 <li><h3>위험한 순간은 ESP32-S3가 바로 멈춥니다</h3><p>범퍼나 낙하 센서가 반응하면 Pi 5의 판단을 기다리지 않고 즉시 정지합니다.</p></li>
 <li><h3>영상은 로봇 안에서만 오갑니다</h3><p>부품끼리는 모두 선으로 연결합니다. 무선은 웹 대시보드와 대화하는 한 구간뿐입니다.</p></li>
 </ul>
+<div class="flex flex-wrap justify-center gap-space-md">
 <button type="button" class="nooki-report-link" data-report-open aria-haspopup="dialog" aria-controls="hardware-report" aria-expanded="false" style="margin-top:0;">하드웨어 부품 보고서 보기 <span aria-hidden="true">↗</span></button>
+<button type="button" class="nooki-report-link" data-report-open aria-haspopup="dialog" aria-controls="board-report" aria-expanded="false" style="margin-top:0;">MCU · SBC 분석 보고서 보기 <span aria-hidden="true">↗</span></button>
+</div>
 </div>
 </section>
 <!-- SECTION 8: SUPPORTED ITEMS -->
@@ -1078,7 +1097,7 @@ main section:first-child .font-body-lg{font-size:15px;}
 </section>
 <section class="nooki-development" aria-labelledby="development-title">
 <div><span class="nooki-eyebrow">개발 현황</span><h2 id="development-title">한 단계씩, 실제 공간에 가까워집니다.</h2></div>
-<ol><li><span>01</span><strong>영상 처리 코드 준비</strong><p>보정·타일 분할·검출 결과 정리</p></li><li><span>02</span><strong>AI 모델·기기 구성 검토</strong><p>생활 공간 학습과 라즈베리 파이 연결 준비 · 추론 런타임 4종 속도 비교 완료(10.15)</p></li><li><span>03</span><strong>생활 공간 검증 예정</strong><p>작은 물품 인식·잘못된 알림·연속 탐색 점검</p></li></ol>
+<ol><li><span>01</span><strong>영상 처리 코드 준비</strong><p>보정·타일 분할·검출 결과 정리</p></li><li><span>02</span><strong>AI 모델·기기 구성 검토</strong><p>생활 공간 학습과 라즈베리 파이 연결 준비 · 추론 런타임 4종 속도 비교 완료(10.15) · MCU·SBC 비교 완료(10.16)</p></li><li><span>03</span><strong>생활 공간 검증 예정</strong><p>작은 물품 인식·잘못된 알림·연속 탐색 점검</p></li></ol>
 </section>
 <!-- SECTION 10: FAQ -->
 <section class="w-full bg-surface py-space-xl lg:py-margin" id="faq">
@@ -1278,7 +1297,7 @@ main section:first-child .font-body-lg{font-size:15px;}
 <div class="nooki-report-header"><div><span class="nooki-model-label">Nooki · 기술 보고서</span><h2 id="report-title">객체 인식 모델과 적용 계획</h2></div><button type="button" class="nooki-report-close" data-report-close aria-label="기술 보고서 닫기" autofocus><span aria-hidden="true">×</span></button></div>
 <div class="nooki-report-content">
 <p id="report-description" class="nooki-report-intro">모델 추천 보고서와 비전 AI 모델 분석 리포트의 핵심 내용을 정리했습니다. 모델과 하드웨어는 검토안이며, 성능은 실제 기기에서 검증할 예정입니다.</p>
-<div class="nooki-report-meta"><span>보고서 기준 · 2026.10.08 · 2026.10.12 · 2026.10.15</span><span class="nooki-report-downloads"><a class="nooki-report-download" href="report/nooki_%EA%B0%9D%EC%B2%B4%EC%9D%B8%EC%8B%9D_%EB%AA%A8%EB%8D%B8_%EC%B6%94%EC%B2%9C_%EB%B3%B4%EA%B3%A0%EC%84%9C.docx" download>모델 추천 보고서 <span aria-hidden="true">↓</span></a><a class="nooki-report-download" href="report/%EB%B9%84%EC%A0%84_AI_%EB%AA%A8%EB%8D%B8_5%EC%A2%85_%EB%B6%84%EC%84%9D_%EB%A6%AC%ED%8F%AC%ED%8A%B8.docx" download>비전 AI 모델 분석 리포트 <span aria-hidden="true">↓</span></a><button type="button" class="nooki-report-download" data-report-open aria-haspopup="dialog" aria-controls="inference-report" aria-expanded="false" style="border:0;font:inherit;font-weight:600;cursor:pointer;">추론 백엔드 비교 보고서 <span aria-hidden="true">↗</span></button></span></div>
+<div class="nooki-report-meta"><span>보고서 기준 · 2026.10.08 · 2026.10.12 · 2026.10.15 · 2026.10.16</span><span class="nooki-report-downloads"><a class="nooki-report-download" href="report/nooki_%EA%B0%9D%EC%B2%B4%EC%9D%B8%EC%8B%9D_%EB%AA%A8%EB%8D%B8_%EC%B6%94%EC%B2%9C_%EB%B3%B4%EA%B3%A0%EC%84%9C.docx" download>모델 추천 보고서 <span aria-hidden="true">↓</span></a><a class="nooki-report-download" href="report/%EB%B9%84%EC%A0%84_AI_%EB%AA%A8%EB%8D%B8_5%EC%A2%85_%EB%B6%84%EC%84%9D_%EB%A6%AC%ED%8F%AC%ED%8A%B8.docx" download>비전 AI 모델 분석 리포트 <span aria-hidden="true">↓</span></a><a class="nooki-report-download" href="report/Nooki_MCU_SBC_%EB%B6%84%EC%84%9D_%EB%B3%B4%EA%B3%A0%EC%84%9C.docx" download>MCU · SBC 분석 보고서 <span aria-hidden="true">↓</span></a><button type="button" class="nooki-report-download" data-report-open aria-haspopup="dialog" aria-controls="inference-report" aria-expanded="false" style="border:0;font:inherit;font-weight:600;cursor:pointer;">추론 백엔드 비교 보고서 <span aria-hidden="true">↗</span></button></span></div>
 <section aria-labelledby="report-model-title"><span class="nooki-model-step">01 · 모델 선정</span><h3 id="report-model-title">YOLO11s를 우선 검토합니다</h3><p>물건의 종류·위치·신뢰도를 함께 찾는 객체 검출 모델을 사용합니다. 작은 소지품 인식, 처리 속도, 가속기 지원을 기준으로 후보를 비교합니다.</p>
 <div class="nooki-report-table-wrap"><table><caption>보고서의 모델 후보와 검토 역할</caption><thead><tr><th scope="col">후보</th><th scope="col">검토 목적</th></tr></thead><tbody><tr><th scope="row">YOLO11s <span class="nooki-report-badge">우선 후보</span></th><td>정확도·속도·Hailo 지원의 균형</td></tr><tr><th scope="row">YOLOv8s</th><td>안정적인 비교 기준과 대안</td></tr><tr><th scope="row">YOLO26s</th><td>작은 물체 인식 성능 비교</td></tr><tr><th scope="row">DAMO-YOLO-S</th><td>라이선스 조건을 고려한 대안</td></tr></tbody></table></div><p class="nooki-report-footnote">모델별 지원 환경과 사용 조건을 확인한 뒤 최종 선정합니다. 공개 벤치마크 수치는 Nooki의 실제 성능을 의미하지 않습니다.</p></section>
 <section aria-labelledby="report-train-title"><span class="nooki-model-step">02 · 학습과 영상 처리</span><h3 id="report-train-title">생활 공간에 맞춰 추가 학습합니다</h3><p>이어버드·이어폰 케이스·반지·귀걸이·열쇠·리모컨을 우선 대상으로 준비합니다. 바닥 재질, 그림자, 조명과 사료·알약처럼 혼동하기 쉬운 물체를 함께 학습합니다.</p>
@@ -1315,6 +1334,8 @@ main section:first-child .font-body-lg{font-size:15px;}
 <tr><th scope="row">NCNN</th><td>70.8ms · 4위</td><td>67.0ms · 1위</td></tr>
 </tbody></table></div>
 <p>10fps에 화면 분할까지 하려면 1회 25ms 안에 끝나야 해서, AI HAT+(Hailo-8L)로 추론하고 NCNN은 CPU 예비로 둡니다. Pi 5 실측과 Hailo 측정은 다음 단계입니다.</p></section>
+<section aria-labelledby="report-board-title"><span class="nooki-model-step">07 · 보드 선정 <span class="nooki-report-badge">2026.10.16 분석 보고서</span></span><h3 id="report-board-title">Pi 5 + AI HAT+와 ESP32-S3를 유지합니다</h3><p>SBC 5개 안과 MCU 4종을 PRD 요구사항으로 비교했습니다. SBC는 Pi 5 + AI HAT+ 13 TOPS(80점)를 권장하고, 화면 분할 인식이 프레임당 100ms를 넘으면 26 TOPS(83점)로 바꿉니다. MCU는 ESP32-S3(90점)를 권장하고, 실시간 문제가 측정되면 Teensy 4.1(93점)로 바꿉니다.</p>
+<button type="button" class="nooki-report-link" data-report-open aria-haspopup="dialog" aria-controls="board-report" aria-expanded="false" style="margin-top:14px;">MCU · SBC 분석 보고서 보기 <span aria-hidden="true">↗</span></button></section>
 <div class="nooki-model-sources"><span>공식 기술 자료</span><a href="https://docs.ultralytics.com/models/yolo11/" target="_blank" rel="noopener noreferrer">Ultralytics YOLO11 ↗</a><a href="https://docs.ultralytics.com/models/yoloe/" target="_blank" rel="noopener noreferrer">Ultralytics YOLOE ↗</a><a href="https://github.com/hailo-ai/hailo_model_zoo" target="_blank" rel="noopener noreferrer">Hailo Model Zoo ↗</a></div>
 </div>
 <div class="nooki-report-footer"><span>개발·검증 계획 요약</span><button type="button" data-report-close>보고서 닫기</button></div>
@@ -1394,6 +1415,40 @@ main section:first-child .font-body-lg{font-size:15px;}
 <ol class="nooki-report-flow"><li><strong>모터</strong><span>N20 6V의 기어비·엔코더 분해능, 목표 주행 속도 0.2m/s를 낼 수 있는지 확정합니다.</span></li><li><strong>LiDAR</strong><span>RPLIDAR C1 높이가 차체에 들어가는지 확인합니다.</span></li><li><strong>배터리</strong><span>18650 ×4가 들어가지 않으면 저상형 리포 2S로 바꿉니다.</span></li><li><strong>MCU</strong><span>ESP32-S3 추가 여부를 확정해 PRD에 반영합니다.</span></li><li><strong>실측</strong><span>시제품으로 라인별 평균·피크 전류를 재서 추정치(≈)를 교체합니다.</span></li></ol></section>
 </div>
 <div class="nooki-report-footer"><span>하드웨어 설계안 요약 · 수치는 추정치</span><button type="button" data-report-close>보고서 닫기</button></div>
+</dialog>
+<!-- On-page summary of report/Nooki_MCU_SBC_분석_보고서.docx (2026.10.16); scores come from report/tools/build_mcu_sbc_report.js. -->
+<dialog id="board-report" class="nooki-report-dialog" aria-labelledby="board-report-title" aria-describedby="board-report-description">
+<div class="nooki-report-header"><div><span class="nooki-model-label">Nooki · 보드 선정 보고서</span><h2 id="board-report-title">MCU · SBC 분석</h2></div><button type="button" class="nooki-report-close" data-report-close aria-label="MCU · SBC 보고서 닫기" autofocus><span aria-hidden="true">×</span></button></div>
+<div class="nooki-report-content">
+<p id="board-report-description" class="nooki-report-intro">작은 물체 실시간 인식, 높이 5.4cm 차체, 배터리 구동, 충돌·낙하 안전이라는 Nooki의 요구사항으로 SBC 5개 안과 MCU 4종을 비교했습니다. 결론은 <strong>Raspberry Pi 5 8GB + AI HAT+</strong>와 <strong>ESP32-S3</strong> 조합을 유지하는 것입니다.</p>
+<div class="nooki-report-meta"><span>보고서 기준 · 2026.10.16 · 근거 PRD 2026.10.06 · 하드웨어 보고서 2026.10.14</span><span class="nooki-report-downloads"><a class="nooki-report-download" href="report/Nooki_MCU_SBC_%EB%B6%84%EC%84%9D_%EB%B3%B4%EA%B3%A0%EC%84%9C.docx" download>MCU · SBC 분석 보고서 <span aria-hidden="true">↓</span></a></span></div>
+<section aria-labelledby="board-report-summary-title"><span class="nooki-model-step">01 · 결론</span><h3 id="board-report-summary-title">지금 구성을 유지하고, 예비안을 정해 둡니다</h3><p>Linux는 실시간 운영체제가 아니라서, AI 판단은 SBC가, 늦으면 위험한 주행·안전은 MCU가 나눠 맡습니다.</p>
+<div class="nooki-report-table-wrap"><table><caption>권장 보드와 바꾸는 조건</caption><thead><tr><th scope="col">구분</th><th scope="col">권장</th><th scope="col">예비안</th><th scope="col">바꾸는 조건</th></tr></thead><tbody>
+<tr><th scope="row">SBC</th><td>Raspberry Pi 5 8GB + AI HAT+ 13 TOPS (Hailo-8L)</td><td>AI HAT+ 26 TOPS (Hailo-8)</td><td>4타일 추론이 프레임당 100ms를 넘을 때. 같은 PCIe 슬롯이라 교체가 쉽습니다</td></tr>
+<tr><th scope="row">MCU</th><td>ESP32-S3 DevKitC-1</td><td>Teensy 4.1</td><td>시제품에서 제어 주기·엔코더 누락 문제가 측정될 때</td></tr>
+</tbody></table></div></section>
+<section aria-labelledby="board-report-sbc-title"><span class="nooki-model-step">02 · SBC 비교</span><h3 id="board-report-sbc-title">카메라 스택과 NPU가 Pi 5를 고른 이유입니다</h3><p>Camera Module 3의 노출·게인 값을 그대로 읽어 LED를 제어할 수 있는 조합은 Pi 5뿐입니다. NPU가 인식을 맡아 CPU는 지도 작성·주행·음성 인식에 씁니다.</p>
+<div class="nooki-report-table-wrap"><table><caption>가중 합계 100점 · AI 추론 25 · CPU 여유 15 · 카메라 15 · ROS 2 10 · 높이 10 · 전원 10 · 가격 10 · 자료 5</caption><thead><tr><th scope="col">후보</th><th scope="col">AI 가속</th><th scope="col">점수</th><th scope="col">판단</th></tr></thead><tbody>
+<tr><th scope="row">Pi 5 + AI HAT+ 13 TOPS</th><td>Hailo-8L</td><td>80</td><td>권장. 타일링 실측 후 확정</td></tr>
+<tr><th scope="row">Pi 5 + AI HAT+ 26 TOPS</th><td>Hailo-8</td><td>83</td><td>예비. 성능 여유는 크지만 더 비쌉니다</td></tr>
+<tr><th scope="row">Pi 5 단독</th><td>CPU (NCNN)</td><td>70</td><td>추론만 67ms라 5fps 예비 모드로만 씁니다</td></tr>
+<tr><th scope="row">Jetson Orin Nano Super</th><td>GPU 67 TOPS</td><td>65</td><td>Camera Module 3 공식 미지원, 19V 입력, 높이, $399</td></tr>
+<tr><th scope="row">RK3588 보드</th><td>NPU 6 TOPS</td><td>62</td><td>카메라 드라이버·NPU 변환 자료가 적습니다</td></tr>
+</tbody></table></div></section>
+<section aria-labelledby="board-report-mcu-title"><span class="nooki-model-step">03 · MCU 비교</span><h3 id="board-report-mcu-title">ESP32-S3로 필요한 자원을 모두 채웁니다</h3><p>엔코더 2채널(PCNT), 낙하 센서 ADC 4채널, GPIO 19개, 네이티브 USB, micro-ROS 공식 ESP-IDF 컴포넌트를 모두 갖췄고 가장 쌉니다.</p>
+<div class="nooki-report-table-wrap"><table><caption>가중 합계 100점 · micro-ROS 20 · 엔코더 15 · ADC·GPIO 15 · USB 10 · 실시간 15 · 크기 10 · 가격 5 · 난이도 10</caption><thead><tr><th scope="col">후보</th><th scope="col">점수</th><th scope="col">판단</th></tr></thead><tbody>
+<tr><th scope="row">ESP32-S3 DevKitC-1</th><td>90</td><td>권장. 10.14 핀 배정이 이미 이 보드 기준입니다</td></tr>
+<tr><th scope="row">Teensy 4.1</th><td>93</td><td>예비. 실시간·ADC는 가장 좋지만 가격이 2배 이상입니다</td></tr>
+<tr><th scope="row">STM32F411 (Black Pill)</th><td>82</td><td>자원은 충분하지만 빌드 환경을 갖추는 비용이 큽니다</td></tr>
+<tr><th scope="row">RP2350 (Pico 2)</th><td>74</td><td>ADC가 3개만 나와 있고 micro-ROS 지원이 확인되지 않았습니다</td></tr>
+</tbody></table></div>
+<p class="nooki-report-footnote">MCU 없이 Pi 5 GPIO로 모터를 직접 다루는 안은 제외했습니다. 엔코더 펄스를 놓치기 쉽고, 안전 정지가 Pi의 부하에 묶이기 때문입니다.</p></section>
+<section aria-labelledby="board-report-next-title"><span class="nooki-model-step">04 · 실측으로 확인할 것</span><h3 id="board-report-next-title">시제품에서 다섯 가지를 잽니다</h3>
+<ol class="nooki-report-flow"><li><strong>타일링 속도</strong><span>Hailo에서 4타일 × 10fps, 프레임당 p95 100ms 미만 (SLAM·Nav2 실행 중)</span></li><li><strong>INT8 정확도</strong><span>ONNX FP32 대비 하락 2%p 이내, 인식 정확도 90% 이상</span></li><li><strong>적층 높이</strong><span>Pi 5 + AI HAT+ + 쿨러가 차체 허용 높이 안에 들어가는지</span></li><li><strong>발열</strong><span>10분 연속 탐색 후 스로틀링 없음 (get_throttled = 0x0)</span></li><li><strong>전류</strong><span>5V-A 라인 피크가 5A 미만인지</span></li></ol>
+<p class="nooki-report-footnote">2025년 말부터 메모리 가격 급등으로 Pi 5와 Jetson 가격이 여러 차례 올랐습니다(Pi 5 8GB $80 → $125 이상, Jetson $249 → $399). 구매 전에 다시 확인합니다.</p></section>
+<div class="nooki-model-sources"><span>참고 자료</span><a href="https://micro.ros.org/docs/overview/hardware/" target="_blank" rel="noopener noreferrer">micro-ROS 지원 하드웨어 ↗</a><a href="https://www.raspberrypi.com/products/ai-hat/" target="_blank" rel="noopener noreferrer">Raspberry Pi AI HAT+ ↗</a></div>
+</div>
+<div class="nooki-report-footer"><span>보드 선정 요약 · 점수는 PRD 기준 평가</span><button type="button" data-report-close>보고서 닫기</button></div>
 </dialog>
 <!-- On-page summary of the 2026.10.15 YOLO26n inference backend comparison (code/raspberrypi, runs/compare_docker_amd64). -->
 <dialog id="inference-report" class="nooki-report-dialog" aria-labelledby="inf-report-title" aria-describedby="inf-report-description">

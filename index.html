@@ -143,9 +143,7 @@ main section:first-child .font-body-lg{font-size:15px;}
 .nooki-model-pair>div{background:#f5f8fa;border-radius:12px;padding:18px;}
 .nooki-model-pair h5{font-size:18px;line-height:1.5;font-weight:600;color:#123d57;margin-bottom:6px;}
 .nooki-model-pair p{font-size:13px;line-height:1.8;color:#526978;word-break:keep-all;}
-.nooki-board-img{display:block;width:100%;max-width:320px;height:auto;margin:0 auto 14px;}
-.nooki-board-actions{display:flex;flex-wrap:wrap;gap:12px;}.nooki-board-actions>*{margin-top:0!important;}
-.nooki-model-loop-figure{margin:0;}
+.nooki-board-img{display:block;width:100%;max-width:320px;height:auto;margin:0 auto 14px;}.nooki-model-loop-figure{margin:0;}
 .nooki-model-loop{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;}
 .nooki-model-loop li{position:relative;border:1px solid #dce6ee;border-radius:10px;padding:14px 12px;background:#fff;font-size:12.5px;line-height:1.7;color:#526978;word-break:keep-all;}
 .nooki-model-loop li strong{display:block;font-size:13px;color:#123d57;font-weight:600;margin-bottom:4px;}
@@ -594,10 +592,7 @@ main section:first-child .font-body-lg{font-size:15px;}
       <div><img class="nooki-board-img" src="images/boards/pi5_ai_hat.svg" alt="Raspberry Pi 5 위에 AI HAT+를 얹은 그림" width="360" height="200" loading="lazy" decoding="async"><span class="nooki-model-step">SBC · AI 판단 · 80점</span><h5>Raspberry Pi 5 + AI HAT+</h5><p>NPU가 인식을 맡고 CPU는 지도 작성·주행·음성에 씁니다. Camera Module 3의 밝기 정보를 그대로 쓸 수 있습니다. Jetson(65점)은 카메라·전원·높이·가격($399)에서 밀렸습니다. 화면 분할 인식이 느리면 26 TOPS 모델로 바꿉니다.</p></div>
       <div><img class="nooki-board-img" src="images/boards/esp32_s3.svg" alt="ESP32-S3 개발 보드 그림" width="360" height="200" loading="lazy" decoding="async"><span class="nooki-model-step">MCU · 주행과 안전 · 90점</span><h5>ESP32-S3</h5><p>바퀴 회전 계수, 낙하 센서 4개, Pi 5와의 USB 연결, micro-ROS를 모두 갖췄고 가장 쌉니다. Teensy 4.1(93점)은 성능은 조금 높지만 가격이 2배 이상이라 예비안으로 둡니다.</p></div>
     </div>
-    <div class="nooki-board-actions">
-      <button type="button" class="nooki-report-link" data-report-open aria-haspopup="dialog" aria-controls="board-report" aria-expanded="false">MCU · SBC 분석 보고서 보기 <span aria-hidden="true">↗</span></button>
-      <a class="nooki-report-link" href="report/Nooki_MCU_SBC_%EB%B6%84%EC%84%9D_%EB%B3%B4%EA%B3%A0%EC%84%9C.docx" download>보고서 내려받기 (.docx) <span aria-hidden="true">↓</span></a>
-    </div>
+    <button type="button" class="nooki-report-link" data-report-open aria-haspopup="dialog" aria-controls="board-report" aria-expanded="false" style="margin-top:0;">MCU · SBC 분석 보고서 보기 <span aria-hidden="true">↗</span></button>
   </div>
   <button type="button" class="nooki-report-link" data-report-open aria-haspopup="dialog" aria-controls="technical-report" aria-expanded="false">기술 보고서 보기 <span aria-hidden="true">↗</span></button>
 <p class="nooki-model-note">개발 중인 구성입니다. 모델·기기 사양은 검증 후 확정됩니다. YOLOE의 기기 가속 지원과 사진 수집 방식(개인정보 보호)은 확장 단계 전에 검증합니다.</p>

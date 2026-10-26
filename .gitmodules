@@ -1,0 +1,3 @@
+[submodule "code/cloud/silver-sniffle"]
+	path = code/cloud/silver-sniffle
+	url = https://github.com/dohyeon5154/silver-sniffle.git

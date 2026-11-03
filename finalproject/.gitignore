@@ -1,0 +1,11 @@
+# ESP-IDF
+firmware/build/
+firmware/managed_components/
+firmware/dependencies.lock
+firmware/sdkconfig
+firmware/sdkconfig.old
+# ROS 2
+ros2_ws/build/
+ros2_ws/install/
+ros2_ws/log/
+__pycache__/

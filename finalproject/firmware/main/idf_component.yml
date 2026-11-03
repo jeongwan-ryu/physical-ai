@@ -1,0 +1,5 @@
+dependencies:
+  idf: ">=5.3"
+  espressif/esp32-camera: "*"
+  espressif/hand_detect: "*"
+  espressif/hand_gesture_recognition: "*"
